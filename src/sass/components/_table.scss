@@ -1,0 +1,194 @@
+.table-wrapper {
+  max-width: 100%;
+  overflow: auto;
+  margin: 0 auto;
+  width: 100%;
+  border: 1px solid var(--grey);
+
+  &.min table {
+    line-height: 1;
+    padding-block: 0;
+  }
+}
+
+table {
+  // border: 1px solid var(--grey-2);
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 1rem;
+  background: color-mix(in srgb, var(--parchment) 100%, var(--white) 100%);
+  word-wrap: none;
+  word-break: none;
+  table-layout: auto;
+  white-space: nowrap;
+
+  // &:has(ref-) td {
+  //   line-height: 1;
+  //   padding-block: 0;
+  // }
+
+  thead {
+    background-color: var(--dark-purple);
+    color: var(--white);
+    // text-align: left;
+    vertical-align: middle;
+    border: 1px solid var(--grey);
+  }
+
+  tbody {
+    th {
+      background-color: color-mix(
+        in srgb,
+        var(--yellow) 100%,
+        var(--white) 100%
+      );
+      // text-align: left;
+      border-color: var(--grey);
+    }
+  }
+
+  th,
+  td {
+    padding: 0.5rem;
+    border: 1px solid transparent;
+    // text-align: center;
+
+    &:nth-of-type(1) {
+      // text-align: left;
+    }
+  }
+
+  td {
+    border-color: var(--grey);
+    word-wrap: break-word;
+    white-space: break-spaces;
+    min-width: 10ch;
+  }
+
+  tr:not(:has([colspan])):not(:has(th)):nth-of-type(odd) {
+    background-color: color-mix(
+      in srgb,
+      var(--yellow-1) 25%,
+      var(--white) 100%
+    );
+  }
+
+  .table-flex {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // th {
+  //   background-color: var(--blue-600);
+  //   color: var(--var(--white));
+  //   line-height: 1.25;
+  //   text-align: center;
+  //   vertical-align: middle;
+  // }
+
+  // th,
+  // td {
+  //   border: 1px solid var(--grey-300);
+  //   padding: 0.5rem;
+
+  //   [data-theme='dark'] & {
+  //     border-color: var(--phosphor-green-medium);
+  //   }
+  // }
+
+  // td {
+  //   vertical-align: top;
+  //   word-break: break-word;
+  // }
+
+  // tbody tr:nth-of-type(even) {
+  //   background-color: var(--grey-100);
+  // }
+
+  // @container type (max-width: 60ch) {
+  //   border: none;
+
+  //   &,
+  //   thead,
+  //   tbody,
+  //   th,
+  //   td,
+  //   tr {
+  //     display: block;
+  //   }
+
+  //   thead tr {
+  //     clip-path: inset(50%);
+  //     height: 1px;
+  //     overflow: hidden;
+  //     position: absolute;
+  //     var(--white)-space: nowrap;
+  //     width: 1px;
+  //   }
+
+  //   tbody tr {
+  //     background: var(--var(--white));
+  //     border: 1px solid var(--grey-300);
+  //     margin-bottom: 1rem;
+
+  //     &:nth-of-type(2n) {
+  //       background: var(--var(--white));
+  //     }
+  //   }
+
+  //   td {
+  //     border: 0;
+  //     display: grid;
+  //     margin: 0;
+  //     padding: 1rem;
+
+  //     &:not(:last-child) {
+  //       border-bottom: 1px solid var(--grey-300);
+  //     }
+
+  //     &::before {
+  //       background-color: var(--blue-600);
+  //       color: var(--var(--white));
+  //       grid-row: 1 / span 1;
+  //     }
+
+  //     &[data-header] {
+  //       /* stylelint-disable selector-no-qualifying-type */
+  //       &::before {
+  //         align-items: center;
+  //         content: attr(data-header);
+  //         display: flex;
+  //         font-weight: bold;
+  //         margin: -1rem -1rem 1rem;
+  //         padding: 0.5rem 1rem;
+  //       }
+  //       /* stylelint-enable selector-no-qualifying-type */
+  //     }
+  //   }
+  // }
+
+  // @container type (min-width: 45ch) {
+  //   td {
+  //     /* stylelint-enable no-descending-specificity */
+  //     grid-template-columns: 8rem 1fr;
+
+  //     &::before {
+  //       grid-column: 1 / span 1;
+  //       grid-row: span 3;
+  //       margin-right: 0.5rem;
+  //     }
+
+  //     /* stylelint-disable max-nesting-depth, selector-no-qualifying-type */
+  //     &[data-header] {
+  //       &::before {
+  //         margin: -1rem 1rem -1rem -1rem;
+  //       }
+  //     }
+  //     /* stylelint-enable max-nesting-depth, selector-no-qualifying-type */
+  //   }
+  // }
+}

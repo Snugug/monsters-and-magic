@@ -1,0 +1,45 @@
+@use 'sass:map';
+@use '$sass/global/colors';
+
+@layer root {
+  :root {
+    @each $name, $value in colors.$colors {
+      --#{$name}: #{$value};
+    }
+
+    @each $theme, $colors in colors.$themes {
+      @each $color, $value in $colors {
+        --theme-#{$theme}--#{'' + $color}: #{$value};
+      }
+    }
+
+    @each $color, $value in map.get(colors.$themes, 'dark') {
+      --theme-#{'' + $color}: var(--theme-dark--#{$color});
+    }
+
+    @each $class, $color in colors.$class-colors {
+      --#{$class}: var(--#{$color});
+    }
+
+    @each $rarity, $color in colors.$rarities {
+      --rarity-#{$rarity}: var(--#{$color});
+    }
+  }
+
+  body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
+    font-family: 'lato', sans-serif;
+    font-weight: normal;
+    font-feature-settings: 'liga';
+    background-color: var(--parchment);
+    color: var(--black);
+    position: relative;
+  }
+}
+
+// body {
+//   overflow-x: hidden;
+//   width: 100vw;
+// }

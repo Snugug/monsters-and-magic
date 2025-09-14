@@ -1,22 +1,42 @@
+---
+import '$sass/style.scss';
+import '$sass/typetura.css';
+
+import Nav from '$components/Nav.svelte';
+
+export type props = {
+  title: string;
+};
+
+const { title } = Astro.props;
+
+const pageTitle = title ? `${title} | Monsters & Magic` : 'Monsters & Magic';
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="stylesheet" href="https://use.typekit.net/hbi5qtc.css" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <Nav client:load><slot name="header" /></Nav>
+    <main>
+      <slot />
+    </main>
+  </body>
+  <script>
+    import '$components/TermReference';
+  </script>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+  main {
+    padding-inline: 0.75rem;
+    padding-block-start: 3.75rem;
+  }
 </style>
