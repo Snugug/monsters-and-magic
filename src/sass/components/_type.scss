@@ -15,9 +15,9 @@
 
   .type {
     container-type: inline-size;
-    max-width: 80ch;
+    max-width: 70ch;
     line-height: 1.618;
-    font-size: 1.15rem;
+    font-size: 1rem;
     // --tt: var(--on);
     // animation-name: body;
     word-wrap: break-word;
@@ -176,7 +176,7 @@
     h3 {
       padding-block-end: 0.25rem;
       margin-block-end: 1rem;
-      border-bottom: 1px solid black;
+      border-bottom: 2px solid var(--dark-yellow);
     }
 
     h4,
@@ -230,7 +230,7 @@
 
     @keyframes h4 {
       from {
-        font-size: 1.1em;
+        font-size: 1.15em;
       }
       to {
         font-size: 1.25em;
