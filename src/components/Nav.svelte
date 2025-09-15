@@ -3,12 +3,6 @@
   import CompactWordmark from '$assets/wordmark.svg?raw';
 
   let { children } = $props();
-
-  let open = $state(false);
-
-  $effect(() => {
-    console.log(open);
-  });
 </script>
 
 <header>
