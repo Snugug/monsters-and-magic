@@ -4,6 +4,8 @@ import '$sass/typetura.css';
 
 import Nav from '$components/Nav.svelte';
 
+import Sprite from '$components/Sprite.astro';
+
 export type props = {
   title: string;
 };
@@ -24,15 +26,19 @@ const pageTitle = title ? `${title} | Monsters & Magic` : 'Monsters & Magic';
     <title>{pageTitle}</title>
   </head>
   <body>
-    <Nav client:load><slot name="header" /></Nav>
-    <main>
-      <slot />
-    </main>
+    <Nav client:load>
+      <slot name="header" />
+    </Nav>
   </body>
-  <script>
-    import '$components/TermReference';
-  </script>
+  <main>
+    <slot />
+  </main>
+
+  <Sprite />
 </html>
+<script>
+  import '$components/TermReference';
+</script>
 
 <style is:global>
   main {

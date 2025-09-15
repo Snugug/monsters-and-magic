@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import * as path from 'path';
 import * as url from 'url';
 import tsconfig from './tsconfig.json';
+import pagefind from './lib/pagefind';
 
 // Get the current directory
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -19,7 +20,7 @@ import svelte from '@astrojs/svelte';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [svelte()],
+  integrations: [svelte(), pagefind()],
   vite: {
     resolve: {
       alias: aliases,

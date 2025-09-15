@@ -24,8 +24,7 @@ export async function postHTMLRefBuilder(tree) {
             let holder = [] as Array<string | RawNode>;
 
             for (const f of found) {
-              const { 0: word, 9: sl, 5: mod, 6: sz, 7: ty, index } = f;
-              // console.log(f);
+              const { 0: word, 12: sl, 5: mod, 6: sz, 7: ty, index } = f;
 
               const sub = c.substring(pointer, index);
               holder.push(sub);
@@ -34,7 +33,6 @@ export async function postHTMLRefBuilder(tree) {
 
               if (sl) {
                 src = shortLookup[sl.toLowerCase()];
-                console.log(src);
               }
 
               if (mod) {

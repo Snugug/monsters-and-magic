@@ -81,7 +81,7 @@ export const sized = {
 };
 
 export const typed = {
-  hold: 'glossary/hold',
+  // hold: 'glossary/hold',
 };
 
 export const replacementRegExp = new RegExp(
