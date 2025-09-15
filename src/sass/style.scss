@@ -1,8 +1,8 @@
+// Layers
+@use 'components/layers';
 // Components
 @use 'components/reset';
 @use 'components/root';
 @use 'components/type';
 @use 'components/term-ref';
 @use 'components/table';
-
-@layer reset, root, type;
