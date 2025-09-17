@@ -65,6 +65,7 @@
 
   async function search(event: SubmitEvent) {
     event.preventDefault();
+    window.location = `/search?q=${looked}`;
   }
 
   $effect(() => {
@@ -82,6 +83,7 @@
           }
           results = f;
         } else {
+          total = 0;
           results = [];
         }
         looked = looking;
@@ -107,6 +109,9 @@
       onkeyup={clear}
       bind:this={searchInput}
     />
+    <button>
+      <Icon label="Search" icon="search" />
+    </button>
   </form>
 
   {#if results}
@@ -117,10 +122,10 @@
             ? 's'
             : ''}.{results?.length < total ? ' Showing first 5.' : ''}
         </p>
-        <a href={`/search?q=${looked}`} class="all" onkeyup={clear}
+        <!-- <a href={`/search?q=${looked}`} class="all" onkeyup={clear}
           ><span>See All</span><Icon icon="forward-arrow" hidden={true}
           ></Icon></a
-        >
+        > -->
       </div>
 
       {#if results.length}
@@ -199,6 +204,7 @@
     display: block;
     padding-block: 0.5rem;
     padding-inline: 1rem;
+
     &:focus {
       outline: none;
       background: var(--light-purple);
@@ -206,6 +212,28 @@
 
     &--title {
       font-weight: 700;
+    }
+  }
+
+  form {
+    display: grid;
+    grid-template-columns: auto 1.5rem;
+    gap: 0;
+
+    button {
+      grid-column: 2 / span 1;
+      grid-row: 1;
+
+      border: 0;
+      padding: 0;
+      background: none;
+
+      :global(svg) {
+        height: 1.25rem;
+        width: 1.25rem;
+        margin-inline-end: 0.25rem;
+        fill: var(--white);
+      }
     }
   }
 
@@ -218,10 +246,13 @@
     font-size: 1rem;
     height: 1.5rem;
     width: 100%;
+    grid-column: 1 / span 2;
+    grid-row: 1;
+    padding-inline-end: 1.75rem;
 
-    &:focus {
-      outline: none;
-      border-color: var(--light-purple);
-    }
+    // &:focus {
+    //   outline: none;
+    //   border-color: var(--light-purple);
+    // }
   }
 </style>

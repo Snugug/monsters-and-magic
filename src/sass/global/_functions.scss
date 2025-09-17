@@ -9,3 +9,7 @@
 @function transparentize($color, $amount) {
   @return color-mix(in srgb, $color, transparent $amount);
 }
+
+@function alpha($color, $amount) {
+  @return color-mix(in srgb, $color, transparent $amount);
+}

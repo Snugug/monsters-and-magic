@@ -172,6 +172,11 @@
       // text-transform: uppercase;
     }
 
+    h1 {
+      margin-block-end: 2rem;
+      border-bottom: 4px solid var(--dark-yellow);
+    }
+
     h2,
     h3 {
       padding-block-end: 0.25rem;

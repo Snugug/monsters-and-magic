@@ -25,20 +25,22 @@
   </div>
 </header>
 
-<div id="global-nav" popover>
+<div id="global-nav" popover open>
   <!-- <button popovertarget="global-nav">Close</button> -->
   <a href="/" class="home-link">
     {@html CompactWordmark}
   </a>
   <nav class="holder">
     <ul role="list">
-      <li><a href="/characters">Characters</a></li>
+      <li><a href="/rules/characters">Characters</a></li>
       <li><a href="/rules">Rules</a></li>
     </ul>
   </nav>
 </div>
 
 <style lang="scss">
+  @use '$sass/global/functions' as fn;
+
   :global(:root) {
     --header-height: calc(3rem + 2px);
   }
@@ -58,6 +60,10 @@
     // overflow: hidden;
     position: fixed;
     width: 100%;
+
+    :global(:focus) {
+      outline-color: var(--light-purple);
+    }
   }
 
   .inner {
@@ -100,7 +106,6 @@
   #global-nav {
     width: calc(100% - 5.5rem);
     max-width: 20rem;
-    display: block;
     left: 100%;
     // transform: translateX(100%);
     transition: transform 0.25s ease-in-out;
@@ -109,10 +114,15 @@
     color: var(--white);
     border: 0;
     display: grid;
+    grid-template-rows: var(--header-height) auto;
     padding: 0;
 
     &:popover-open {
       transform: translateX(-100%);
+    }
+
+    :global(:focus) {
+      outline-color: var(--light-purple);
     }
 
     &::backdrop {
@@ -140,6 +150,16 @@
       height: 1.5rem;
       fill: var(--white);
     }
+  }
+
+  [role='list'] a {
+    padding: 0.5rem 1.5rem;
+    font-size: 1.25rem;
+    color: fn.alpha(var(--white), 25%);
+    text-decoration: none;
+    border-bottom: 1px solid fn.alpha(var(--white), 75%);
+    display: block;
+    letter-spacing: 1px;
   }
 
   // body:has(:popover-open) .inner {

@@ -1,5 +1,5 @@
 <script>
-  let { label, icon, hidden = false } = $props();
+  let { label = '', icon, hidden = false } = $props();
 </script>
 
 <svg

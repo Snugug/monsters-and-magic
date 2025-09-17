@@ -1,18 +1,23 @@
 ---
-import Layout from '$layouts/Layout.astro';
+import Article from '$layouts/Article.astro';
 
-import { getEntry, render } from 'astro:content';
+import { getEntry } from 'astro:content';
 
-const loaded = await getEntry('standalone', 'characters');
-const { Content } = await render(loaded);
+const {
+  rendered: {
+    html,
+    metadata: { headings },
+  },
+} = await getEntry('standalone', 'characters');
+
+console.log(headings);
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-  <div class="type">
-    <Content />
-    <!-- <SiteLanding /> -->
-  </div>
-</Layout>
+<Article title="Characters" headings={headings}>
+  <Fragment set:html={html} slot="content" />
+  <!-- <Content slot='content' /> -->
+  <!-- <SiteLanding /> -->
+</Article>
