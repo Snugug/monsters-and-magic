@@ -1,0 +1,53 @@
+---
+import Layout from '$layouts/Layout.astro';
+import ChapterNav from '$components/ChapterNav.svelte';
+import type { MarkdownHeading } from 'astro';
+import { getCollection } from 'astro:content';
+
+const standalone = (await getCollection('chapters')).map((s) => {
+  return {
+    url: `/rules/${s.slug}`,
+    title: s.data.title,
+    chapter: s.data.chapter,
+  };
+});
+
+export type props = {
+  title: string;
+  headings: MarkdownHeading;
+  chapter: number;
+};
+
+const { title, chapter } = Astro.props;
+
+const next = standalone.find((f) => f.chapter === chapter + 1) || null;
+const previous = standalone.find((f) => f.chapter === chapter - 1) || null;
+---
+
+<Layout title={title}>
+  <div class="chapter">
+    <div class="chapter--major-nav">
+      <ChapterNav next={next} previous={previous} />
+    </div>
+    <aside class="chapter--subnav">
+      <slot name="sidebar" />
+    </aside>
+
+    <article class="chapter--content">
+      <div class="type">
+        <h1>Chapter {chapter}: {title}</h1>
+        <slot name="content" />
+      </div>
+    </article>
+  </div>
+</Layout>
+
+<style lang="scss">
+  .chapter {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    max-width: 70ch;
+    margin-inline: auto;
+  }
+</style>

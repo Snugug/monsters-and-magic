@@ -2,8 +2,9 @@
   import Icon from '$components/Icon.svelte';
 
   interface Link {
-    url: string;
-    title: string;
+    url: String;
+    title: String;
+    chapter: Number;
   }
 
   const { previous, next }: { previous: Link; next: Link } = $props();
@@ -15,7 +16,7 @@
       {#if previous}
         <a href={previous.url}>
           <Icon hidden={true} icon="forward"></Icon>
-          <span>{previous.title}</span>
+          <span>{previous.chapter}. {previous.title}</span>
         </a>
       {/if}
     </li>
@@ -27,7 +28,7 @@
     <li class="modesto" aria-hidden={next === undefined}>
       {#if next}
         <a href={next.url}>
-          <span>{next.title}</span>
+          <span>{next.chapter}. {next.title}</span>
           <Icon hidden={true} icon="forward"></Icon>
         </a>
       {/if}

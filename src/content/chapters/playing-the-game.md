@@ -1,5 +1,6 @@
 ---
-title: Characters
+title: Playing the Game
+chapter: 1
 ---
 
 In the world of Monsters & Magic, your character is your entryway to your world. It's your in-world persona, through which you'll tell a story.

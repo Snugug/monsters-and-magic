@@ -7,6 +7,14 @@ const standalone = defineCollection({
   }),
 });
 
+const chapters = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    chapter: z.number().optional(),
+  }),
+});
+
 const glossary = defineCollection({
   type: 'content',
   schema: z.object({
@@ -28,5 +36,6 @@ const glossary = defineCollection({
 
 export const collections = {
   standalone,
+  chapters,
   glossary,
 };

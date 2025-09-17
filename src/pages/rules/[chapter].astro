@@ -1,0 +1,31 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Chapter from '$layouts/Chapter.astro';
+
+import { getCollection } from 'astro:content';
+
+export const getStaticPaths = (async () => {
+  return (await getCollection('chapters')).map((c) => {
+    return {
+      params: {
+        chapter: c.slug,
+      },
+      props: {
+        content: c?.rendered?.html,
+        data: c.data,
+        metadata: c?.rendered,
+      },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { content, data, metadata } = Astro.props;
+
+console.log(metadata);
+---
+
+<Chapter title={data.title} chapter={data.chapter}>
+  <Fragment set:html={content} slot="content" />
+  <!-- <Content slot='content' /> -->
+  <!-- <SiteLanding /> -->
+</Chapter>
