@@ -1,0 +1,41 @@
+---
+import Layout from '$layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const chapters = (await getCollection('chapters'))
+  .map((c) => {
+    return {
+      title: c.data.title,
+      url: `/rules/${c.slug}`,
+      chapter: c.data.chapter,
+      headings: c?.rendered?.metadata?.headings,
+    };
+  })
+  .sort((a, b) => {
+    if (a.chapter < b.chapter) return -1;
+    if (a.chapter > b.chapter) return 1;
+    return 0;
+  });
+
+console.log(chapters);
+
+// console.log(chapters[0].headings);
+---
+
+<Layout title="Rules">
+  <h1>Rules</h1>
+  <ul>
+    {
+      chapters.map((c) => {
+        return (
+          <li>
+            <a href={c.url}>
+              {c.chapter === 0 ? 'Introduction' : `Chapter ${c.chapter}`}:{' '}
+              {c.title}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Layout>

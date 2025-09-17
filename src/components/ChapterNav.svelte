@@ -10,13 +10,16 @@
   const { previous, next }: { previous: Link; next: Link } = $props();
 </script>
 
-<aside class="chapter-nav">
+<nav class="chapter-nav">
   <ul role="list" class="nav">
     <li class="modesto" aria-hidden={previous === undefined}>
       {#if previous}
         <a href={previous.url}>
           <Icon hidden={true} icon="forward"></Icon>
-          <span>{previous.chapter}. {previous.title}</span>
+          <span
+            >{previous.chapter === 0 ? 'Introduction:' : `${previous.chapter}.`}
+            {previous.title}</span
+          >
         </a>
       {/if}
     </li>
@@ -34,7 +37,7 @@
       {/if}
     </li>
   </ul>
-</aside>
+</nav>
 
 <style lang="scss">
   .chapter-nav {

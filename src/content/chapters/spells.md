@@ -1,6 +1,6 @@
 ---
-title: Characters
-chapter: 2
+title: Spells
+chapter: 6
 ---
 
 In the world of Monsters & Magic, your character is your entryway to your world. It's your in-world persona, through which you'll tell a story.
