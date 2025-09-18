@@ -58,7 +58,9 @@
     background: var(--offblack);
     height: var(--header-height);
     // overflow: hidden;
-    position: fixed;
+    position: sticky;
+    top: 0;
+    left: 0;
     width: 100%;
 
     :global(:focus) {
@@ -68,7 +70,8 @@
 
   .inner {
     transition: transform 0.25s ease-in-out;
-    padding: 0.75rem;
+    padding-inline: 1rem;
+    padding-block: 0.75rem;
 
     display: grid;
     grid-template-columns: 3rem min-content auto 1.5rem;

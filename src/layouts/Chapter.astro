@@ -1,10 +1,11 @@
 ---
 import Layout from '$layouts/Layout.astro';
 import ChapterNav from '$components/ChapterNav.svelte';
-import type { MarkdownHeading } from 'astro';
+import ChapterSidebar from '$components/ChapterSidebar.svelte';
+import type { CollectionEntry, RenderedContent } from 'astro:content';
 import { getCollection } from 'astro:content';
 
-const standalone = (await getCollection('chapters')).map((s) => {
+const chapters = (await getCollection('chapters')).map((s) => {
   return {
     url: `/rules/${s.slug}`,
     title: s.data.title,
@@ -13,15 +14,20 @@ const standalone = (await getCollection('chapters')).map((s) => {
 });
 
 export type props = {
-  title: string;
-  headings: MarkdownHeading;
-  chapter: number;
+  chapter: CollectionEntry<'chapters'> & RenderedContent;
 };
 
-const { title, chapter } = Astro.props;
+const { chapter: ChapterEntry } = Astro.props;
 
-const next = standalone.find((f) => f.chapter === chapter + 1) || null;
-const previous = standalone.find((f) => f.chapter === chapter - 1) || null;
+const {
+  data: { title, chapter },
+  rendered: {
+    metadata: { headings },
+  },
+} = ChapterEntry as CollectionEntry<'chapters'>;
+
+const next = chapters.find((f) => f.chapter === chapter + 1) || null;
+const previous = chapters.find((f) => f.chapter === chapter - 1) || null;
 ---
 
 <Layout title={title}>
@@ -30,30 +36,61 @@ const previous = standalone.find((f) => f.chapter === chapter - 1) || null;
       <ChapterNav next={next} previous={previous} />
     </aside>
     <aside class="chapter--subnav">
-      <slot name="sidebar" />
+      <div class="sidebar">
+        <ChapterSidebar
+          title={title}
+          chapter={chapter}
+          headings={headings}
+          slug={ChapterEntry.slug}
+        />
+      </div>
     </aside>
 
     <article class="chapter--content">
       <div class="type">
-        <h1>
+        <h1 id={ChapterEntry.slug}>
           {chapter === 0 ? 'Introduction' : `Chapter ${chapter}`}: {title}
         </h1>
         <slot name="content" />
       </div>
     </article>
-
-    <aside class="chapter--major-nav">
-      <ChapterNav next={next} previous={previous} />
-    </aside>
   </div>
 </Layout>
 
 <style lang="scss">
   .chapter {
+    container-type: inline-size;
     display: grid;
-    gap: 1rem;
     width: 100%;
-    max-width: 70ch;
+    max-width: calc(250px + 2rem + 70ch);
+    // max-width: 70ch;
     margin-inline: auto;
+    grid-template-columns: 250px auto;
+    gap: 2rem;
+    row-gap: 1rem;
+
+    &--major-nav {
+      grid-column: 2 / span 1;
+      grid-row: 1 / span 1;
+      position: sticky;
+      top: calc(var(--header-height) + 1rem);
+    }
+    &--subnav {
+      grid-column: 1 / span 1;
+      grid-row: 1 / span 2;
+    }
+    &--content {
+      grid-column: 2 / span 1;
+      grid-row: 2 / span 1;
+    }
+  }
+
+  .sidebar {
+    position: sticky;
+    top: calc(var(--header-height) + 1rem);
+  }
+
+  :global(:target) {
+    scroll-margin-block-start: calc(var(--header-height) + 4rem + 2px);
   }
 </style>

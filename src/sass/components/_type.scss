@@ -162,7 +162,12 @@
     h2,
     h3,
     h4,
-    h5 {
+    h5,
+    &--h1,
+    &--h2,
+    &--h3,
+    &--h4,
+    &--h5 {
       @extend %modesto;
       --tt: var(--on);
       line-height: 1.25;
@@ -172,20 +177,25 @@
       // text-transform: uppercase;
     }
 
-    h1 {
+    h1,
+    &--h1 {
       margin-block-end: 2rem;
       border-bottom: 4px solid var(--dark-yellow);
     }
 
     h2,
-    h3 {
+    h3,
+    &--h2,
+    &--h3 {
       padding-block-end: 0.25rem;
       margin-block-end: 1rem;
       border-bottom: 2px solid var(--dark-yellow);
     }
 
     h4,
-    h5 {
+    h5,
+    &--h4,
+    &--h5 {
       margin-block-end: 0.5rem;
     }
 

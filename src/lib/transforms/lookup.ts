@@ -62,6 +62,7 @@ export const shortLookup = {
 
 export const modified = {
   ongoing: 'glossary/ongoing',
+  forward: 'glossary/forward',
   fatigue: 'glossary/fatigue',
   exhaustion: 'glossary/exhaustion',
   piercing: 'glossary/piercing',
@@ -81,7 +82,7 @@ export const sized = {
 };
 
 export const typed = {
-  // hold: 'glossary/hold',
+  hold: 'glossary/hold',
 };
 
 export const replacementRegExp = new RegExp(

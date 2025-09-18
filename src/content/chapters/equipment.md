@@ -3,72 +3,41 @@ title: Equipment
 chapter: 7
 ---
 
-In the world of Monsters & Magic, your character is your entryway to your world. It's your in-world persona, through which you'll tell a story.
+## Weight and carrying capacity
 
-## Proficiencies
+While adventuring, you're going to pick up stuff, and that stuff has weight. How much weight you can lug around is your carrying capacity, and how much you're currently carrying is your load.
 
-All characters are proficient with simple weapons. Depending on your class, you may gain proficiencies with additional weapons, armor, or shields. When you make an attack roll with a weapon or spell with which you are proficient, you add your proficiency bonus to the roll.
+Each 1 weight weighs approximately 5-10 lbs. There are some items, though, that have a negligible effect on your load; they have 0 weight. Other items only have an effect on your load when you've got a bunch of them, those are marked as light weight. 10 light weight items, in any combination, weighs 1 weight. Some items, like a backpack, make it easier to carry more; their weight is negative. Any combination of 1000 gold and gems that don't have their own weight has 1 weight.
 
-Your proficiency bonus starts at +1 and increases by 1 when you reach a new tier of play.
+Your carrying capacity is the most you can carry before becoming encumbered and is equal to double your +POWER plus 10. When you're encumbered, you have -1 movement and take -1 ongoing to all rolls until you're no longer encumbered. Your load can never be more than your carrying capacity +3.
 
-## Abilities
+## Weapons
 
-Your character's abilities are divided into four categories:
+Weapons deal damage! If playing in story mode and a weapon deals more than 1 dice of damage (like a maul), add +1 to its damage. If you have mastery with a weapon, you gain its technique for free, as long as you continue to have mastery of it. Some weapons also have properties describing how they can, or need to, be used.
 
-- **Focus** - Your ability to think deeply about a subject, strategize, and connect disparate pieces of information. You can make a focus roll instead of a power roll when you attack with precise weapons.
-- **Power** - Your strength of body and mind. You make a power roll when you attack with weapons.
-- **Cunning** - Your decisiveness and ability to think and act quickly. You add your cunning to your AC when wearing light or medium armor, and you can make a cunning roll instead of a power roll when you attack with agile weapons.
-- **Luck** - How often fortune swings in your favor. You make a luck roll when trying to do something beyond your normal skills and proficiencies.
+Unarmed and improvised attacks deal 1 damage.
 
-Abilities can range from -2 to 5. You start with two abilities at 0 and two abilities at 1. You can then decrease any ability by 1 to increase any other ability by 1. At character creation, no ability can be higher than 2. Once you reach Heroic Tier, abilities can have a maximum of 3, at Epic Tier a maximum of 4, and at Legendary Tier a maximum of 5.
+Weapons can be made out of the fade-touched mithril. Mithril weapons cost 1000g for any weapon whose standard price is less than 10g, otherwise it's 1000g more expensive than its base price. Mithril weapons gain 1 rune slot and its weight is reduced by 1 (reducing light weight to 0 weight and 1 weight to light weight).
 
-## Threads of Fate
+Mithril weapons can be refined further into masterwork weapons-weapons made to the absolute highest quality standards. These weapons cost 10x the cost of their mithril weapon version, Masterwork weapons gain 1 seal slot and +1 piercing.
 
-Every character gains a number of threads of fate equal to their proficiency bonus. They can be used to bend the narrative, influence rolls, maybe even get you out of some trouble. When you spend a thread, choose one:
+### Weapon Properties
 
-- **Feeling Lucky** - Make a luck roll and use it instead of an ability check you’ve made, you’ve forced a creature to make, or a creature has made against you (like an attack roll).
-- **Bend Luck** - Add +LUCK as a bonus to an ability check you’ve made, or as a penalty to an ability check you’ve forced a creature to make or a creature has made against you (like an attack roll), after it’s been made but before it’s been resolved (like rolling for damage). Negative +LUCK will reduce an ability check you’ve made and increase one made by another creature.
-- **Lucky Find** - Add something helpful to the current narrative that you would have been lucky to stumble across, like the key to a locked door or a cipher for an ancient script. The GM may ask you to spend multiple threads depending on your suggestion, or may veto your suggestion (in which case you don’t spend your thread)
-- **Bonds of Fate** - Lean into your shared history with another character, letting them add their +BOND with you to their roll, or your +BOND with them to your roll.
+- **Agile** - Can use +CUNNING instead of +POWER for attack and damage rolls. If wielding two agile weapons and deal damage or fatigue to a creature with your primary weapon, you can spend 1-fatigue to attack it with your secondary weapon; this damage does not include your ability score.
+- **Heavy** - Requires +POWER of 1 or greater to wield.
+- **Precise** - Rewards careful strikes over brute force, can use +FOCUS instead of +POWER for attack and damage rolls.
+- **Reload** - Takes extra effort to reload-it can only be fired once per turn
+- **Two-handed** - Unwieldy and must be used with two hands
+- **Thrown** - Can be thrown. If thrown, it's treated as a ranged weapon (but cannot use ammunition) and has a short range.
+- **Versatile** - Can wield with one hand or two; if wielding with two, add +1 damage to damage rolls when used as a melee weapon. Can swap between one handed and two handed by using **Use Item**
+- **Simple** - Basic weapons anyone can use.
+- **Piercing** - Ignore an amount of AC equal to the piercing amount when dealing weapon damage, or deal additional fatigue equal to ½ the piercing amount (minimum 1) when dealing fatigue.
 
-At the end of a long rest, you regain 1 thread if you don't have any. Whenever you roll a critical hit or critical miss, you also regain 1 thread. You can never have more threads of fate than your proficiency bonus.
+### Weapon Mastery
 
-Whenever you spend a thread (except when granted by being inspired), at the end of a long rest, and whenever you roll a critical hit or a critical miss, the GM also gains 1 thread that they can use to affect the scene, too.
-
-- Reroll an ability check and use either result
-- Use a monster's thread powered ability
-- Make an unexpected, or otherwise previously un-telegraphed, change to a scene
-
-## Talents
-
-Describe your background before you started adventuring and write two talents, these are your skills and experiences. Each time you reach a new tier of play, you gain an additional talent. A talent's bonus equals your proficiency bonus. When you level up, you can optionally choose to increase the bonus of your talents. If you have expertise with a talent, you double its bonus. Whenever one of your talents would be applicable to a situation, you can roll a skill check.
-
-## Lineage & Heritage
-
-Choose your lineage and your heritage. Your lineage will determine your size as well as give you two special traits. Your heritage describes the kind of culture and community you grew up in, and will likewise provide you with a number of traits.
-
-## Class & Feats
-
-At character creation, you pick a class and gain that class's abilities and core feats. Feats are special rules that modify how the game is played for your character. Throughout the game, you can choose a maximum of 5 feats (not including your class's core feats). You can only pick feats from a class if you have at least one core feat from that class, and if the feat mentions features you do not have access to, you do not gain those features.
-
-When gaining a feat, you can pick one from another class's list; this is called multiclassing. Your first feat from another class must be one of their core feats, and it counts against the maximum number of feats you can choose. This allows you to take feats from that class as well as yours.
-
-## Bonds
-
-Bonds are what make you a party of adventurers, not just a random assortment of people, They're the feelings, thoughts, and shared history that tie you together. You will always have at least one bond, and you'll often have more.
-
-Each bond is a simple statement that relates you to another PC or NPC, describing an imbalance in your relationship. It can be positive, like helping you through a difficult ordeal, negative, like going back on their word, or neutral, like boasting of a triumph without you seeing proof. Pick something relevant to your last session, your last interaction, or something you know about their reputation. Bonds should include what the imbalance is, as well as an open-ended way for that imbalance to be resolved. Good resolutions should allow for both positive and negative outcomes without dictating specific conditions; think "I need to keep my eye on them", not "they must do X to regain my trust". Think of bonds as threads in the fabric of your relationship with another character, weaving detail into how you interact, not as the definitive story of how you get along with them. Bonds will look something like the following:
-
-> Xavier says they're working for the benefit of the king, but they don't seem as committed to the cause as I am.
-
-> Gemma really saved my skin from that orc attack. I owe her one.
-
-> Urdan ran from battle instead of standing to help us defend the town. He's proven himself a coward and a liability and needs to be watched.
-
-You start with a bond for each of your companions. Build it from your Session 0 conversation.
-
-At the end of each session you may resolve one bond. To do so, talk to the player of the character you share the bond with and decide if the bond still describes how you relate. If it no longer does, maybe because circumstances have changed or there's no longer a question about their actions, resolve your bond. Any time you look at a bond and think "that's not a big factor in how we relate anymore", the bond is at a good place to resolve. When you resolve a bond, mark 1 XP. If the bond's resolution increases your connection with that character, increment your BOND with them by 1, if it decreases it, decrement it by 1.
-
-## Reputation
-
-Throughout the course of play, you'll gain a reputation with the various factions and peoples you come across. Your reputation with everyone generally starts at 0, although your reputation with a new group may be unclear to you when you first interact with them. Whenever you complete a major action that would change how a group feels about you, you either gain, or lose, a reputation point with them. Your reputation is an **ongoing modifier** to social interactions with members of that group as long as the members of that group recognize you.
+- **Nick** - When you **strike** with this weapon, mark 1-fatigue on a strong hit to apply **sundered**
+- **Graze** - When you **strike** with this weapon and miss, deal damage equal to your POWER.
+- **Ring** - When you **strike** with this weapon, mark 2-fatigue on a hit to apply **impaired**
+- **Cleave** - When you **strike** with this weapon, mark 1-fatigue to deal half the damage you dealt to your target to another creature within the weapon's reach.
+- **Sap** - When you **strike** with this weapon, mark 1-fatigue on a hit to apply **weakened**
+- **Pinpoint** - When you **strike** with this weapon, mark 1-fatigue on a hit to become **prepared** for your next attack roll against your target.

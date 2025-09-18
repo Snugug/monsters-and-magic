@@ -12,19 +12,18 @@ export const getStaticPaths = (async () => {
       },
       props: {
         content: c?.rendered?.html,
-        data: c.data,
-        metadata: c?.rendered,
+        chapter: c,
       },
     };
   });
 }) satisfies GetStaticPaths;
 
-const { content, data, metadata } = Astro.props;
+const { content, chapter } = Astro.props;
 
-console.log(metadata);
+console.log(chapter);
 ---
 
-<Chapter title={data.title} chapter={data.chapter}>
+<Chapter chapter={chapter}>
   <Fragment set:html={content} slot="content" />
   <!-- <Content slot='content' /> -->
   <!-- <SiteLanding /> -->
