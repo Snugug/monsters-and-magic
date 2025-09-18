@@ -93,8 +93,11 @@
 
   function clear(e: KeyboardEvent) {
     if (e.key === 'Escape') {
-      looking = '';
-      searchInput.focus();
+      if (document.activeElement !== searchInput) {
+        searchInput.focus();
+      } else {
+        looking = '';
+      }
     }
   }
 </script>
@@ -109,7 +112,7 @@
       onkeyup={clear}
       bind:this={searchInput}
     />
-    <button>
+    <button onkeyup={clear}>
       <Icon label="Search" icon="search" />
     </button>
   </form>
