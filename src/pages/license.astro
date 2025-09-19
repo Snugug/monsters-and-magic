@@ -1,0 +1,29 @@
+---
+import Layout from '$layouts/Layout.astro';
+import Wordmark from '$assets/wordmark.svg';
+
+import { getEntry, render } from 'astro:content';
+
+const SiteLanding = await getEntry('standalone', 'site-landing');
+const { Content } = await render(SiteLanding);
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout>
+  <article class="type">
+    <p>
+      <strong>Monsters & Magic</strong> rules are available under the <a
+        href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+        >CC BY-NC-SA 4.0 Attribution-NonCommercial-ShareAlike 4.0 International
+        Creative Commons license</a
+      >.
+    </p>
+    <p>
+      Neither this website nor its source code, including the underlying data
+      files, are currently available to be licensed (closed source). This may
+      change in the future.
+    </p>
+  </article>
+</Layout>
