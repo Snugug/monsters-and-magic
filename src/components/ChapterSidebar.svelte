@@ -55,6 +55,7 @@
   .title {
     border-bottom: none;
     margin-block-end: 0;
+    padding-block-end: 0;
   }
 
   a {
