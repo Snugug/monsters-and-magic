@@ -1,6 +1,15 @@
 ---
 import Layout from '$layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import Wordmark from '$assets/wordmark.svg';
+import type { MarkdownHeading } from 'astro';
+
+interface Chapters {
+  title: string;
+  url: string;
+  chapter: number;
+  headings: MarkdownHeading[];
+}
 
 const chapters = (await getCollection('chapters'))
   .map((c) => {
@@ -15,27 +24,109 @@ const chapters = (await getCollection('chapters'))
     if (a.chapter < b.chapter) return -1;
     if (a.chapter > b.chapter) return 1;
     return 0;
-  });
-
-console.log(chapters);
-
-// console.log(chapters[0].headings);
+  }) as Chapters[];
 ---
 
 <Layout title="Rules">
-  <h1>Rules</h1>
-  <ul>
-    {
-      chapters.map((c) => {
-        return (
-          <li>
-            <a href={c.url}>
-              {c.chapter === 0 ? 'Introduction' : `Chapter ${c.chapter}`}:{' '}
-              {c.title}
-            </a>
-          </li>
-        );
-      })
-    }
-  </ul>
+  <div class="container">
+    <div class="wm">
+      <Wordmark />
+    </div>
+
+    <div class="toc--wrapper">
+      <h3 class="modesto toc--title">Chapters</h3>
+      <ul role="list" class="toc">
+        {
+          chapters.map((c) => {
+            return (
+              <li class="chapter">
+                <a href={c.url} class="modesto">
+                  {c.chapter === 0 ? 'Introduction' : `Chapter ${c.chapter}`}:{' '}
+                  {c.title}
+                </a>
+                <ul role="list">
+                  {c.headings.map((h) => {
+                    return (
+                      h.depth === 2 && (
+                        <li>
+                          <a href={`${c.url}#${h.slug}`}>{h.text}</a>
+                        </li>
+                      )
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </div>
 </Layout>
+
+<style lang="scss">
+  .container {
+    max-width: calc(250px + 2rem + 70ch);
+    margin-inline: auto;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .modesto {
+    font-size: 1.5rem;
+    line-height: 1.1;
+    color: var(--dark-red);
+  }
+
+  .toc {
+    columns: 1;
+
+    @media (min-width: 500px) {
+      columns: 2;
+    }
+    @media (min-width: 770px) {
+      columns: 3;
+    }
+    column-gap: 2rem;
+    padding-inline: 1rem;
+    column-rule: 1px solid var(--dark-yellow);
+  }
+
+  .toc--wrapper {
+    font-size: 1rem;
+    border: 1px solid var(--dark-yellow);
+    background: var(--white);
+  }
+  .toc--title {
+    width: 100%;
+    background: var(--offblack);
+    color: var(--white);
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+  }
+
+  .wm {
+  }
+
+  .chapter {
+    padding-block: 1rem;
+  }
+
+  li {
+    break-inside: avoid;
+  }
+
+  li ul {
+    padding-inline-start: 1rem;
+  }
+
+  a {
+    color: currentColor;
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+      text-decoration: underline;
+    }
+  }
+</style>
