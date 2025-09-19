@@ -1,10 +1,23 @@
-<script>
+<script lang="ts">
+  import type { Snippet } from 'svelte';
   import Mark from '$assets/micro.svg?raw';
   import CompactWordmark from '$assets/wordmark.svg?raw';
   import Icon from '$components/Icon.svelte';
   import Search from '$components/Search.svelte';
+  import { chapterTitle } from '$lib/helpers';
 
-  let { children } = $props();
+  interface Rule {
+    url: string;
+    title: string;
+    chapter: number;
+  }
+
+  interface Props {
+    children: Snippet;
+    rules: Rule[];
+  }
+
+  let { children, rules }: Props = $props();
 </script>
 
 <header>
@@ -32,8 +45,25 @@
   </a>
   <nav class="holder">
     <ul role="list">
-      <li><a href="/rules/characters">Characters</a></li>
-      <li><a href="/rules">Rules</a></li>
+      <li><a href="/characters">My Characters</a></li>
+      <li>
+        <details>
+          <summary>Rules</summary>
+          <ul role="list">
+            {#each rules as rule}
+              <li>
+                <a href={rule.url}>{chapterTitle(rule.chapter, rule.title)}</a>
+              </li>
+            {/each}
+          </ul>
+        </details>
+      </li>
+      <li><a href="/classes">Classes</a></li>
+      <li><a href="/feats">Feats</a></li>
+      <li><a href="/techniques">Techniques</a></li>
+      <li><a href="/spells">Spells</a></li>
+      <li><a href="/equipment">Equipment</a></li>
+      <li><a href="/glossary">Glossary</a></li>
     </ul>
   </nav>
 </div>
@@ -156,7 +186,8 @@
     }
   }
 
-  [role='list'] a {
+  [role='list'] a,
+  [role='list'] details {
     padding: 0.5rem 1.5rem;
     font-size: 1.25rem;
     color: fn.alpha(var(--white), 25%);
@@ -164,6 +195,23 @@
     border-bottom: 1px solid fn.alpha(var(--white), 75%);
     display: block;
     letter-spacing: 1px;
+  }
+
+  [role='list'] details {
+    padding: 0;
+
+    summary {
+      padding: 0.5rem 1.5rem;
+
+      + ul {
+        border-top: 1px solid fn.alpha(var(--white), 75%);
+      }
+    }
+
+    a {
+      padding-inline-start: 2.5rem;
+      font-size: 1rem;
+    }
   }
 
   // body:has(:popover-open) .inner {

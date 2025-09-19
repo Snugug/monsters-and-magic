@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { MarkdownHeading } from 'astro';
+  import { chapterTitle } from '$lib/helpers';
 
   const {
     title,
@@ -7,10 +8,10 @@
     headings,
     slug,
   }: {
-    title: String;
-    chapter: Number;
+    title: string;
+    chapter: number;
     headings: MarkdownHeading[];
-    slug: String;
+    slug: string;
   } = $props();
   console.log(headings);
 </script>
@@ -19,9 +20,7 @@
   <nav>
     <ul role="list" class="subnav">
       <li class="modesto type--h3 title">
-        <a href={`#${slug}`}
-          >{chapter === 0 ? 'Introduction' : `Chapter ${chapter}`}: {title}</a
-        >
+        <a href={`#${slug}`}>{chapterTitle(chapter, title)}</a>
       </li>
       {#each headings as heading, i}
         <li>
@@ -65,7 +64,8 @@
     border-left: 2px solid transparent;
     padding-inline-start: calc(0.5rem * var(--depth, 1));
 
-    &:target-current {
+    &:target-current,
+    &:hover {
       background: hsl(from var(--light-yellow) h calc(s / 2) calc(l * 1.2));
       border-color: var(--dark-yellow);
     }

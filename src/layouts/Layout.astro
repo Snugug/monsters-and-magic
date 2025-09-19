@@ -3,16 +3,38 @@ import '$sass/style.scss';
 import '$sass/typetura.css';
 
 import Nav from '$components/Nav.svelte';
-
+import Footer from '$components/Footer.astro';
 import Sprite from '$components/Sprite.astro';
+
+import { getCollection } from 'astro:content';
 
 export type props = {
   title: string;
 };
 
+const chapters = (await getCollection('chapters'))
+  .map((s) => {
+    return {
+      url: `/rules/${s.slug}`,
+      title: s.data.title,
+      chapter: s.data.chapter,
+    };
+  })
+  .sort((a, b) => {
+    if (a.chapter < b.chapter) return -1;
+    if (a.chapter > b.chapter) return 1;
+    return 0;
+  });
+
 const { title } = Astro.props;
 
 const pageTitle = title ? `${title} | Monsters & Magic` : 'Monsters & Magic';
+
+chapters.unshift({
+  url: '/rules',
+  title: 'Table of Contents',
+  chapter: -1,
+});
 ---
 
 <!doctype html>
@@ -26,21 +48,39 @@ const pageTitle = title ? `${title} | Monsters & Magic` : 'Monsters & Magic';
     <title>{pageTitle}</title>
   </head>
   <body>
-    <Nav client:load>
-      <slot name="header" />
-    </Nav>
-  </body>
-  <main>
-    <slot />
-  </main>
+    <div class="nav">
+      <Nav client:load rules={chapters}>
+        <slot name="header" />
+      </Nav>
+    </div>
+    <main>
+      <slot />
+    </main>
 
-  <Sprite />
+    <div class="footer">
+      <Footer />
+    </div>
+
+    <Sprite />
+  </body>
 </html>
 <script>
   import '$components/TermReference';
 </script>
 
 <style is:global>
+  body {
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-rows: var(--header-height) 1fr auto;
+  }
+  .nav {
+    position: sticky;
+    top: 0;
+    left: 0;
+  }
   main {
     padding-inline: 1rem;
     padding-block: 1rem;
