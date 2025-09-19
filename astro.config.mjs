@@ -18,9 +18,11 @@ const aliases = Object.entries(tsconfig.compilerOptions.paths).map(
 
 import svelte from '@astrojs/svelte';
 
+import mdx from '@astrojs/mdx';
+
 // https://astro.build/config
 export default defineConfig({
-  integrations: [svelte(), pagefind()],
+  integrations: [svelte(), pagefind(), mdx()],
   vite: {
     resolve: {
       alias: aliases,

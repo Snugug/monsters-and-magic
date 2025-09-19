@@ -2,42 +2,21 @@
 import Layout from '$layouts/Layout.astro';
 import ChapterNav from '$components/ChapterNav.svelte';
 import ChapterSidebar from '$components/ChapterSidebar.svelte';
-import type { CollectionEntry, RenderedContent } from 'astro:content';
-import { getCollection } from 'astro:content';
 import { chapterTitle } from '$lib/helpers';
-
-const chapters = (await getCollection('chapters'))
-  .map((s) => {
-    return {
-      url: `/rules/${s.slug}`,
-      title: s.data.title,
-      chapter: s.data.chapter,
-    };
-  })
-  .sort((a, b) => {
-    if (a.chapter < b.chapter) return -1;
-    if (a.chapter > b.chapter) return 1;
-    return 0;
-  });
+import { chapters, Chapter } from '$lib/chapters';
 
 export type props = {
-  chapter: CollectionEntry<'chapters'> & RenderedContent;
+  chapter: Chapter;
 };
 
-const { chapter: ChapterEntry } = Astro.props;
+const { chapter } = Astro.props;
 
-const {
-  data: { title, chapter },
-  rendered: {
-    metadata: { headings },
-  },
-} = ChapterEntry as CollectionEntry<'chapters'>;
-
-const next = chapters.find((f) => f.chapter === chapter + 1) || null;
-const previous = chapters.find((f) => f.chapter === chapter - 1) || null;
+const next = chapters.find((f) => f.chapter === chapter.chapter + 1) || null;
+const previous =
+  chapters.find((f) => f.chapter === chapter.chapter - 1) || null;
 ---
 
-<Layout title={title}>
+<Layout title={chapter.title}>
   <div class="chapter">
     <aside class="chapter--major-nav">
       <ChapterNav next={next} previous={previous} />
@@ -45,17 +24,19 @@ const previous = chapters.find((f) => f.chapter === chapter - 1) || null;
     <aside class="chapter--subnav">
       <div class="sidebar">
         <ChapterSidebar
-          title={title}
-          chapter={chapter}
-          headings={headings}
-          slug={ChapterEntry.slug}
+          title={chapter.title}
+          chapter={chapter.chapter}
+          headings={chapter.headings}
+          slug={chapter.slug}
         />
       </div>
     </aside>
 
     <article class="chapter--content">
       <div class="type">
-        <h1 id={ChapterEntry.slug}>{chapterTitle(chapter, title)}</h1>
+        <h1 id={chapter.slug}>
+          {chapterTitle(chapter.chapter, chapter.title)}
+        </h1>
         <slot name="content" />
       </div>
     </article>
