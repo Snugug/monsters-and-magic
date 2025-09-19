@@ -4,14 +4,21 @@ import ChapterNav from '$components/ChapterNav.svelte';
 import ChapterSidebar from '$components/ChapterSidebar.svelte';
 import type { CollectionEntry, RenderedContent } from 'astro:content';
 import { getCollection } from 'astro:content';
+import { chapterTitle } from '$lib/helpers';
 
-const chapters = (await getCollection('chapters')).map((s) => {
-  return {
-    url: `/rules/${s.slug}`,
-    title: s.data.title,
-    chapter: s.data.chapter,
-  };
-});
+const chapters = (await getCollection('chapters'))
+  .map((s) => {
+    return {
+      url: `/rules/${s.slug}`,
+      title: s.data.title,
+      chapter: s.data.chapter,
+    };
+  })
+  .sort((a, b) => {
+    if (a.chapter < b.chapter) return -1;
+    if (a.chapter > b.chapter) return 1;
+    return 0;
+  });
 
 export type props = {
   chapter: CollectionEntry<'chapters'> & RenderedContent;
@@ -48,9 +55,7 @@ const previous = chapters.find((f) => f.chapter === chapter - 1) || null;
 
     <article class="chapter--content">
       <div class="type">
-        <h1 id={ChapterEntry.slug}>
-          {chapter === 0 ? 'Introduction' : `Chapter ${chapter}`}: {title}
-        </h1>
+        <h1 id={ChapterEntry.slug}>{chapterTitle(chapter, title)}</h1>
         <slot name="content" />
       </div>
     </article>
@@ -62,32 +67,41 @@ const previous = chapters.find((f) => f.chapter === chapter - 1) || null;
     container-type: inline-size;
     display: grid;
     width: 100%;
-    max-width: calc(250px + 2rem + 70ch);
-    // max-width: 70ch;
+    max-width: 70ch;
     margin-inline: auto;
-    grid-template-columns: 250px auto;
-    gap: 2rem;
+    gap: 1rem;
     row-gap: 1rem;
 
     &--major-nav {
-      grid-column: 2 / span 1;
-      grid-row: 1 / span 1;
       position: sticky;
       top: calc(var(--header-height) + 1rem);
     }
-    &--subnav {
-      grid-column: 1 / span 1;
-      grid-row: 1 / span 2;
-    }
-    &--content {
-      grid-column: 2 / span 1;
-      grid-row: 2 / span 1;
+
+    @media (min-width: 836px) {
+      max-width: calc(250px + 2rem + 70ch);
+      grid-template-columns: 250px auto;
+
+      &--major-nav {
+        grid-column: 2 / span 1;
+        grid-row: 1 / span 1;
+      }
+
+      &--subnav {
+        grid-column: 1 / span 1;
+        grid-row: 1 / span 2;
+      }
+      &--content {
+        grid-column: 2 / span 1;
+        grid-row: 2 / span 1;
+      }
     }
   }
 
   .sidebar {
-    position: sticky;
-    top: calc(var(--header-height) + 1rem);
+    @media (min-width: 836px) {
+      position: sticky;
+      top: calc(var(--header-height) + 1rem);
+    }
   }
 
   :global(:target) {
