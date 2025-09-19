@@ -36,12 +36,19 @@
   }
 
   header {
-    padding: 0.5rem 1rem;
+    padding-inline-start: 1rem;
+    padding-block: 0.5rem;
+    padding-inline-end: 0.5rem;
     background-color: var(--dark-purple);
     color: var(--white);
     position: relative;
     z-index: 0;
+    display: grid;
+    grid-template-columns: 1fr 1.25rem;
+    gap: 0.5rem;
+
     a {
+      // padding: 0.5rem 1rem;
       color: currentColor;
       display: grid;
       grid-template-columns: 1fr 1em;
@@ -49,6 +56,19 @@
 
       &:hover {
         text-decoration: underline;
+      }
+    }
+
+    .close {
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+
+      svg {
+        fill: var(--white);
+        height: 1.25rem;
+        width: 1.25rem;
       }
     }
 

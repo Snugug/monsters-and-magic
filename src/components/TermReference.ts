@@ -10,6 +10,7 @@ class TermReference extends HTMLElement {
   static html = `
     <header>
       <a><h2 class="modesto"></h2><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+      <button class="close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" aria-label="Close"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"></path></svg></button>
     </header>
     <div class="body"></div>
   `;
@@ -53,6 +54,7 @@ class TermReference extends HTMLElement {
     const body = popover.querySelector('.body') as HTMLDivElement;
     const header = popover.querySelector('h2') as HTMLHeadingElement;
     const link = popover.querySelector('a') as HTMLAnchorElement;
+    const close = popover.querySelector('.close') as HTMLButtonElement;
 
     const { title, content } = cache;
 
@@ -60,6 +62,7 @@ class TermReference extends HTMLElement {
     link.href = this.#href;
     document.body.append(popover);
     body.append(content.cloneNode(true));
+    close.setAttribute('popoverTarget', this.#id);
     popover.showPopover();
 
     // Close all children popovers when this one closes
