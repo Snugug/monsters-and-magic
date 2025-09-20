@@ -15,7 +15,6 @@ export async function buildChapter(
   c: CollectionEntry<'chapters'>,
 ): Promise<Chapter> {
   const r = await c.render();
-  console.log(r);
   return {
     title: c.data.title,
     slug: c.slug,

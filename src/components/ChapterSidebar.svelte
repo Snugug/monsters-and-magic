@@ -13,7 +13,7 @@
     headings: MarkdownHeading[];
     slug: string;
   } = $props();
-  console.log(headings);
+  // console.log(headings);
 </script>
 
 <div class="sidebar">
