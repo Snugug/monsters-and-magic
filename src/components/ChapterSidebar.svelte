@@ -13,7 +13,14 @@
     headings: MarkdownHeading[];
     slug: string;
   } = $props();
+
+  // TODO: Use https://github.com/w3c/csswg-drafts/issues/2084#issuecomment-3188365883 to automatically show and hide details and make these list items details if they have children
+  // const grouped = [];
+
+  // function recurseHeadings
   // console.log(headings);
+
+  // TODO: Small Screen Nav
 </script>
 
 <div class="sidebar">

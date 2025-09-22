@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+
+const techniques = (await getCollection('techniques'))
+  .filter((t) => t.data.type === 'basic')
+  .sort((a, b) => {
+    if (a.data.reaction) return 1;
+    if (b.data.reaction) return -1;
+
+    if (a.data.ap < b.data.ap) return -1;
+    if (a.data.ap > b.data.ap) return 1;
+
+    return 0;
+  });
+---
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align:left">Name</th>
+      <th style="text-align:left">Action</th>
+      <th style="text-align:left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      techniques.map((t) => {
+        return (
+          <tr>
+            <td style="text-align:left;min-width:12ch">{t.data.title}</td>
+            <td style="text-align:left">
+              {t.data.ap ? `${t.data.ap} AP` : `1 R: ${t.data.reaction}`}
+            </td>
+            <td style="text-align:left">{t.body}</td>
+          </tr>
+        );
+      })
+    }
+  </tbody>
+</table>

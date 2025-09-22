@@ -18,7 +18,7 @@ export function remarkContainers() {
         node.type === 'textDirective'
       ) {
         /* Usage
-        :::message{.warning|.info|.error}
+        :::message[Optional Title]{.warning|.info|.error}
 
         Stuff Goes Here
 
@@ -27,9 +27,19 @@ export function remarkContainers() {
         if (node.name === 'message') {
           if (node.attributes.class) {
             node.attributes['data-type'] = node.attributes.class;
-            node.attributes.class += ' message';
+            node.attributes.class += ' message type';
           } else {
-            node.attributes.class = 'message';
+            node.attributes.class = 'message type';
+          }
+
+          // Find Title
+          const label = node.children.findIndex((c) => c?.data?.directiveLabel);
+          if (label >= 0) {
+            const title = node.children[label];
+            const titleData = title.data || {};
+            titleData.hProperties = h('p', title || {}).properties;
+            titleData.hProperties.className = ['message--title'];
+            // console.log(titleData);
           }
 
           const data = node.data || (node.data = {});

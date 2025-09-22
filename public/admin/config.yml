@@ -57,3 +57,34 @@ collections:
       - label: Body
         name: body
         widget: markdown
+  - label: Techniques
+    name: technique
+    folder: src/content/techniques
+    create: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Type
+        name: type
+        widget: select
+        options:
+          - label: Basic
+            value: basic
+          - label: Advanced
+            value: advanced
+          - label: Rare
+            value: rare
+      - label: AP
+        name: ap
+        widget: number
+        value_type: int
+        min: 1
+        required: false
+      - label: Reaction
+        name: reaction
+        widget: string
+        required: false
+      - label: Body
+        name: body
+        widget: markdown

@@ -25,6 +25,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-svelte": "^3.4.0",
+    "remark-attributes": "^0.3.2",
     "remark-definition-list": "^2.0.0",
     "remark-directive": "^4.0.0",
     "sass": "^1.92.1",

@@ -12,6 +12,7 @@ import {
 } from 'remark-definition-list';
 import remarkDirective from 'remark-directive';
 import { remarkContainers } from './lib/markdown';
+import remarkAttributes from 'remark-attributes';
 
 // Get the current directory
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -33,7 +34,12 @@ export default defineConfig({
     },
   },
   markdown: {
-    remarkPlugins: [remarkDefinitionList, remarkDirective, remarkContainers],
+    remarkPlugins: [
+      remarkDefinitionList,
+      remarkDirective,
+      remarkContainers,
+      remarkAttributes,
+    ],
     remarkRehype: {
       handlers: {
         ...defListHastHandlers,

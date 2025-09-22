@@ -276,9 +276,12 @@
 
     blockquote {
       margin: 0;
-      padding: 0 1em;
+      margin-block: 1rem;
+      padding: 0.25rem 1em;
       color: var(--muted);
-      border-left: 0.25em solid var(--border);
+      background: var(--white);
+      border-left: 0.25em solid var(--dark-yellow);
+      font-style: italic;
 
       > :first-child {
         margin-block-start: 0;
@@ -343,6 +346,30 @@
     dl dd {
       padding: 0 1em;
       margin-block-end: 1em;
+    }
+  }
+
+  .message {
+    padding: 0.5rem 1rem;
+    background: var(--white);
+    border: 1px solid var(--dark-yellow);
+
+    &.warning {
+      background: var(--light-yellow);
+    }
+
+    &.error {
+      background: var(--light-red);
+      border-color: var(--dark-red);
+    }
+
+    &--title {
+      @extend %modesto;
+      --tt: var(--on);
+      animation-name: h4;
+      + p {
+        margin-block-start: 0;
+      }
     }
   }
 

@@ -55,7 +55,9 @@ export const shortLookup = {
   // wis: 'glossary/wisdom',
   // int: 'glossary/intelligence',
   // cha: 'glossary/charisma',
+
   // class: 'glossary/class-ability',
+  dc: 'glossary/difficulty-class',
   pb: 'glossary/proficiency-bonus',
   spell: 'glossary/spell-ability',
 };
@@ -70,6 +72,7 @@ export const modified = {
   ap: 'glossary/action-points',
   thread: 'glossary/threads-of-fate',
   threads: 'glossary/threads-of-fate',
+  weight: 'glossary/weight',
   // round: 'glossary/combat-round',
   // rounds: 'glossary/combat-round',
 };
