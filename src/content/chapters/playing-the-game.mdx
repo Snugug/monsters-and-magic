@@ -230,15 +230,19 @@ Lightly Obscured
 : Areas that are tough to see through, like patchy fog, or dim light. Ability checks that rely on sight take -2 ongoing while trying to see something in the area.
 
 Heavily Obscured
-: Areas that are totally opaque, like darkness or dense fog. You are Blinded while trying to see something in the area.
+: Areas that are totally opaque, like darkness or dense fog. You are blinded while trying to see something in the area.
 
 #### Cover
 
 Partial Cover
-: At least half of your body is behind an ally or an object. Attacks you are made with -2 ongoing and you gain +2 AC.
+: At least half of your body is behind an ally or an object. Attacks against you are made with -2 ongoing and you gain +2 AC.
 
 Total Cover
 : All of your body is entirely covered by an ally or an object. You cannot be targeted directly by an attack or spell.
+
+### Falling
+
+Falling is dangerous! Try and avoid it! If you fall, take **1d6** damage for each 10 feet you fall. On the material plane, gravity works about the same as it does on Earth, so you'll fall 580 feet in 1 turn (6 seconds), 2315 feet in 2 turns (about ½ a mile), and 5280 feet in 3 turns (1 mile).
 
 ### Movement
 
@@ -365,4 +369,89 @@ import BasicTechniques from '$components/tables/BasicTechniques.astro';
 
 ## Damage & Healing
 
+All creatures in Monsters & Magic have two pools that they draw from, hit points (HP) and fatigue. Hit points are your health and vitality—they represent how much physical punishment a creature can take before they start dying. Fatigue is your physical and mental fortitude—it represents how much energy you can exert before being knocked unconscious. Balancing your use of fatigue as you adventure will be key to keeping you and your party members up and active.
+
+### Hit Points
+
+A PC's hit points are based on their character class, whereas a monster's is based on their CR and point buy. Whenever something deals damage to you, reduce your current HP by the total damage done.
+
+#### Armor Class
+
+Some creatures will have an Armor Class (AC), this represents a level of protection they have against incoming damage. Reduce any damage you take by your AC. For PCs, your AC will be based on what armor you're wearing (see [Chapter 7: Equipment](/rules/equipment)); if you're not wearing armor, or wearing light or medium armor, add your +CUNNING to your AC.
+
+#### Resistance & Vulnerability
+
+Creatures may have resistance or vulnerability to certain damage types—a red dragon may resist fire damage, for instance, or a water elemental may be vulnerable to lightning damage. After reducing damage by your AC, either cut the remaining damage you'd take by half if it's of a type you resist, or double it if it's of a type you're vulnerable to. Some creatures may be immune to certain damage types; they take no damage from that type.
+
+#### Temporary Hit Points
+
+You may be granted temporary hit points. Temporary hit points are a hit point pool you reduce from first when taking damage instead of your normal hit point pool. Think of them as an extra boost of vitality. Temporary hit points do not stack, so you cannot gain them from multiple sources.
+
 ## Conditions & Statuses
+
+While adventuring, you may be subject to a condition or a status, a positive or negative state that has an effect on you. While conditions and statuses stack, and you can have one that cancels another, you cannot have the _same_ condition or status applied more than once to you. Unless otherwise specified, a condition or status lasts until the end of a creature's next turn in combat, or after 6 seconds.
+
+### Conditions
+
+Conditions are a negative state. While they don't stack, if you would inflict a condition on a target that already has that same condition, you can choose to either extend the duration by 1 turn or detonate the condition, ending it immediately to deal either 1d10 damage of the same type as your attack, or 3 fatigue, your choice.
+
+Weakened
+: Your strength has been drained—ability checks are made with -2 ongoing
+
+Sundered
+: Your armor is less effective—take -2 to your AC.
+
+Impaired
+: You can't exert much energy—lose 1 AP at the start of your turn
+
+Stunned
+: You're dazed and unable to act—you're immobile and you can't spend AP or take reactions.
+
+Doomed
+: You're in grave danger—mark 1-fatigue at the start of every turn until you free yourself.
+
+Restrained
+: You're being held back—you're immobile and can't spend AP until you mark 3-fatigue on your turn to free yourself. If you're being restrained by a creature, they can mark the same to prevent you from freeing yourself.
+
+Slowed
+: It's harder for you to move—movement speed is halved
+
+Prone
+: You've fallen to the ground—you become slowed, can only crawl to move, have disadvantage on attack rolls, and attack rolls against you have advantage if the attacker is within touch range of you and disadvantage if they're further away. You can end this condition by taking the Move technique to stand up, spending ½ your maximum Speed.
+
+Unconscious
+: You're out—you become prone and stunned and are unaware of your surroundings
+
+Frightened
+: You're scared for your life—you are weakened while you can see, hear, or feel the source of your fear, and you cannot move closer to the source of your fear.
+
+Blinded
+: You cannot see—ability checks that rely on sight automatically fail, attack rolls are made against you with advantage, and your attack rolls are made with disadvantage.
+
+### Statuses
+
+Statuses are a positive state. While they don't stack, if you would bestow a status on a target that already has that same status, but whose remaining duration is less than or equal to what you'd bestow, you can choose to either extend the duration by 1 turn or give them +1 forward to their next ability check.
+
+Quickened
+: You're ready to go—gain +1 AP at the start of your turn
+
+Empowered
+: You feel stronger than ever—attack rolls are made with +2 ongoing
+
+Invigorated
+: It's tough to tire you out—recover +1 fatigue at the start of your turn
+
+Hastened
+: You've got a pep in your step—movement speed is doubled
+
+Prepared
+: You're ready for what comes next—take +2 forward on an appropriate roll
+
+Protected
+: It's harder to hurt you—you gain +2 AC while protected.
+
+Inspired
+: You're ready to shape your destiny—clear inspired to use a thread of fate without expending one, even if you don't have one available.
+
+Invisible
+: You, and everything you're wearing or carrying is hidden from sight—you have advantage on initiative rolls and attack rolls and you cannot be targeted by effects that rely on sight.
