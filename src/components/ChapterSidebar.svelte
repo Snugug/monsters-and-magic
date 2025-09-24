@@ -1,6 +1,10 @@
 <script lang="ts">
-  import type { MarkdownHeading } from 'astro';
+  import { type MarkdownHeading } from 'astro';
   import { chapterTitle } from '$lib/helpers';
+  import { inspect } from 'util';
+  import ChapterNav from './ChapterNav.svelte';
+  import ChapterDetails from '$components/ChapterDetails.svelte';
+  import Icon from '$components/Icon.svelte';
 
   const {
     title,
@@ -14,33 +18,118 @@
     slug: string;
   } = $props();
 
-  // TODO: Use https://github.com/w3c/csswg-drafts/issues/2084#issuecomment-3188365883 to automatically show and hide details and make these list items details if they have children
-  // const grouped = [];
+  interface ChapterSubnav extends MarkdownHeading {
+    children?: ChapterSubnav[];
+  }
 
-  // function recurseHeadings
-  // console.log(headings);
+  interface TreeMap {
+    [key: number]: {
+      children: ChapterNav[];
+    };
+  }
+
+  function buildTree(items: MarkdownHeading[]) {
+    // The final tree will be built here.
+    const tree: ChapterSubnav[] = [];
+    // A dictionary to keep track of the last parent found at each depth level.
+    // We use a dummy root at depth 0 to simplify the logic.
+    const parentMap: TreeMap = { 0: { children: tree } };
+
+    // Iterate over each item in the flat array.
+    for (const item of items) {
+      // Create a new node object, adding a 'children' array for future nested items.
+      const node = { ...item, children: [] };
+
+      // Find the parent for the current node by looking up the depth-1 level.
+      const parent = parentMap[node.depth - 1];
+
+      if (parent) {
+        // Add the new node to its parent's children array.
+        parent.children.push(node);
+        // Update the parent map, so this node can be a parent for the next level down.
+        parentMap[node.depth] = node;
+      } else {
+        // If no parent is found at the expected depth, it means this is a new root node.
+        tree.push(node);
+        parentMap[node.depth] = node;
+      }
+    }
+
+    return tree;
+  }
+
+  const headingTree = buildTree(headings);
+
+  console.log(inspect(headingTree, false, null, true));
 
   // TODO: Small Screen Nav
 </script>
 
-<div class="sidebar">
-  <nav>
+<nav class="sidebar">
+  <details>
+    <summary class="modesto type--h3 title">
+      <a href={`#${slug}`}>{chapterTitle(chapter, title)}</a>
+      <Icon icon="forward" label="expand" />
+    </summary>
     <ul role="list" class="subnav">
-      <li class="modesto type--h3 title">
-        <a href={`#${slug}`}>{chapterTitle(chapter, title)}</a>
-      </li>
-      {#each headings as heading, i}
-        <li>
-          <a href={`#${heading.slug}`} style={`--depth: ${heading.depth - 1}`}
-            >{heading.text}</a
-          >
-        </li>
+      {#each headingTree as heading}
+        <ChapterDetails chapter={heading} />
       {/each}
+      <!-- {#each headings as heading, i}
+        <li>
+          
+        </li>
+      {/each} -->
     </ul>
-  </nav>
-</div>
+  </details>
+</nav>
 
 <style lang="scss">
+  summary {
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:has(:target-current),
+    &:hover {
+      background: hsl(from var(--light-yellow) h calc(s / 2) calc(l * 1.2));
+    }
+
+    @container style(--collapsed: 1) {
+      display: grid;
+      grid-template-columns: 1fr 1.5rem;
+      gap: 0.5rem;
+      align-items: center;
+
+      :global(svg) {
+        height: 1.5rem;
+        width: 1.5rem;
+      }
+    }
+
+    @container style(--collapsed: 0) {
+      :global(svg) {
+        display: none;
+      }
+    }
+  }
+
+  details {
+    &[open] > summary :global(svg),
+    &:has(:target-current) > summary :global(svg) {
+      transform: rotate(90deg);
+    }
+
+    @container style(--collapsed: 0) {
+      &::details-content {
+        content-visibility: visible;
+        height: auto !important;
+      }
+    }
+  }
+
   .sidebar {
     background: var(--white);
     border: 1px solid var(--dark-yellow);

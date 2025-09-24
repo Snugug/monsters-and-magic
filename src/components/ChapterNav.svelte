@@ -42,7 +42,7 @@
 <style lang="scss">
   .chapter-nav {
     background: var(--white);
-    padding: 0.25rem 0.5rem;
+    padding-block: 0.25rem;
     border: 1px solid var(--dark-yellow);
   }
   .nav {

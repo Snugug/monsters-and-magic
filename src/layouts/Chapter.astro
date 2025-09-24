@@ -45,6 +45,7 @@ const previous =
 
 <style lang="scss">
   .chapter {
+    --collapsed: 1;
     container-type: inline-size;
     display: grid;
     width: 100%;
@@ -53,12 +54,30 @@ const previous =
     gap: 1rem;
     row-gap: 1rem;
 
+    &--content {
+      :global(:target) {
+        scroll-margin-block-start: calc(var(--header-height) + 4rem + 2px);
+
+        @container style(--collapsed: 1) {
+          scroll-margin-block-start: calc(var(--header-height) + 6rem + 2px);
+        }
+      }
+    }
+
     &--major-nav {
       position: sticky;
       top: calc(var(--header-height) + 1rem);
+      z-index: 1;
+    }
+
+    &--subnav {
+      position: sticky;
+      top: calc(var(--header-height) + 3rem + 1px);
+      z-index: 1;
     }
 
     @media (min-width: 836px) {
+      --collapsed: 0;
       max-width: calc(250px + 2rem + 70ch);
       grid-template-columns: 250px auto;
 
@@ -82,10 +101,7 @@ const previous =
     @media (min-width: 836px) {
       position: sticky;
       top: calc(var(--header-height) + 1rem);
+      z-index: 1;
     }
-  }
-
-  :global(:target) {
-    scroll-margin-block-start: calc(var(--header-height) + 4rem + 2px);
   }
 </style>
