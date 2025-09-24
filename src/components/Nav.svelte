@@ -87,12 +87,9 @@
     border-bottom: 2px solid var(--purple);
     background: var(--offblack);
     height: var(--header-height);
-    // overflow: hidden;
-    position: sticky;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
 
     :global(:focus) {
       outline-color: var(--light-purple);
