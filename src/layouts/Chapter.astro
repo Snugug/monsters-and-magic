@@ -74,6 +74,8 @@ const previous =
       position: sticky;
       top: calc(var(--header-height) + 3rem + 1px);
       z-index: 1;
+      margin-block-start: -2rem;
+      margin-block-end: 1rem;
     }
 
     @media (min-width: 836px) {
@@ -89,6 +91,7 @@ const previous =
       &--subnav {
         grid-column: 1 / span 1;
         grid-row: 1 / span 2;
+        margin: 0;
       }
       &--content {
         grid-column: 2 / span 1;
