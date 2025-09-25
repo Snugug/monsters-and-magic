@@ -127,7 +127,7 @@ Sometimes an ability check will have a difficulty class (often denoted as **DC**
 
 If an effect happens at **+1 step** or **-1 step**, take the result you've rolled and either go up or down the result chart by one step (weak hit to strong hit, for instance). Unless otherwise specified, this cannot turn a strong hit or a miss into a critical hit or a critical miss.
 
-## Ongoing, Forward, and Hold
+### Ongoing, Forward, and Hold
 
 Throughout the game, techniques, spells, or feats may tell you to take +1 ongoing, -1 forward, or to hold 3-things. They are modifiers to the game and will include a description, for instance take +1 ongoing to attack rolls until the end of combat, or +3 forward to your AC, or hold 3-arrows. Each has a different expiration:
 
@@ -367,7 +367,7 @@ import BasicTechniques from '$components/tables/BasicTechniques.astro';
 
 ### Mounted
 
-## Damage & Healing
+## Harm & Healing
 
 All creatures in Monsters & Magic have two pools that they draw from, hit points (HP) and fatigue. Hit points are your health and vitality—they represent how much physical punishment a creature can take before they start dying. Fatigue is your physical and mental fortitude—it represents how much energy you can exert before being knocked unconscious. Balancing your use of fatigue as you adventure will be key to keeping you and your party members up and active.
 
@@ -386,6 +386,93 @@ Creatures may have resistance or vulnerability to certain damage types—a red d
 #### Temporary Hit Points
 
 You may be granted temporary hit points. Temporary hit points are a hit point pool you reduce from first when taking damage instead of your normal hit point pool. Think of them as an extra boost of vitality. Temporary hit points do not stack, so you cannot gain them from multiple sources.
+
+### Fatigue & Exhaustion
+
+Fatigue and exhaustion are two sides of the same coin. You mark fatigue when you take an action that requires extra effort, or something drains your energy, and you can mark a certain amount of fatigue per level of exhaustion, which acts as a ratcheting mechanism to describe how much total energy you've got left. All PCs have 5 fatigue and 5 exhaustion, monsters' fatigue and exhaustion are based on their point buy.
+
+Whenever you need to mark a fatigue and you have none available in your current exhaustion level, mark your next level of exhaustion, reduce the remaining fatigue you need to mark by 1, then reset your fatigue to 0 and continue marking fatigue at your new exhaustion level. While some techniques or spells can let you heal fatigue, healing fatigue can't reduce your exhaustion level—you can only do that through taking a long rest or through other means that specifically let you reduce exhaustion.
+
+The first exhaustion that's marked has not effect on your ability to adventure, but further marks do. Following a Fibonacci sequence, your second and third exhaustion bestows a -1 ongoing to all ability checks, the fourth, -2 ongoing, and the fifth -3 ongoing. These penalties are not cumulative with each other, but they do stack on top of any other bonuses or penalties you have, and cannot be negated or reduced in and of themselves other than by reducing your exhaustion.
+
+For monsters, they receive -1 ongoing to all ability checks per level of exhaustion they have.
+
+If you need to mark an exhaustion and don't have any more to mark, you fall unconscious until you've finished a long rest or, for PCs, someone performs an action that lets you recover fatigue.
+
+### Death & Dying
+
+If your HP total is reduced to 0, you fall unconscious and prone and start dying. Your goal is to stabilize, which you can do by rolling a strong hit or a critical hit, or accumulating **3-deathsave**. When you stabilize, you remain unconscious until you're healed at least 1 HP or until you've finished a long rest.
+
+On your turn, or every 6 seconds, make a luck roll. On a weak hit, hold 1-deathsave, n a strong hit, you stabilize immediately, and on a critical hit you stabilize, heal 1 HP, and recover from being unconscious. On a miss, you mark 1-exhaustion.
+
+If you take damage wile dying, mark 1-exhaustion. If you are healed while dying, your HP is reset to 0 plus the amount you were healed, you stabilize, and you are no longer unconscious. When you stabilize, reset your held **deathsave**.
+
+While dying, if you need to mark exhaustion and you can't, you die.
+
+**When you die** Death themself come to bargain with you. The GM will give you with a deal—a path you need to take, a change you need to make, or something of the like. Either accept the bargain and stabilize, or refuse, seal your fate, and pass on.
+
+### Rest & Recovery
+
+There are three kinds of rests you can take as you adventure: a short rest, a long rest, and an extended rest. Each rest takes a certain amount of time, during which you can swap items in your loadout and take certain **downtime activities**, depending on the rest.
+
+At your GM's discretion, when you'er able to take shelter in a comfortable setting, you may be able to choose additional downtime activities. Inns, or particularly generous hosts, typically offer food, beverages, and other creature comforts to travelers (like a bath or extra comfy bedding)—these typically give you extra supplies for you to spend during your rest.
+
+#### Short Rest
+
+A short rest lasts 1 in-game hour. You cannot take more than 3 short rests in a row before taking a long rest. You can choose two of the following **downtime activities**:
+
+Tend to Wounds
+: Spend up to 2 supply to heal yourself or an ally ¼ of their total HP per supply spent.
+
+Clear Fatigue
+: Clear 2 fatigue.
+
+Gather Supplies
+: Search the area for supplies. Make a focus roll—on a weak hit, gain 1 supply, on a strong hit gain 2 supply.
+
+Prepare
+: Describe how you prepare yourself for the path ahead. Become prepared for that scenario. If you prepare for the same thing with one or more members of your party, instead you each hold 2-prepared which lasts until you take a long rest, which you can spend 1:1 to become prepared for a relevant roll.
+
+#### Long Rest
+
+A long rest last 8 in-game hours. You can choose two of the following **downtime activities**:
+
+Tend to Wounds
+: Spend supplies to heal yourself or an ally ¼ of their total HP per supply spent.
+
+Clear Fatigue
+: Clear all fatigue and optionally spend supplies to recover 1 exhaustion per supply.
+
+Gather Supplies
+: Search the area for supplies. Make a focus roll—on a weak hit, gain 1 supply, on a strong hit gain 2 supply.
+
+Take Watch
+: Spend 2 hours watching for danger. Make a focus roll against a hidden DC, set by the GM.
+
+Prepare
+: Describe how you prepare yourself for the path ahead. Become prepared for that scenario. If you prepare for the same thing with one or more members of your party, instead you each hold 2-prepared which lasts until you take a long rest, which you can spend 1:1 to become prepared for a relevant roll.
+
+Work on a Project
+: With GM approval, pursue a long-term project, such as deciphering an ancient text or crafting a new weapon.
+
+Daily Preparations
+: Complete items marked as part of your daily preparations
+
+#### Extended Rest
+
+An extended rest lasts 12 in-game hours and cannot be interrupted by more than 1 hour of strenuous activity (such as combat). You can choose one of the following **downtime activities**:
+
+Recuperate
+: Heal all HP, clear all fatigue, and recover 2 exhaustion
+
+Level Up
+: Reflect on your adventure and advance to the next level, provided you have enough experience to do so
+
+Work on a Project
+: With GM approval, pursue a long-term project, such as deciphering an ancient text or crafting a new weapon. Countdown twice, with +2 forward for each roll you make towards it.
+
+Get a Job
+: Find work to earn some gold. This is typically a day job and the amount you earn is up to the GM's discretion.
 
 ## Conditions & Statuses
 
