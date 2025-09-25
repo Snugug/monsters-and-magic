@@ -3,8 +3,6 @@
   import Icon from '$components/Icon.svelte';
   import ChapterDetails from '$components/ChapterDetails.svelte';
 
-  // TODO: Use https://github.com/w3c/csswg-drafts/issues/2084#issuecomment-3188365883 to automatically show and hide details and make these list items details if they have children
-
   interface ChapterSubnav extends MarkdownHeading {
     children?: ChapterSubnav[];
   }
@@ -51,6 +49,9 @@
       &:has(:target-current),
       &:hover {
         background: hsl(from var(--light-yellow) h calc(s / 2) calc(l * 1.2));
+        a {
+          border-color: var(--dark-yellow);
+        }
       }
 
       &::-webkit-details-marker {
