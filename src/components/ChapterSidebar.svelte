@@ -1,7 +1,6 @@
 <script lang="ts">
   import { type MarkdownHeading } from 'astro';
   import { chapterTitle } from '$lib/helpers';
-  import { inspect } from 'util';
   import ChapterNav from './ChapterNav.svelte';
   import ChapterDetails from '$components/ChapterDetails.svelte';
   import Icon from '$components/Icon.svelte';
@@ -59,10 +58,6 @@
   }
 
   const headingTree = buildTree(headings);
-
-  console.log(inspect(headingTree, false, null, true));
-
-  // TODO: Small Screen Nav
 </script>
 
 <nav class="sidebar">
@@ -75,11 +70,6 @@
       {#each headingTree as heading}
         <ChapterDetails chapter={heading} />
       {/each}
-      <!-- {#each headings as heading, i}
-        <li>
-          
-        </li>
-      {/each} -->
     </ul>
   </details>
 </nav>
@@ -126,8 +116,7 @@
   }
 
   details {
-    &[open] > summary :global(svg),
-    &:has(:target-current) > summary :global(svg) {
+    &[open] > summary :global(svg) {
       transform: rotate(90deg);
     }
 
