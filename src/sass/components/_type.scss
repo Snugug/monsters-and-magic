@@ -43,6 +43,17 @@
       clear: both;
     }
 
+    .icon {
+      height: 1em;
+      width: 1em;
+      fill: currentColor;
+    }
+
+    p .icon {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
     &.long > p:first-of-type::first-letter {
       @extend %baroque;
       font-size: 3lh;
