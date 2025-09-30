@@ -197,6 +197,8 @@
     &--h4,
     &--h5 {
       margin-block-end: 0.5rem;
+      border-bottom: 2px solid var(--dark-yellow);
+      // width: max-content;
     }
 
     @for $i from 1 through 4 {

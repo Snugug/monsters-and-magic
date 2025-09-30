@@ -58,13 +58,13 @@ The fun part of playing Monsters & Magic isn't rolling dice, it's telling a stor
 Every PC in the game has four abilities:
 
 Focus
-: Your ability to think deeply about a subject, strategize, and connect disparate pieces of information. You can make a focus roll instead of a power roll when you attack with precise weapons.
+: Your ability to think deeply about a subject, strategize, and connect disparate pieces of information. You can make a focus roll instead of a power roll when you attack with _precise_ weapons.
 
 Power
 : Your strength of body and mind. You make a power roll when you attack with weapons.
 
 Cunning
-: Your decisiveness and ability to think and act quickly. You add your cunning to your AC when wearing light or medium armor, and you can make a cunning roll instead of a power roll when you attack with agile weapons.
+: Your decisiveness and ability to think and act quickly. You add your cunning to your AC when wearing light or medium armor, and you can make a cunning roll instead of a power roll when you attack with _agile_ weapons.
 
 Luck
 : How often fortune swings in your favor. You make a luck roll when trying to do something beyond your normal skills and proficiencies.
@@ -190,7 +190,9 @@ Throughout the course of play, you'll gain a reputation with the various faction
 
 You're an adventuring party, exploring the world is what you do! This is some of how you'll interact with the world while you do.
 
-### Vision and Light
+### Perception and Detection
+
+#### Light
 
 Light, and how creatures see, are key to being able explore the world around them.
 
@@ -198,39 +200,43 @@ Bright Light
 : Full, clear illumination, like being outside on a sunny day.
 
 Dim Light
-: Limited illumination, like being outside under a full moon without any artificial light sources. Creatures can only see in shades of gray, and take -2 ongoing to ability checks that require sight.
+: Limited illumination, like being outside under a full moon without any artificial light sources. Creatures and items in dim light are _concealed_.
 
 Darkness
-: No illumination, like being in a room with no windows, doors, or artificial light sources. When inside, or trying to target a creature inside, you're blinded.
+: No illumination, like being in a room with no windows, doors, or artificial light sources. Creatures and items in darkness are _hidden_.
 
 Magical Darkness
-: Darkness that is fueled by magic instead of just a lack of light. It cannot be illuminated through non-magical means and cannot be seen through except by creatures that specifically can pierce it.
+: Darkness that is fueled by magic instead of just a lack of light. It cannot be illuminated through non-magical means and cannot be seen through except by creatures that specifically can pierce it, including by creatures with _darkvision_.
 
-With those levels of light come different ways creatures can see through those levels of light, sometimes not requiring light at all. All vision is described within a certain range, beyond that range they have no extra senses and normal vision for the current lighting conditions apply.
+#### Senses
+
+With those levels of light come different ways creatures can perceive the world. All vision is described within a certain range, beyond that range they have no extra senses and normal vision for the current lighting conditions apply.
+
+Low-Light Vision
+: Can see in _dim light_ as if it were _bright light_.
 
 Darkvision
-: Can see in _dim light_ as if it were _bright light_ and can see in regular _darkness_ as if it were _dim light_ within range.
+: Can see in _dim light_ as if it were _bright light_ and can see in regular _darkness_ as if it were _dim light_. Your vision in _darkness_ is in black and white only.
 
 Tremmorsense
-: Can detect the exact location of creatures and objects in range that are physically touching a surface they are, but cannot make out details that require sight (like colors or exact objects). Does not take penalties to checks that require sight to locate a creature or object within range.
+: Can detect the movement of creatures and object on the same solid surface within the provided range—they cannot benefit from being _concealed_ or _hidden_, although you cannot make out details.
 
 Blindsight
-: Can detect the exact location of creatures and objects in range, but cannot make out details that require sight (like colors or exact objects). Does not take penalties to checks that require sight to locate a creature or object within range.
+: Can detect the exact location of creatures and objects within the provided range—they cannot benefit from being _concealed_ or _hidden_, although you cannot make out details.
 
 Truesight
-: Can see in any lighting condition,including _magical darkness_, as if it were _bright light_, as well as see invisible creatures and objects, as well as see through illusions, within range.
+: Can see in any lighting condition,including _magical darkness_, as if it were _bright light_, as well as see _invisible_ creatures and objects, and see through illusions, within range.
 
-### Hiding
+#### Concealment
 
-Whether you want to spy on another creature, sneak past someone, or try and set an ambush, you're going to want to hide. Your GM will tell you whether it's appropriate to hide. If you successfully hide, you become invisible.
+Concealed
+: If a creature or item is concealed, they can still be observed, but it's more challenging to do so. Ability checks that rely on sight against something concealed are made with -2 ongoing.
 
-#### Obscured Areas
+Hidden
+: If a creature or item is hidden, they are only barely perceptible— you may know what space they're in, but little else. You are blinded while trying to use an ability check that relies on sight against something _hidden_.
 
-Lightly Obscured
-: Areas that are tough to see through, like patchy fog, or dim light. Ability checks that rely on sight take -2 ongoing while trying to see something in the area.
-
-Heavily Obscured
-: Areas that are totally opaque, like darkness or dense fog. You are blinded while trying to see something in the area.
+Undetected
+: If a creature is undetected, you don't know what space they're in—treat them as if they were _hidden_—but the GM will make your ability check in secret for you, with a hidden DC. Undetected creatures are subject to area effects as normal.
 
 #### Cover
 
@@ -323,13 +329,19 @@ Each 1 weight weighs approximately 5-10 lbs. There are some items, though, that 
 
 Your carrying capacity is the most you can carry before becoming encumbered and is equal to double your +POWER plus 10. When you're encumbered, you speed is halved and take you take -1 ongoing to all rolls until you're no longer encumbered. Your load can never be more than your carrying capacity +3.
 
+### Loadout
+
+While your character may carry a number of items with them, the items they have available to use at a moments notice is called their **loadout**. You can have a number of 0-weight items in your loadout equal to twice your +CUNNING (minimum 1) that you can use as part of the Use Item basic technique.
+
+In addition, each character has two weapon loadouts that they can swap between. Each weapon loadout consists of either a two-handed primary weapon or focus, or a one-handed primary weapon or focus and optional either a one-handed secondary weapon, a shield, or an additional one-handed focus. You can use the Retrieve Item basic technique to swap between your weapon loadouts, and can draw one of your weapon loadouts as part of a technique if you don't have any weapons currently equipped.
+
 ## Combat
 
 When all else fails, it's time for combat!
 
 ### Order
 
-Combat happens in rounds, each taking approximately 6 seconds to happen. At the start of combat, make a cunning roll; this is your **initiative** and determines the order in which you act.
+Combat happens in rounds, each taking approximately 6 seconds to happen. At the start of combat, make a cunning roll; this is your **initiative** and determines the order in which you act, but is a direct roll without success steps like a normal ability check. Instead, the initiative order starts with the creature rolled the highest, going down from there. If there's a tie, player characters go first, then monsters. Two or more allies with the same initiative can take their turns interchangeably, but once they take any action, that is considered the start of their turn.
 
 :::message[Dynamic Initiative]
 
@@ -357,15 +369,27 @@ import BasicTechniques from '$components/tables/BasicTechniques.astro';
 
 <BasicTechniques />
 
-### Attacking
+### Attacking & Dealing Damage
 
-### Cover
+If you use an action that has you attack a creature, you'll target a creature you can see within your weapon or spell's range and make an appropriate ability check—for weapon attacks, you'll make a power roll, for spell attacks you'll roll with +SPELL. On a hit, if you don't deal a fixed amount of damage or fatigue, roll the damage die or dice associated with your action. Unless otherwise specified, on a weak hit, you deal ½ the rolled or fixed damage or fatigue (minimum 1), on a strong hit, you deal full damage, and on a critical hit, you deal double damage.
 
-### Ranged
+If you use an action that forces a creature to make a saving throw, instead of you rolling an attack, the creatures and objects affected by your action makes the saving throw. These actions will include what happen on a miss or a weak hit.
 
-### Melee
+### Reach & Range
 
-### Mounted
+Some actions will use a phrase like "whin your **reach**" to describe a distance; this is the range of your equipped weapon and, if unspecified, refers to your equipped melee weapon. If it's used as a trigger for a reaction and the action has you make an attack, it must be with the equipped weapon, unless otherwise specified. If you do not have a melee weapon equipped, it's within touch range of yourself (5 feet).
+
+Melee weapons cannot be used at a distance further than touch range, and spells can't be cast further than their stated range. Ranged weapons, however, can; you can try to attack a creature up to twice your ranged weapon's range away, making your attack roll with disadvantage if it's beyond normal reach. Anything further away than twice your ranged weapon's range cannot be targeted.
+
+### Mounted Combat
+
+A willing creature that is at least one size larger than a rider and has the appropriate anatomy can serve as a mount. You can use the <ref- src="techniques/mount-or-dismount">Mount or Dismount</ref-> technique to get on and off of a mount. If you're on a mount and an effect would force you off of it, make a cunning saving throw—on a miss, you'r thrown from your mount and knocked prone in an unoccupied space within 5 feet of the mount, on a weak hit you can either mark 2-fatigue to stay on your mount or be knocked from your mount to an unoccupied space within 5 feet but land on your feet. You make the same save if you or your mount are knocked prone.
+
+If a mount has been trained to accept a rider, the rider can control it. A controlled mount's initiative becomes the same as its rider, and it can only use the <ref- src="techniques/move">Move</ref->, <ref- src="techniques/dodge">Dodge</ref->, or <ref- src="techniques/move">Disengage</ref-> techniques. An independent mount—one that lets you ride but ignores your control—retains its own initiative and can move and act as it likes.
+
+### Underwater Combat
+
+While underwater, everything has resistance to fire damage. Attacks with are made with disadvantage unless the creature has a swim speed or is riding a mount with a swim speed, and the range of ranged weapons is halved.
 
 ## Harm & Healing
 
@@ -541,4 +565,4 @@ Inspired
 : You're ready to shape your destiny—clear inspired to use a thread of fate without expending one, even if you don't have one available.
 
 Invisible
-: You, and everything you're wearing or carrying is hidden from sight—you have advantage on initiative rolls and attack rolls and you cannot be targeted by effects that rely on sight.
+: You, and everything you're wearing or carrying is hidden from sight—you become _undetected_ and have advantage on initiative rolls and attack rolls.

@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 
-const ignore = ['hold'];
+const ignore = ['hold', 'focus', 'cunning', 'power', 'luck'];
 
 const glossary = (await getCollection('glossary'))
   .filter((a) => !ignore.includes(a.slug))
