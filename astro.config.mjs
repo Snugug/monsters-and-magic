@@ -13,6 +13,10 @@ import {
 import remarkDirective from 'remark-directive';
 import { remarkContainers } from './lib/markdown';
 import remarkAttributes from 'remark-attributes';
+import {
+  remarkExtendedTable,
+  extendedTableHandlers,
+} from 'remark-extended-table';
 
 // Get the current directory
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -39,9 +43,11 @@ export default defineConfig({
       remarkDirective,
       remarkContainers,
       remarkAttributes,
+      remarkExtendedTable,
     ],
     remarkRehype: {
       handlers: {
+        ...extendedTableHandlers,
         ...defListHastHandlers,
       },
     },

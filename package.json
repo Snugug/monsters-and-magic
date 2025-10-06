@@ -16,8 +16,10 @@
     "@sveltia/cms": "^0.105.2",
     "astro": "^5.14.1",
     "astro-remote": "^0.3.4",
+    "install": "^0.13.0",
     "pagefind": "^1.4.0",
     "posthtml": "^0.16.6",
+    "remark-extended-table": "^2.0.3",
     "svelte": "^5.39.6",
     "typescript": "^5.9.2"
   },
