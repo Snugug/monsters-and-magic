@@ -3,6 +3,7 @@ title: Rogue
 proficiencies:
   weapons: agile weapons
   armor: light armor
+  techniques: 2
 hp: 25
 feats:
   - title: Sneak Attack

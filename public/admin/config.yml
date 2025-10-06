@@ -90,6 +90,11 @@ collections:
           - label: Armor
             name: armor
             required: false
+          - label: Techniques
+            name: techniques
+            widget: number
+            value_type: int
+            default: 0
       - label: hp
         name: hp
         widget: number

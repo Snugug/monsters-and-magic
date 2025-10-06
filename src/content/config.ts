@@ -98,6 +98,7 @@ const classes = defineCollection({
     proficiencies: z.object({
       weapons: z.string().optional(),
       armor: z.string().optional(),
+      techniques: z.number().step(1).min(0),
     }),
     hp: z.number().step(1),
     feats: z.array(
