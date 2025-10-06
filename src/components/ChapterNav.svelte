@@ -66,6 +66,7 @@
     display: grid;
     grid-template-columns: 1fr 1.5rem 1fr;
     gap: 1rem;
+    align-items: center;
 
     li {
       &:first-of-type {
