@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+
+const heritage = (await getCollection('heritage')).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+---
+
+<ul role="list">
+  {
+    heritage.map((a) => (
+      <li>
+        <header>
+          <p class="title type--h3">{a.data.title}</p>
+          {a.data.requirements && (
+            <p>
+              <strong>Requirements:</strong> {a.data.requirements}
+            </p>
+          )}
+        </header>
+        <div class="type" set:html={a.rendered.html} />
+      </li>
+    ))
+  }
+</ul>
+
+<style lang="scss">
+  header p:not(.title) {
+    margin-block-end: 1rem;
+  }
+</style>

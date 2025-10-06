@@ -2,27 +2,30 @@
 import { getCollection } from 'astro:content';
 import { Markdown } from 'astro-remote';
 
-const lineage = await getCollection('lineage');
+const lineage = (await getCollection('lineage')).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
 ---
 
 <ul role="list">
   {
     lineage.map((a) => (
-      <li>
+      <li class="lineage">
         <header>
-          <p class="title">{a.data.title}</p>
+          <h3 class="title type--h3">{a.data.title}</h3>
           <p>
             <strong>Size:</strong> {a.data.size.join(', ')}
           </p>
         </header>
         <div class="type" set:html={a.rendered.html} />
         <section>
-          <p>Traits</p>
-          <ul>
+          <ul role="list">
             {a.data.traits.map((t) => (
               <li>
-                <p>{t.title}</p>
-                <p>Points: {t.points}</p>
+                <h4 class="type--h4">{t.title}</h4>
+                <p>
+                  <strong>Points:</strong> {t.points}
+                </p>
                 <div class="type">
                   <Markdown content={t.description} />
                 </div>
@@ -34,3 +37,25 @@ const lineage = await getCollection('lineage');
     ))
   }
 </ul>
+
+<style>
+  li,
+  ul {
+    display: grid;
+    gap: 1rem;
+  }
+
+  ul:has(ul) {
+    gap: 2rem;
+  }
+
+  .type {
+    width: 100%;
+  }
+
+  .lineage {
+    border: 1px solid var(--dark-yellow) !important;
+    padding: 0.5rem;
+    background: var(--white);
+  }
+</style>
