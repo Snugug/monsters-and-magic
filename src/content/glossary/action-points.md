@@ -1,5 +1,5 @@
 ---
-title: Actio Points
+title: Action Points
 type: []
 ---
 

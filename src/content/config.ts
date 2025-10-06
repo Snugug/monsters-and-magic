@@ -42,6 +42,7 @@ const techniques = defineCollection({
       type: z.enum(['basic', 'advanced', 'rare']),
       ap: z.union([z.number().int().min(1), z.null()]).optional(),
       reaction: z.union([z.string(), z.null()]).optional(),
+      duration: z.union([z.string(), z.null()]).optional(),
     })
     .superRefine((item, ctx) => {
       // Is a reaction but has AP
@@ -67,9 +68,64 @@ const techniques = defineCollection({
     }),
 });
 
+const lineage = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    size: z.array(z.enum(['small', 'medium'])),
+    traits: z.array(
+      z.object({
+        title: z.string(),
+        points: z.number().step(1).min(1).max(3),
+        description: z.string(),
+      }),
+    ),
+  }),
+});
+
+const activities = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    taken: z.array(z.enum(['short rest', 'long rest', 'extended rest'])),
+  }),
+});
+
+const classes = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    proficiencies: z.object({
+      weapons: z.string().optional(),
+      armor: z.string().optional(),
+    }),
+    hp: z.number().step(1),
+    feats: z.array(
+      z.object({
+        title: z.string(),
+        core: z.boolean(),
+        spellcasting: z.boolean(),
+        description: z.string(),
+      }),
+    ),
+  }),
+});
+
+const heritage = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    requirements: z.string().optional(),
+  }),
+});
+
 export const collections = {
   standalone,
   chapters,
   glossary,
   techniques,
+  lineage,
+  activities,
+  classes,
+  heritage,
 };

@@ -48,7 +48,10 @@
       <li><a href="/characters">My Characters</a></li>
       <li>
         <details>
-          <summary>Rules</summary>
+          <summary>
+            <span>Rules</span>
+            <Icon icon="forward" label="expand" />
+          </summary>
           <ul role="list">
             {#each rules as rule}
               <li>
@@ -58,6 +61,8 @@
           </ul>
         </details>
       </li>
+      <li><a href="/lineages">Lineages</a></li>
+      <li><a href="/heritages">Heritages</a></li>
       <li><a href="/classes">Classes</a></li>
       <li><a href="/feats">Feats</a></li>
       <li><a href="/techniques">Techniques</a></li>
@@ -96,6 +101,28 @@
     top: 0;
     left: 0;
     width: 100%;
+  }
+
+  summary {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1.5rem;
+    gap: 0.5rem;
+    align-items: center;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    :global(svg) {
+      fill: currentColor;
+      height: 1.5rem;
+      width: 1.5rem;
+
+      details[open] > & {
+        transform: rotate(90deg);
+      }
+    }
   }
 
   .inner {

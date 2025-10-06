@@ -150,6 +150,9 @@
 <style lang="scss">
   .search {
     position: relative;
+    max-width: 40ch;
+    width: 100%;
+    justify-self: end;
   }
 
   .results {

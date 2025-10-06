@@ -19,7 +19,7 @@ const previous =
 <Layout title={chapter.title}>
   <div class="chapter">
     <aside class="chapter--major-nav">
-      <ChapterNav next={next} previous={previous} />
+      <ChapterNav next={next} previous={previous} client:idle />
     </aside>
     <aside class="chapter--subnav">
       <div class="sidebar">
@@ -72,9 +72,11 @@ const previous =
 
     &--subnav {
       position: sticky;
-      top: calc(var(--header-height) + 3rem + 1px);
+      top: calc(
+        var(--header-height) + 1rem + 1px + var(--chapnav-height, 2rem)
+      );
       z-index: 1;
-      margin-block-start: -2rem;
+      margin-block-start: calc(var(--chapnav-height, 2rem) * -1);
       margin-block-end: 1rem;
     }
 

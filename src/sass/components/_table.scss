@@ -18,15 +18,7 @@ table {
   width: 100%;
   font-size: 1rem;
   background: color-mix(in srgb, var(--parchment) 100%, var(--white) 100%);
-  word-wrap: none;
-  word-break: none;
-  table-layout: auto;
-  white-space: nowrap;
-
-  // &:has(ref-) td {
-  //   line-height: 1;
-  //   padding-block: 0;
-  // }
+  table-layout: fixed;
 
   thead {
     background-color: var(--dark-red);
@@ -49,6 +41,7 @@ table {
       );
       // text-align: left;
       border-color: var(--grey);
+      width: max-content;
     }
   }
 
@@ -65,8 +58,8 @@ table {
 
   td {
     border-color: var(--grey);
-    word-wrap: break-word;
-    white-space: break-spaces;
+    // word-wrap: break-word;
+    // white-space: break-spaces;
     min-width: 10ch;
   }
 

@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import { Markdown } from 'astro-remote';
+
+const lineage = await getCollection('lineage');
+---
+
+<ul role="list">
+  {
+    lineage.map((a) => (
+      <li>
+        <header>
+          <p class="title">{a.data.title}</p>
+          <p>
+            <strong>Size:</strong> {a.data.size.join(', ')}
+          </p>
+        </header>
+        <div class="type" set:html={a.rendered.html} />
+        <section>
+          <p>Traits</p>
+          <ul>
+            {a.data.traits.map((t) => (
+              <li>
+                <p>{t.title}</p>
+                <p>Points: {t.points}</p>
+                <div class="type">
+                  <Markdown content={t.description} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </li>
+    ))
+  }
+</ul>

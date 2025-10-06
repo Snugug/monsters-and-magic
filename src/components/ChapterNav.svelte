@@ -8,9 +8,26 @@
   }
 
   const { previous, next }: { previous: Link; next: Link } = $props();
+
+  let wrapper: HTMLElement | undefined = $state();
+
+  $effect(() => {
+    console.log('Effect');
+    if (wrapper && ResizeObserver) {
+      console.log(wrapper);
+      const resize = new ResizeObserver(([entry]) => {
+        document.body.style.setProperty(
+          '--chapnav-height',
+          `${entry.contentRect.height + 8}px`,
+        );
+      });
+
+      resize.observe(wrapper);
+    }
+  });
 </script>
 
-<nav class="chapter-nav">
+<nav class="chapter-nav" bind:this={wrapper}>
   <ul role="list" class="nav">
     <li class="modesto" aria-hidden={previous === undefined}>
       {#if previous}
@@ -60,6 +77,7 @@
         }
       }
       &:last-of-type a {
+        text-align: right;
         justify-content: flex-end;
       }
     }
@@ -70,6 +88,10 @@
       display: flex;
       width: 100%;
       gap: 0rem;
+      align-items: center;
+      span {
+        line-height: 1;
+      }
     }
 
     :global(svg) {

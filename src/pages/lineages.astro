@@ -1,13 +1,7 @@
 ---
 import Layout from '$layouts/Layout.astro';
 import Wordmark from '$assets/wordmark.svg';
-
-import BasicTechniques from '$components/tables/BasicTechniques.astro';
-
-import { getEntry, render } from 'astro:content';
-
-const SiteLanding = await getEntry('standalone', 'site-landing');
-const { Content } = await render(SiteLanding);
+import Lineages from '$components/tables/Lineages.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
@@ -16,8 +10,6 @@ const { Content } = await render(SiteLanding);
 <Layout>
   <Wordmark />
 
-  <div class="type">
-    <BasicTechniques />
-    <!-- <SiteLanding /> -->
-  </div>
+  <Lineages />
+  <!-- <SiteLanding /> -->
 </Layout>

@@ -12,6 +12,12 @@ const techniques = (await getCollection('techniques'))
 
     return 0;
   });
+
+function cost(t) {
+  if (t.data.ap) return t.data.ap + ' AP';
+  if (t.data.reaction) return '1 R';
+  if (t.data.duration) return t.data.duration;
+}
 ---
 
 <table>
@@ -29,7 +35,13 @@ const techniques = (await getCollection('techniques'))
           <tr>
             <td style="text-align:left;min-width:12ch">{t.data.title}</td>
             <td style="text-align:left">
-              {t.data.ap ? `${t.data.ap} AP` : `1 R: ${t.data.reaction}`}
+              <strong>{cost(t)}</strong>
+              {t.data.reaction && (
+                <fragment>
+                  <br />
+                  <span class="rxn">{t.data.reaction}</span>
+                </fragment>
+              )}
             </td>
             <td style="text-align:left">{t.body}</td>
           </tr>
@@ -38,3 +50,11 @@ const techniques = (await getCollection('techniques'))
     }
   </tbody>
 </table>
+
+<style>
+  .rxn {
+    line-height: 1.25;
+    display: inline-block;
+    font-size: 0.9em;
+  }
+</style>

@@ -14,8 +14,12 @@ const techniques = (await getCollection('techniques'))
     acc[cur.data.title.toLowerCase()] = `techniques/${cur.slug}`;
     return acc;
   }, {});
+const activities = (await getCollection('activities')).reduce((acc, cur) => {
+  acc[cur.data.title.toLowerCase()] = `activities/${cur.slug}`;
+  return acc;
+}, {});
 
-const collections = { ...glossary, ...techniques };
+const collections = { ...glossary, ...techniques, ...activities };
 
 export const lookup = Object.assign(collections, {
   thread: 'glossary/threads-of-fate',
@@ -68,8 +72,9 @@ export const modified = {
   fatigue: 'glossary/fatigue',
   exhaustion: 'glossary/exhaustion',
   piercing: 'glossary/piercing',
-  ac: 'glossary/ac',
+  ac: 'glossary/armor-class',
   ap: 'glossary/action-points',
+  hp: 'glossary/hit-points',
   thread: 'glossary/threads-of-fate',
   threads: 'glossary/threads-of-fate',
   weight: 'glossary/weight',

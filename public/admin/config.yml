@@ -20,6 +20,155 @@ public_folder: /media
 
 # Content collections
 collections:
+  - label: Lineages
+    name: lineage
+    folder: src/content/lineage
+    create: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Description
+        name: body
+        widget: markdown
+      - label: Size
+        name: size
+        widget: select
+        multiple: true
+        options:
+          - label: Small
+            value: small
+          - label: Medium
+            value: medium
+      - label: Traits
+        name: traits
+        widget: list
+        fields:
+          - label: Title
+            name: title
+          - label: Points
+            name: points
+            widget: number
+            value_type: int
+            default: 1
+            min: 1
+            max: 3
+          - label: Description
+            name: description
+            widget: markdown
+
+  - label: Heritages
+    name: heritage
+    folder: src/content/heritage
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Requirements
+        name: requirements
+        required: false
+      - label: Description
+        name: body
+        widget: markdown
+  - label: Classes
+    name: classes
+    folder: src/content/classes
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Description
+        name: body
+        widget: markdown
+      - label: Proficiencies
+        name: proficiencies
+        widget: object
+        fields:
+          - label: Weapons
+            name: weapons
+            required: false
+          - label: Armor
+            name: armor
+            required: false
+      - label: hp
+        name: hp
+        widget: number
+        value_type: int
+        default: 25
+      - label: Feats
+        name: feats
+        widget: list
+        fields:
+          - label: Title
+            name: title
+          - label: Core
+            name: core
+            widget: boolean
+            required: false
+          - label: Spellcasting
+            name: spellcasting
+            widget: boolean
+            required: false
+          - label: Description
+            name: description
+            widget: markdown
+  - label: Techniques
+    name: technique
+    folder: src/content/techniques
+    create: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Type
+        name: type
+        widget: select
+        options:
+          - label: Basic
+            value: basic
+          - label: Advanced
+            value: advanced
+          - label: Rare
+            value: rare
+      - label: AP
+        name: ap
+        widget: number
+        value_type: int
+        min: 1
+        required: false
+      - label: Reaction
+        name: reaction
+        widget: string
+        required: false
+      - label: Duration
+        name: duration
+        widget: string
+        required: false
+      - label: Body
+        name: body
+        widget: markdown
+  - label: Downtime Activities
+    name: activities
+    folder: src/content/activities
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Availability
+        name: taken
+        widget: select
+        multiple: true
+        options:
+          - label: Short Rest
+            value: short rest
+          - label: Long Rest
+            value: long rest
+          - label: Extended Rest
+            value: extended rest
+      - label: description
+        name: body
+        widget: markdown
+
   - label: Standalone Page
     name: standalone
     folder: src/content/standalone
@@ -54,37 +203,6 @@ collections:
           - Weapon Property
           - Armor Property
           - Damage Type
-      - label: Body
-        name: body
-        widget: markdown
-  - label: Techniques
-    name: technique
-    folder: src/content/techniques
-    create: true
-    fields:
-      - label: Title
-        name: title
-        widget: string
-      - label: Type
-        name: type
-        widget: select
-        options:
-          - label: Basic
-            value: basic
-          - label: Advanced
-            value: advanced
-          - label: Rare
-            value: rare
-      - label: AP
-        name: ap
-        widget: number
-        value_type: int
-        min: 1
-        required: false
-      - label: Reaction
-        name: reaction
-        widget: string
-        required: false
       - label: Body
         name: body
         widget: markdown
