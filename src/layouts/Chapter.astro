@@ -17,12 +17,12 @@ const previous =
 ---
 
 <Layout title={chapter.title}>
-  <div class='chapter'>
-    <aside class='chapter--major-nav'>
+  <div class="chapter">
+    <aside class="chapter--major-nav">
       <ChapterNav next={next} previous={previous} client:idle />
     </aside>
-    <aside class='chapter--subnav'>
-      <div class='sidebar'>
+    <aside class="chapter--subnav">
+      <div class="sidebar">
         <ChapterSidebar
           title={chapter.title}
           chapter={chapter.chapter}
@@ -32,18 +32,18 @@ const previous =
       </div>
     </aside>
 
-    <article class='chapter--content'>
-      <div class='type'>
+    <article class="chapter--content">
+      <div class="type">
         <h1 id={chapter.slug}>
           {chapterTitle(chapter.chapter, chapter.title)}
         </h1>
-        <slot name='content' />
+        <slot name="content" />
       </div>
     </article>
   </div>
 </Layout>
 
-<style lang='scss'>
+<style lang="scss">
   .chapter {
     --collapsed: 1;
     container-type: inline-size;
