@@ -1,9 +1,20 @@
+import {
+  remarkDefinitionList,
+  defListHastHandlers,
+} from 'remark-definition-list';
+import remarkDirective from 'remark-directive';
+import remarkAttributes from 'remark-attributes';
+import {
+  remarkExtendedTable,
+  extendedTableHandlers,
+} from 'remark-extended-table';
+
 import { h } from 'hastscript';
 import { visit } from 'unist-util-visit';
 
 // This plugin is an example to turn `::note` into divs,
 // passing arbitrary attributes.
-export function remarkContainers() {
+function remarkContainers() {
   /**
    * @param {Root} tree
    *   Tree.
@@ -83,3 +94,19 @@ export function remarkContainers() {
     });
   };
 }
+
+export const markdown = {
+  remarkPlugins: [
+    remarkDefinitionList,
+    remarkDirective,
+    remarkContainers,
+    remarkAttributes,
+    remarkExtendedTable,
+  ],
+  remarkRehype: {
+    handlers: {
+      ...extendedTableHandlers,
+      ...defListHastHandlers,
+    },
+  },
+};

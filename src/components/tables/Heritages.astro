@@ -11,7 +11,7 @@ const heritage = (await getCollection('heritage')).sort((a, b) =>
     heritage.map((a) => (
       <li>
         <header>
-          <p class="title type--h3">{a.data.title}</p>
+          <h2 class="title type--h2">{a.data.title}</h2>
           {a.data.requirements && (
             <p>
               <strong>Requirements:</strong> {a.data.requirements}
@@ -25,7 +25,7 @@ const heritage = (await getCollection('heritage')).sort((a, b) =>
 </ul>
 
 <style lang="scss">
-  header p:not(.title) {
-    margin-block-end: 1rem;
-  }
+  // header p:not(.title) {
+  //   margin-block-end: 1rem;
+  // }
 </style>

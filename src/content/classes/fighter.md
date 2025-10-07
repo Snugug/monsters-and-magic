@@ -45,27 +45,13 @@ feats:
       Dueling
       : When wielding a melee weapon in one hand and no other weapons, gain **+2 ongoing** to attack rolls made with it
 
-      Blind Fighting
-      : Gain blindsight 10'.
-
-      Alert
-      : If not unconscious, roll initiative with advantage
-
       Finally, you're more adapt at learning techniques and teaching the ones you know—reduce the countdown required to teach a technique by 2 (minimum 1) and the countdown to learn a technique from a scroll by 2 (minimum 1).
   - title: Expert Marksman
     core: false
     spellcasting: false
     rare: false
     description: |-
-      You zero in on your enemy's weaknesses. While you have temporary hit points or are invisible, your weapon attacks have +2 ongoing to attack rolls and gain piercing equal to your proficiency bonus. Additionally, once per turn, if you **strike** a creature when you have advantage, you can forgo rolling with advantage and instead **strike** the creature twice as part of the same attack, rolling separate attack rolls for each attack.
-
-      Choose an additional fighting style.
-  - title: Tactical Advantage
-    core: false
-    spellcasting: false
-    rare: false
-    description: |-
-      You press your advantages wherever you can. When you use one of your adrenaline points, you can move up to half your speed without provoking reactions for moving out of reach of an enemy. Additionally, as a reaction to a creature using a technique in combat that you don't already know, you can spend 1 adrenaline point and mark 3-fatigue, or 1-exhaustion if it's rare, to learn it. Once you do this, you can't do it again until you've finished your daily preparations, and you can only learn a number of techniques this way equal to your +FOCUS (minimum 1).
+      You zero in on your enemy's weaknesses. While you have temporary hit points or are invisible, your weapon attacks have +2 ongoing to attack rolls and gain piercing equal to your proficiency bonus. Additionally, once per turn, if you strike a creature when you have advantage, you can forgo rolling with advantage and instead strike the creature twice as part of the same attack, rolling separate attack rolls for each attack.
 
       Choose an additional fighting style.
   - title: Power Surge
@@ -119,6 +105,17 @@ feats:
       : Spend 2 AP to apply **invigorated** to a creature within your reach.
 
       Increase your maximum number of adrenaline points by 1.
----
+  - title: Tactical Advantage
+    core: false
+    spellcasting: false
+    rare: true
+    description: |-
+      You press your advantages wherever you can. When you use one of your adrenaline points, you can move up to half your speed without provoking reactions for moving out of reach of an enemy. Additionally, as a reaction to a creature using a technique in combat that you don't already know, you can spend 1 adrenaline point and mark 3-fatigue, or 1-exhaustion if it's rare, to learn it. Once you do this, you can't do it again until you've finished your daily preparations, and you can only learn a number of techniques this way equal to your +FOCUS (minimum 1). Finally, choose an additional fighting style, which can include one of the following:
 
+      Blind Fighting
+      : Gain blindsight 10'.
+
+      Alert
+      : If not unconscious, roll initiative with advantage
+---
 Slide & Dice

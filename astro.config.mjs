@@ -6,17 +6,7 @@ import tsconfig from './tsconfig.json';
 import pagefind from './lib/pagefind';
 import svelte from '@astrojs/svelte';
 import mdx from '@astrojs/mdx';
-import {
-  remarkDefinitionList,
-  defListHastHandlers,
-} from 'remark-definition-list';
-import remarkDirective from 'remark-directive';
-import { remarkContainers } from './lib/markdown';
-import remarkAttributes from 'remark-attributes';
-import {
-  remarkExtendedTable,
-  extendedTableHandlers,
-} from 'remark-extended-table';
+import { markdown } from './lib/markdown';
 
 // Get the current directory
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -37,19 +27,5 @@ export default defineConfig({
       alias: aliases,
     },
   },
-  markdown: {
-    remarkPlugins: [
-      remarkDefinitionList,
-      remarkDirective,
-      remarkContainers,
-      remarkAttributes,
-      remarkExtendedTable,
-    ],
-    remarkRehype: {
-      handlers: {
-        ...extendedTableHandlers,
-        ...defListHastHandlers,
-      },
-    },
-  },
+  markdown,
 });
