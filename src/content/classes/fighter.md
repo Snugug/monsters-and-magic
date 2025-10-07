@@ -9,6 +9,7 @@ feats:
   - title: Adrenaline Rush
     core: true
     spellcasting: false
+    rare: false
     description: |-
       In the heat of battle, you can push yourself further than other combatants. You gain a number of adrenaline points you can use to power extraordinary feats in combat equal to your proficiency bonus. You can spend your adrenaline points to do one of the following:
 
@@ -25,6 +26,7 @@ feats:
   - title: Martial Master
     core: true
     spellcasting: false
+    rare: false
     description: |-
       You are a master of all things fighting. Choose a number of weapons up to your +POWER with which you're proficient: you gain mastery with them, and you can change your selection as part of your daily preparations. You can also choose a fighting style, which you can also change as part of your daily preparations:
 
@@ -53,6 +55,7 @@ feats:
   - title: Expert Marksman
     core: false
     spellcasting: false
+    rare: false
     description: |-
       You zero in on your enemy's weaknesses. While you have temporary hit points or are invisible, your weapon attacks have +2 ongoing to attack rolls and gain piercing equal to your proficiency bonus. Additionally, once per turn, if you **strike** a creature when you have advantage, you can forgo rolling with advantage and instead **strike** the creature twice as part of the same attack, rolling separate attack rolls for each attack.
 
@@ -60,6 +63,7 @@ feats:
   - title: Tactical Advantage
     core: false
     spellcasting: false
+    rare: false
     description: |-
       You press your advantages wherever you can. When you use one of your adrenaline points, you can move up to half your speed without provoking reactions for moving out of reach of an enemy. Additionally, as a reaction to a creature using a technique in combat that you don't already know, you can spend 1 adrenaline point and mark 3-fatigue, or 1-exhaustion if it's rare, to learn it. Once you do this, you can't do it again until you've finished your daily preparations, and you can only learn a number of techniques this way equal to your +FOCUS (minimum 1).
 
@@ -67,6 +71,7 @@ feats:
   - title: Power Surge
     core: false
     spellcasting: false
+    rare: false
     description: |-
       You draw upon your inner strength to power through combat. Whenever you use Strike multiple times per turn, you can mark 1-fatigue to reduce the AP you need to spend by 1, to a minimum of 1 AP. You also gain additional ways to use your Adrenaline Surge:
 
@@ -83,6 +88,7 @@ feats:
   - title: Command & Conquer
     core: false
     spellcasting: false
+    rare: false
     description: |-
       You command the battlefield, directing your allies to victory. Once per short rest, you can spend 1 AP to survey all enemies you can see—you learn their CR, vulnerabilities, and resistances, if any. You also gain additional ways to use your Adrenaline Surge:
 
@@ -99,6 +105,7 @@ feats:
   - title: Battlefield Medicine
     core: false
     spellcasting: false
+    rare: false
     description: |-
       Sometimes, the best offense is a good defense. When you Disengage, you can mark up to 3-fatigue to gain +1 AC for each fatigue marked until the start of your next turn. You also gain additional ways to use your Adrenaline Surge:
 

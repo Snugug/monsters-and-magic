@@ -9,6 +9,7 @@ feats:
   - title: The Pen is Mightier than the Sword
     core: true
     spellcasting: false
+    rare: false
     description: |-
       When telling the story of what happened here today, it's ok to embellish a little bit if it'll make it more exciting! Before combat starts, you can choose an opponent you can see and make a luck roll, DC 10 plus their challenge rating. You learn what kind of creature they are (or appear to be) and their CR. On a weak hit, they also become weakened and you learn one of their descriptors (GM's choice), on a strong hit they become weakened, you learn two of their descriptors, and can add or remove one, and on a critical hit they become permanently weakened, you learn three of their descriptors,and can add or remove two. On a miss, a duplicate of the creature appears, with ½ the original's HP. On a critical miss, another duplicate appears, with ¼ the original's HP.
 
@@ -18,10 +19,12 @@ feats:
   - title: Jack of All Trades
     core: true
     spellcasting: false
+    rare: false
     description: You know a little bit of this and a little bit of that. Gain a talent, then choose one of your talents to gain expertise in. Gain either mastery of a weapon you're proficient in, which you can swap as part of your daily preparations, the ability to cast a cantrip of your choice, or a non-rare technique of your choice. Finally, increase your maximum number of threads of fate by 1.
   - title: Fount of Luck
     core: false
     spellcasting: false
+    rare: false
     description: |-
       Whenever you take a long rest, you and a number of creatures of your choice up to your +LUCK regain +1 thread if they tend to wounds or clear fatigue. As part of your daily preparations, you regain a number of threads of fate equal to your +LUCK.
 
@@ -29,6 +32,7 @@ feats:
   - title: Rewrite
     core: false
     spellcasting: false
+    rare: false
     description: |-
       On your turn, you can spend a thread of fate to direct allies to act instead of you. They spend your AP on your turn to take their action, but you must mark any fatigue they use. They can use any technique you know, and if they can cast spells, they can use any cantrips you know. You, of course, can take credit for what they've done in the retelling. 
 
@@ -36,6 +40,7 @@ feats:
   - title: I Make Plans.
     core: false
     spellcasting: false
+    rare: false
     description: |-
       Whenever you fail a skill check, you can trigger a contingency plan. Spend a thread of fate to explain how your contingency plan was triggered, and then either roll a new skill check with a different talent, explaining how that one is now relevant, or have an ally make a skill check with a relevant talent that'll take the place of your skill check. If that fails, you can spend another thread of fate to do it again, and again, and again, and so on, but neither you nor your allies can roll with the same talent twice for your contingency planning.
 
@@ -45,6 +50,7 @@ feats:
   - title: Rabbit's Foot
     core: false
     spellcasting: false
+    rare: true
     description: |-
       You've learned how to bend the luck of others. You can now choose one of the following when spending a thread of fate:
 
@@ -57,6 +63,7 @@ feats:
   - title: Farkle
     core: false
     spellcasting: false
+    rare: true
     description: |-
       Whenever you deal damage to a creature with an attack roll, you can mark up to your +LUCK in fatigue to potentially do extra damage to it. For each fatigue you marked, roll 1d6.
 

@@ -24,6 +24,10 @@ const collections = { ...glossary, ...techniques, ...activities };
 export const lookup = Object.assign(collections, {
   thread: 'glossary/threads-of-fate',
   threads: 'glossary/threads-of-fate',
+  'fly speed': 'glossary/speed',
+  'climb speed': 'glossary/speed',
+  'swim speed': 'glossary/speed',
+  'burrow speed': 'glossary/speed',
   // str: 'glossary/strength',
   // dex: 'glossary/dexterity',
   // con: 'glossary/constitution',
@@ -94,7 +98,7 @@ export const typed = {
 };
 
 export const replacementRegExp = new RegExp(
-  `(((\\+|-)?\\d(\\s|-))(${Object.keys(modified).join('|')}))\\b` +
+  `(((\\+|-)?\\d+(\\s|-))(${Object.keys(modified).join('|')}))\\b` +
     '|' +
     `\\b(${Object.keys(sized).join('|')})\\s\\d\\b` +
     `|` +

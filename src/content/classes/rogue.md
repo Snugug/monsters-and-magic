@@ -9,6 +9,7 @@ feats:
   - title: Sneak Attack
     core: true
     spellcasting: false
+    rare: false
     description: |-
       Once per turn, when you deal damage with a ranged or agile weapon attack, you can mark a number of fatigue up to your proficiency bonus—for each fatigue marked, deal an extra 1d6 damage. You can only do this if you have advantage on, or were prepared for, the attack roll, are empowered, or another foe of your target is within close range of them.
 
@@ -16,6 +17,7 @@ feats:
   - title: Savant
     core: true
     spellcasting: false
+    rare: false
     description: |-
       When you gain this feat, gain an additional talent, then choose one of your talents—you gain expertise in it. Starting at Level 2, whenever you gain a talent by reaching a new tier of play, choose one of your talents and gain expertise in it, too. If you retrain a talent you're an expert in, it does not retain your expertise.
 
@@ -23,14 +25,17 @@ feats:
   - title: Uncanny Dodge
     core: false
     spellcasting: false
+    rare: false
     description: Whenever you make a cunning saving throw, you can treat a miss as a weak hit and a weak hit as a strong hit. Additionally, when an attacker that you can see hits you with an attack roll, you can use your reaction to halve the attack's damage against you.
   - title: Nimble Actions
     core: false
     spellcasting: false
+    rare: false
     description: Your fast hands and quick thinking make using some basic techniques quicker. The Hide and Disengage techniques only cost you 1 AP to use, if you use the Move technique more than once in a turn, the second use of it only costs 1 AP, and you can reduce the AP cost of Use Item and Retrieve Item techniques to 0 by marking 1-fatigue
   - title: Cunning Strike
     core: false
     spellcasting: false
+    rare: false
     description: |-
       When you deal Sneak Attack damage, you can add one of the following Cunning Strike effects, paying its cost from the number of d6s you roll. If an effect requires a saving throw, the DC is equal to 10  +CUNNING.
 
@@ -48,18 +53,20 @@ feats:
 
       Knock Out (4d6)
       : The target must succeed on a power saving throw; on a weak hit they are impaired for 1 minute, on a miss they are stunned and prone for 1 minute. At the end of each of their turns they can repeat the saving throw, ending the impaired or stunned immediately on a strong hit and after their next turn on a weak hit. Being hit by an attack also ends the impaired or stunned conditions.
-  - title: Reliable Talents
-    core: false
-    spellcasting: false
-    description: Whenever you make a roll with one of your talents, you can treat a roll of 9 or below as a 10. Gain a talent of your choice.
   - title: Second Story Work
     core: false
     spellcasting: false
+    rare: false
     description: |-
       You've trained at being particularly stealthy, able to get in and out of sticky situations without being seen. Gain a talent in the vein of stealth, infiltration, thievery, or the like. Additionally, you gain a Climb Speed equal to your Walking Speed, and if you have Cunning Strike, you gain the following additional option:
 
       Stalker (1d6)
       : This attack doesn't end the invisible condition on you if you gained it by using the Hide technique and you end your turn behind Total Cover.
+  - title: Reliable Talents
+    core: false
+    spellcasting: false
+    rare: true
+    description: Whenever you make a roll with one of your talents, you can treat a roll of 9 or below as a 10. Gain a talent of your choice.
 ---
 
 Sneak and awesome
