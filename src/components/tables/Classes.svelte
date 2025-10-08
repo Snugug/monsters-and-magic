@@ -3,6 +3,7 @@
   import Icon from '$components/Icon.svelte';
   import { createMarkdownProcessor } from '@astrojs/markdown-remark';
   import { markdown } from '$$lib/markdown';
+  import slugify from 'slugify';
 
   const md = await createMarkdownProcessor(markdown);
 
@@ -22,59 +23,54 @@
   );
 </script>
 
-<ul role="list">
-  {#each classes as a}
-    <li class="lineage">
-      <header>
-        <h2 class="title type--h2">{a.data.title}</h2>
-        <footer>
-          {#if a.data.proficiencies.weapons}
-            <p>Proficient with {a.data.proficiencies.weapons}</p>
+{#each classes as a}
+  <section class="lineage">
+    <header>
+      <h2 id={a.slug} class="title type--h2">{a.data.title}</h2>
+      <footer>
+        {#if a.data.proficiencies.weapons}
+          <p>Proficient with {a.data.proficiencies.weapons}</p>
+        {/if}
+        {#if a.data.proficiencies.armor}
+          <p>Proficient with {a.data.proficiencies.armor}</p>
+        {/if}
+        <p>{a.data.hp} HP</p>
+      </footer>
+    </header>
+    <div class="type" set:html={a.rendered.html} />
+    <section>
+      {#each a.data.feats as t}
+        <h3 id={slugify(t.title, { lower: true })} class="type--h3 feat--title">
+          <span>{t.title}</span>
+          {#if t.core || t.spellcasting || t.rare}
+            <span class="icons">
+              {#if t.core}
+                <Icon label="Core Feat" icon="diamond" />
+              {/if}
+              {#if t.spellcasting}
+                <Icon label="Spellcasting Feat" icon="wand" />
+              {/if}
+              {#if t.rare}
+                <span class="rare">
+                  <Icon label="Rare Feat" icon="flare" />
+                </span>
+              {/if}
+            </span>
           {/if}
-          {#if a.data.proficiencies.armor}
-            <p>Proficient with {a.data.proficiencies.armor}</p>
-          {/if}
-          <p>{a.data.hp} HP</p>
-        </footer>
-      </header>
-      <div class="type" set:html={a.rendered.html} />
-      <section>
-        <ul role="list">
-          {#each a.data.feats as t}
-            <li>
-              <h3 class="type--h3 feat--title">
-                <span>{t.title}</span>
-                {#if t.core || t.spellcasting || t.rare}
-                  <span class="icons">
-                    {#if t.core}
-                      <Icon label="Core Feat" icon="diamond" />
-                    {/if}
-                    {#if t.spellcasting}
-                      <Icon label="Spellcasting Feat" icon="wand" />
-                    {/if}
-                    {#if t.rare}
-                      <span class="rare">
-                        <Icon label="Rare Feat" icon="flare" />
-                      </span>
-                    {/if}
-                  </span>
-                {/if}
-              </h3>
+        </h3>
 
-              <div class="type">
-                {@html t.description}
-              </div>
-            </li>
-          {/each}
-        </ul>
-      </section>
-    </li>
-  {/each}
-</ul>
+        <div class="type">
+          {@html t.description}
+        </div>
+      {/each}
+    </section>
+  </section>
+{/each}
 
 <style lang="scss">
   li,
   ul {
+    padding: 0;
     display: grid;
     gap: 1rem;
   }

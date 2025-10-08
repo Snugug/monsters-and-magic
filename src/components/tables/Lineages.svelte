@@ -3,6 +3,7 @@
   import Icon from '$components/Icon.svelte';
   import { createMarkdownProcessor } from '@astrojs/markdown-remark';
   import { markdown } from '$$lib/markdown';
+  import slugify from 'slugify';
 
   const md = await createMarkdownProcessor(markdown);
 
@@ -22,39 +23,44 @@
   );
 </script>
 
-<ul role="list">
-  {#each lineage as a}
-    <li class="lineage">
-      <header>
-        <h2 class="title type--h2">{a.data.title}</h2>
-        <p>
-          <strong>Size:</strong>
-          {a.data.size.join(', ')}
-        </p>
-      </header>
-      <div class="type" set:html={a.rendered.html} />
-      <section>
-        <ul role="list">
-          {#each a.data.traits as t}
-            <li>
-              <h3 class="type--h3 trait--title">
-                <span>{t.title}</span>
-                <Icon label={`Points: ${t.points}`} icon={`c${t.points}`} />
-              </h3>
-              <div class="type">
-                {@html t.description}
-              </div>
-            </li>
-          {/each}
-        </ul>
-      </section>
-    </li>
-  {/each}
-</ul>
+{#each lineage as a}
+  <section class="lineage">
+    <header>
+      <h3 id={a.slug} class="title type--h2">{a.data.title}</h3>
+      <p>
+        <strong>Size:</strong>
+        {a.data.size.join(', ')}
+      </p>
+    </header>
+    <div>
+      {@html a.rendered.html}
+    </div>
+    <section>
+      <ul role="list">
+        {#each a.data.traits as t}
+          <li>
+            <h4
+              id={slugify(t.title, { lower: true })}
+              class="type--h3 trait--title"
+            >
+              <span>{t.title}</span>
+              <Icon label={`Points: ${t.points}`} icon={`c${t.points}`} />
+            </h4>
+            <div class="type">
+              {@html t.description}
+            </div>
+          </li>
+        {/each}
+      </ul>
+    </section>
+  </section>
+{/each}
 
 <style lang="scss">
   li,
   ul {
+    margin: 0;
+    padding: 0;
     display: grid;
     gap: 1rem;
   }

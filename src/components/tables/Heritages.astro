@@ -6,23 +6,23 @@ const heritage = (await getCollection('heritage')).sort((a, b) =>
 );
 ---
 
-<ul role="list">
-  {
-    heritage.map((a) => (
-      <li>
-        <header>
-          <h2 class="title type--h2">{a.data.title}</h2>
-          {a.data.requirements && (
-            <p>
-              <strong>Requirements:</strong> {a.data.requirements}
-            </p>
-          )}
-        </header>
-        <div class="type" set:html={a.rendered.html} />
-      </li>
-    ))
-  }
-</ul>
+{
+  heritage.map((a) => (
+    <section>
+      <header>
+        <h3 id={a.slug} class="title">
+          {a.data.title}
+        </h3>
+        {a.data.requirements && (
+          <p>
+            <strong>Requirements:</strong> {a.data.requirements}
+          </p>
+        )}
+      </header>
+      <div class="type" set:html={a.rendered.html} />
+    </section>
+  ))
+}
 
 <style lang="scss">
   // header p:not(.title) {

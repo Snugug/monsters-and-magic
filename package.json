@@ -19,6 +19,7 @@
     "pagefind": "^1.4.0",
     "posthtml": "^0.16.6",
     "remark-extended-table": "^2.0.3",
+    "slugify": "^1.6.6",
     "svelte": "^5.39.6",
     "typescript": "^5.9.2"
   },
