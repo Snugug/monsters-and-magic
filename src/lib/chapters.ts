@@ -70,6 +70,29 @@ export async function buildChapter(
       .flat();
   }
 
+  if (c.slug === 'techniques') {
+    const techniques = (await getCollection('techniques')).sort((a, b) =>
+      a.data.title.localeCompare(b.data.title),
+    );
+    const basic = techniques
+      .filter((a) => a.data.type === 'basic')
+      .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
+    const adv = techniques
+      .filter((a) => a.data.type === 'advanced')
+      .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
+    const rare = techniques
+      .filter((a) => a.data.type === 'rare')
+      .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
+    console.log(headings);
+
+    const bi = headings.findIndex((h) => h.slug === 'basic-techniques');
+    headings = insert(headings, bi, basic);
+    const ai = headings.findIndex((h) => h.slug === 'advanced-techniques');
+    headings = insert(headings, ai, adv);
+    const ri = headings.findIndex((h) => h.slug === 'rare-techniques');
+    headings = insert(headings, ri, rare);
+  }
+
   return {
     title: c.data.title,
     slug: c.slug,

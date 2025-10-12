@@ -132,6 +132,7 @@ collections:
       - label: Type
         name: type
         widget: select
+        default: advanced
         options:
           - label: Basic
             value: basic
@@ -217,3 +218,56 @@ collections:
       - label: Body
         name: body
         widget: markdown
+  - label: Monster
+    name: monster
+    folder: src/content/monster
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Description
+        name: body
+      - label: Size
+        name: size
+        widget: select
+        options:
+          - tiny
+          - small
+          - medium
+          - large
+          - huge
+          - gargantuan
+      - label: Offense
+        size: offense
+        widget: object
+        fields:
+          - label: Vicious
+            name: vicious
+            widget: number
+            value_type: int
+            default: 0
+          - label: Timid
+            name: timid
+            widget: number
+            value_type: int
+            default: 0
+          - label: Specialized
+            name: specialized
+            widget: number
+            value_type: int
+            default: 0
+          - label: Savage
+            name: savage
+            widget: number
+            value_type: int
+            default: 0
+          - label: Strong
+            name: strong
+            widget: number
+            value_type: int
+            default: 0
+          - label: Weak
+            name: weak
+            widget: number
+            value_type: int
+            default: 0

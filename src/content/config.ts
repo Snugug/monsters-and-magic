@@ -1,4 +1,5 @@
 import { z, defineCollection, refrence } from 'astro:content';
+import { boolean } from 'astro:schema';
 
 const standalone = defineCollection({
   type: 'content',
@@ -121,6 +122,83 @@ const heritage = defineCollection({
   }),
 });
 
+const monsterStep = z.number().step(1).min(0);
+const elements = z.enum([
+  'fire',
+  'cold',
+  'force',
+  'lightning',
+  'poison',
+  'acid',
+  'radiant',
+  'necrotic',
+]);
+
+const monster = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    size: z.enum(['tiny', 'small', 'medium', 'large', 'huge', 'gargantuan']),
+    offense: z.object({
+      vicious: monsterStep,
+      timid: monsterStep,
+      specialized: monsterStep,
+      savage: monsterStep,
+      strong: monsterStep,
+      weak: monsterStep,
+      energetic: monsterStep,
+      conditioned: monsterStep,
+      skilled: monsterStep,
+      caster: monsterStep,
+      charming: monsterStep,
+      upcast: monsterStep,
+      grappler: monsterStep,
+      elemental: elements.optional(),
+      spicy: elements.optional(),
+    }),
+    defense: z.object({
+      stout: monsterStep,
+      frail: monsterStep,
+      'heavily armored': monsterStep,
+      'lightly armored': monsterStep,
+      resistant: z.array(elements).optional(),
+      tough: z.boolean(),
+      immune: z.array(elements).optional(),
+      vulnerable: z.array(elements).optional(),
+    }),
+    movement: z.object({
+      speed: z.object({
+        // Averages
+        // 1+ for each speed above 30
+        // 1- for each speed below 30
+        walking: monsterStep.optional(),
+        flying: monsterStep.optional(), // 3 points
+        climbing: monsterStep.optional(), // 1 point
+        swimming: monsterStep.optional(), // 1 point
+        burrowing: monsterStep.optional(), // 2 points
+      }),
+      amphibious: z.boolean(),
+      flyby: z.boolean(),
+    }),
+    vision: z.object({
+      'low-light': z.boolean(),
+      darkvision: z.boolean(),
+      blindsight: monsterStep,
+      tremorsense: monsterStep,
+      truesight: monsterStep,
+    }),
+    special: z.object({
+      ancient: monsterStep,
+      legendary: z.boolean(),
+      lair: z.boolean(),
+      bloodthirsty: monsterStep,
+      draining: z.boolean(),
+      unrelenting: z.boolean(),
+      undying: z.boolean(),
+    }),
+  }),
+});
+
 export const collections = {
   standalone,
   chapters,
@@ -130,4 +208,5 @@ export const collections = {
   activities,
   classes,
   heritage,
+  monster,
 };

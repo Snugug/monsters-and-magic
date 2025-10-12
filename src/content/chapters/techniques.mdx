@@ -1,0 +1,68 @@
+---
+title: Techniques
+chapter: 5
+---
+
+import Techniques from '$components/mdx/Techniques.svelte';
+
+There are three tiers of techniques: basic, advanced, and rare.
+
+import Icon from '$components/Icon.svelte';
+
+<table>
+  <caption style="background-color: var(--dark-red); color: var(--white); padding: .5rem; font-weight: bold;">
+    Technique Icons
+  </caption>
+  <tbody>
+    <tr>
+      <td style="width: 5ch;">
+        <span style="display: flex; justify-content: center;">
+          <Icon label="1 Action Point" icon="ap1" />
+        </span>
+      </td>
+      <td>1 AP</td>
+    </tr>
+    <tr>
+      <td style="width: 5ch;">
+        <span style="display: flex; justify-content: center;">
+          <Icon label="2 Action Points" icon="ap2" />
+        </span>
+      </td>
+      <td>2 AP</td>
+    </tr>
+    <tr>
+      <td style="width: 5ch;">
+        <span style="display: flex; justify-content: center;">
+          <Icon label="3 Action Points" icon="ap3" />
+        </span>
+      </td>
+      <td>3 AP</td>
+    </tr>
+    <tr>
+      <td style="width: 5ch;">
+        <span style="display: flex; justify-content: center;">
+          <Icon label="Reaction" icon="rxn" />
+        </span>
+      </td>
+      <td>Reaction</td>
+    </tr>
+  </tbody>
+</table>
+
+## Basic Techniques
+
+Basic techniques are techniques all creatures can use.
+
+<Techniques type="basic" />
+
+Advanced techniques are techniques creatures can learn and use throughout the course of the game.
+
+## Advanced Techniques
+
+<Techniques type="advanced" />
+
+## Rare Techniques
+
+Rare techniques require special training to use and are generally not available until Epic tier.
+
+<Techniques type="rare" />
