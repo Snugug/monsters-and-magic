@@ -152,6 +152,8 @@ const charms = defineCollection({
   schema: z.object({
     title: z.string(),
     ap: z.union([z.number(), z.null()]),
+    reaction: z.string().optional(),
+    duration: z.string().optional(),
     fatigue: z.union([z.number(), z.null()]),
     tags: z.array(z.enum(['targeting', 'effect', 'metamagic'])),
     concentration: z.boolean(),

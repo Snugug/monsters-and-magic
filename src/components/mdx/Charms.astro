@@ -19,9 +19,16 @@ const charms = await Promise.all(
 function cost(c) {
   if (c.data.ap || c.data.fatigue) {
     let st = '';
+
     if (c.data.ap) st += `+${c.data.ap} AP`;
     if (c.data.ap && c.data.fatigue) st += ' | ';
-    if (c.data.fatigue) st += `+${c.data.fatigue} Fatigue`;
+    if (c.data.fatigue) {
+      if (c.data.fatigue === 6) {
+        st += '+1 Exhaustion';
+      } else {
+        st += `+${c.data.fatigue} Fatigue`;
+      }
+    }
     return st;
   } else {
     return false;
@@ -29,9 +36,9 @@ function cost(c) {
 }
 ---
 
-<div class="filter">
-  <select name="charm-list" class="charm-list">
-    <option value="all">All</option>
+<div class='filter'>
+  <select name='charm-list' class='charm-list'>
+    <option value='all'>All</option>
     {cantrips.map((c) => <option value={c.slug}>{c.title}</option>)}
   </select>
 </div>
@@ -40,36 +47,53 @@ function cost(c) {
   charms.map((c) => (
     <section
       id={c.slug}
-      class="charms"
+      class='charms'
       data-list={c.data.spells.map((s) => s.id).join(', ')}
     >
       <h3>
         <span>{c.data.title}</span>
         {c.data.concentration && (
-          <Icon label="Concentration" icon="concentration" />
+          <Icon label='Concentration' icon='concentration' />
+        )}
+        {c.data.reaction && <Icon label='Reaction' icon='rxn' />}
+        {c.data.duration && (
+          <Icon label={`Ritual: ${c.data.duration}`} icon='ritual' />
         )}
       </h3>
 
-      <ul class="tags">
+      <ul class='tags'>
         {c.data.spells.map((l) => (
-          <li class="tag">{l.id}</li>
+          <li class='tag'>{l.id}</li>
         ))}
       </ul>
 
       {cost(c) && <p>{cost(c)}</p>}
 
-      <ul class="tags">
+      <ul class='tags'>
         {c.data.tags.map((t) => (
-          <li class="tag">{t}</li>
+          <li class='tag'>{t}</li>
         ))}
       </ul>
 
-      <div class="type" set:html={c.rendered.html} />
+      {c.data.reaction && (
+        <p class='reaction'>
+          <Icon label='Reaction' icon='rxn' />
+          {c.data.reaction}
+        </p>
+      )}
+      {c.data.duration && (
+        <p class='reaction'>
+          <Icon label={`Ritual: ${c.data.duration}`} icon='ritual' />
+          {c.data.duration}
+        </p>
+      )}
+
+      <div class='type' set:html={c.rendered.html} />
     </section>
   ))
 }
 
-<script type="module">
+<script type='module'>
   const select = document.querySelectorAll('.charm-list');
   const charms = document.querySelectorAll('.charms');
 
@@ -102,7 +126,7 @@ function cost(c) {
   }
 </script>
 
-<style lang="scss">
+<style lang='scss'>
   section {
     display: grid;
     gap: 1rem;
@@ -152,6 +176,10 @@ function cost(c) {
     flex-wrap: wrap;
     margin: 0;
     padding: 0;
+  }
+
+  .tag {
+    margin-top: 0;
   }
 
   .filter {

@@ -28,10 +28,25 @@
 }
 
 :has([aria-label='“Charms” Collection']) {
-  .content {
+  .content:not(.combobox) {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    max-width: 800px;
+    margin-inline: auto;
   }
+
+  // [data-key-path='ap'],
+  // [data-key-path='fatigue'],
+  // [data-key-path='concentration'] {
+  //   grid-column: span 1;
+  // }
+
+  // [data-key-path='reaction'],
+  // [data-key-path='tags'] {
+  //   grid-column: span 2;
+  // }
+
   [data-key-path='title'],
   [data-key-path='spells'],
   [data-key-path='tags'],

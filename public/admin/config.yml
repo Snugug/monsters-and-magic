@@ -244,6 +244,12 @@ collections:
         value_type: int
         min: 1
         required: false
+      - label: Reaction
+        name: reaction
+        required: false
+      - label: Duration
+        name: duration
+        required: false
       - label: Fatigue
         name: fatigue
         widget: number
