@@ -1,4 +1,4 @@
-import { z, defineCollection, refrence } from 'astro:content';
+import { z, defineCollection, reference } from 'astro:content';
 import { boolean } from 'astro:schema';
 
 const standalone = defineCollection({
@@ -132,7 +132,33 @@ const elements = z.enum([
   'acid',
   'radiant',
   'necrotic',
+  'physical',
+  'fatigue',
 ]);
+
+const cantrips = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    list: z.array(z.enum(['arcane', 'primal', 'divine', 'psionic'])),
+    save: z.enum(['focus', 'power', 'cunning']).optional(),
+    type: elements.optional(),
+    upcast: z.string(),
+  }),
+});
+
+const charms = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    ap: z.union([z.number(), z.null()]),
+    fatigue: z.union([z.number(), z.null()]),
+    tags: z.array(z.enum(['targeting', 'effect', 'metamagic'])),
+    concentration: z.boolean(),
+    rare: boolean(),
+    spells: z.array(reference('cantrips')),
+  }),
+});
 
 const monster = defineCollection({
   type: 'content',
@@ -209,4 +235,6 @@ export const collections = {
   classes,
   heritage,
   monster,
+  cantrips,
+  charms,
 };

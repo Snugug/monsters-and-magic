@@ -1,0 +1,55 @@
+---
+title: Spellcasting
+chapter: 6
+---
+
+The basis of all spellcasting is the cantrip—they are core spells that spellcasters can cast as easily as a fighter can wield a sword. When you gain a spellcasting feat, you'll either be given specific cantrips you can cast or can choose cantrips from the Arcane, Primal, Divine, or Psionic spell lists.
+
+If cantrips are the foundation of spellcasting, charms are the flourish. Charms let you change how a cantrip behaves, typically by changing who you can target with a cantrip or the effects of casting the cantrip. Each charm is associated with a number of cantrips and has one or more tags associated with it—you can only use one charm of a given tag when you cast a spell. There are two main charm tags: targeting and effect.
+
+Targeting
+: Retains the effect(s) of the base cantrip, but changes how to target the spell.
+
+Effect
+: Retains the targeting (range, creatures affected, etc…) of the base cantrip, but changes the effect that happens, including if damage is done at all.
+
+For instance, you can use the **Blast** charm, which is a targeting charm, and the **Move** charm, an effect charm, together when casting a spell, but not the **Blast** charm and the **Spray** charm, because they're both targeting charms. Charms can be added to a cantrip on the fly—you don't need to decide how you want to combine them up-front. Whenever you see "spell" across the rules, it refers to either a cantrip cast on its own, or a cantrip cast with charms.
+
+:::message[Flexible Casting]{.info}
+
+Because charms are added on-the-fly, you can create a variety of effects depending on how you combine them! When preparing charms, consider charms that can work with more than one of your cantrips to give you the most flexibility in your spellcasting.
+
+:::
+
+If a charm forces a target to make a saving throw, the saving throw is determined by the base cantrip, and the DC equals 10 +SPELL. Unless otherwise specified, the target will take full damage on a miss (as well as any effect that happens on a strong hit), and only half damage on a weak hit.
+
+If a charm lasts while you concentrate on it, you need to use the <ref- src="techniques/concentration-on-a-spell">concentrate on a spell</ref-> technique on each subsequent turn to continue concentrating on it. You must concentrate on each spell individually. Concentration can also be broken by being inflicted with a condition or being forced to mark fatigue by another creature—make a focus saving throw, DC 10 + the number of spells you're concentrating on. On a miss, you lose concentration on all spells, on a weak hit, mark 2-fatigue or choose one spell to lose your concentration on.
+
+You can upcast a spell to a higher level, increasing its potency. Each level you upcast a spell to requires you to mark additional fatigue, based on the level and in addition to any that you need to mark for charms, and a minimum amount of AP. The minimum amount of AP includes the 1 AP needed to cast a spell and any AP spent on charming the spell.
+
+| Upcast Level | Minimum AP | Fatigue       |
+| :----------- | :--------- | :------------ |
+| 1st Level    | 2 AP       | +1 fatigue    |
+| 2nd Level    | 2 AP       | +2 fatigue    |
+| 3rd Level    | 3 AP       | +3 fatigue    |
+| 4th Level    | 3 AP       | +4 fatigue    |
+| 5th Level    | 4 AP       | +4 fatigue    |
+| 6th Level    | 4 AP       | +1 exhaustion |
+
+You gain the upcast benefits for your cantrip and any charms per level you upcast, so if you upcast to level 2 you gain the cantrip's upcast feature twice, and a charm's upcast (if it has one) feature twice.
+
+## Cantrips
+
+import Cantrips from '$components/mdx/Cantrips.astro';
+
+<Cantrips />
+
+## Charms
+
+import Charms from '$components/mdx/Charms.astro';
+
+<Charms />
+
+## Rare Charms
+
+<Charms rare={true} />

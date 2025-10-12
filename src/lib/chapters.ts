@@ -93,6 +93,30 @@ export async function buildChapter(
     headings = insert(headings, ri, rare);
   }
 
+  if (c.slug === 'spellcasting') {
+    const cantrips = (await getCollection('cantrips'))
+      .sort((a, b) => a.data.title.localeCompare(b.data.title))
+      .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
+    const charms = (await getCollection('charms'))
+      .sort((a, b) => a.data.title.localeCompare(b.data.title))
+      .map((a) => ({
+        depth: 3,
+        slug: a.slug,
+        text: a.data.title,
+        rare: a.data.rare,
+      }));
+
+    const c1 = charms.filter((c) => c.rare === false);
+    const c2 = charms.filter((c) => c.rare === true);
+
+    let f = headings.findIndex((h) => h.slug === 'cantrips');
+    headings = insert(headings, f, cantrips);
+    f = headings.findIndex((h) => h.slug === 'charms');
+    headings = insert(headings, f, c1);
+    f = headings.findIndex((h) => h.slug === 'rare-charms');
+    headings = insert(headings, f, c2);
+  }
+
   return {
     title: c.data.title,
     slug: c.slug,

@@ -159,6 +159,119 @@ collections:
       - label: Body
         name: body
         widget: markdown
+  - label: Cantrips
+    name: cantrips
+    folder: src/content/cantrips
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Description
+        name: body
+        widget: text
+      - label: Spell List
+        name: list
+        widget: select
+        multiple: true
+        options:
+          - label: Arcane
+            value: arcane
+          - label: Primal
+            value: primal
+          - label: Divine
+            value: divine
+          - label: Psionic
+            value: psionic
+      - label: Element Type
+        name: type
+        widget: select
+        required: false
+        options:
+          - label: Fire
+            value: fire
+          - label: Cold
+            value: cold
+          - label: Force
+            value: force
+          - label: Lightning
+            value: lightning
+          - label: Poison
+            value: poison
+          - label: Acid
+            value: acid
+          - label: Radiant
+            value: radiant
+          - label: Necrotic
+            value: necrotic
+          - label: Physical
+            value: physical
+          - label: Fatigue
+            value: fatigue
+      - label: Save
+        name: save
+        widget: select
+        required: false
+        options:
+          - label: Focus
+            value: focus
+          - label: Power
+            value: power
+          - label: Cunning
+            value: cunning
+      - label: Upcast
+        name: upcast
+        widget: text
+  - label: Charms
+    name: charms
+    folder: src/content/charms
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Spells
+        name: spells
+        widget: relation
+        collection: cantrips
+        value_field: '{{slug}}'
+        multiple: true
+        display_fields:
+          - title
+        search_fields:
+          - title
+      - label: AP
+        name: ap
+        widget: number
+        value_type: int
+        min: 1
+        required: false
+      - label: Fatigue
+        name: fatigue
+        widget: number
+        value_type: int
+        min: 1
+        required: false
+      - label: Concentration
+        name: concentration
+        widget: boolean
+        required: false
+      - label: Rare
+        name: rare
+        widget: boolean
+        required: false
+      - label: Tags
+        name: tags
+        widget: select
+        multiple: true
+        options:
+          - label: Targeting
+            value: targeting
+          - label: Effect
+            value: effect
+          - label: Metamagic
+            value: metamagic
+      - label: Description
+        name: body
+        widget: markdown
   - label: Downtime Activities
     name: activities
     folder: src/content/activities

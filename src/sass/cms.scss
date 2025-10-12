@@ -27,6 +27,19 @@
   }
 }
 
+:has([aria-label='“Charms” Collection']) {
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  [data-key-path='title'],
+  [data-key-path='spells'],
+  [data-key-path='tags'],
+  [data-key-path='body'] {
+    grid-column: 1 / -1;
+  }
+}
+
 // [aria-label='“Items” Field'] .item-body,
 // [aria-label='“Labeling” Field'] .item-list,
 // [aria-label='“Servings” Field'] .item-body,
