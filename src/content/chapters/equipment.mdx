@@ -3,8 +3,6 @@ title: Equipment
 chapter: 7
 ---
 
-import Weapons from '$components/mdx/Weapons.svelte';
-
 ## Weight and carrying capacity
 
 While adventuring, you're going to pick up stuff, and that stuff has weight. How much weight you can lug around is your carrying capacity, and how much you're currently carrying is your load.
@@ -26,6 +24,8 @@ If playing in story mode, you deal half the weapon's damage die instead of rolli
 :::
 
 Some weapons have special weapon properties—every property always applies to the weapon when wielded. All weapons also have a mastery property—if you gain weapon mastery of that weapon, you can use the mastery property.
+
+import Weapons from '$components/mdx/Weapons.svelte';
 
 <Weapons simple={true} />
 
@@ -82,3 +82,40 @@ Sap
 
 Pinpoint
 : When you strike with this weapon, mark 1-fatigue on a hit to become prepared for your next attack roll against your target.
+
+## Foci
+
+Foci allow you to channel your magic, letting you cast spells as a spellcaster. In order to cast spells, you must have at least one focus equipped. Each focus has a set of properties that affect your spellcasting when equipped. In addition to the foci below, any simple melee weapon can be used as a focus and have the **assail** property—a few common weapon foci are presented below. Some foci have weapon properties like **two-handed** and **versatile**—refer to those properties for definitions.
+
+:::message[Dual-Wielding Foci]{.info}
+
+Because you don't need an empty hand to cast spells as long as you're wielding a focus, think about how you may dual-wield with them! You could wield a dagger and orb to get the benefits of either one depending on which you use to cast your spells. Or a wand and a shield for extra protection.
+
+:::
+
+import Foci from '$components/mdx/Foci.svelte';
+
+<Foci />
+
+### Foci Properties
+
+Assail
+: Can be used as the normal weapon, or can Use Item and channel one of your cantrips. While channeled, the weapon takes on a magical appearance in line with the cantrip being used, you can cast spells with that cantrip at melee range, and you can substitute a base level cantrip for a weapon attack taking reactions. You can Use Item again to change your weapon back to its normal form or to another cantrip.
+
+Extend
+: When you apply a condition or status with a spell through this focus, you can mark 1-fatigue per target to extend its duration by 1 round. You can choose how many targets to extend.
+
+Empower
+: When you strike a creature with a cantrip through this focus, add your +SPELL to the damage you deal (half if you deal fatigue).
+
+## Armor
+
+Armor is your level of protection against incoming blows, and comes in three types: light armor, medium armor, and heavy armor. Light armor provides the least amount of protection, but it's the easiest to wear—you add your full +CUNNING to your AC when wearing it. Medium armor provides a moderate amount of protection but is bulkier—you add half of your +CUNNING to your AC when wearing it. Heavy armor provides the most protection, but it's bulky—you don't add your +CUNNING to your AC when wearing it.
+
+Some armor is bulky enough that you need a minimum amount of +POWER to wear it. If your +POWER is less than the required amount, you can't wear that armor. If it's equal to your +POWER, you take -2 ongoing to all rolls to attempt to be stealthy or sneaky while wearing it.
+
+You can also equip a shield. Shields provide a bonus to your AC while wielding it. Unlike armor, shields are part of your loadout.
+
+import Armor from '$components/mdx/Armor.svelte';
+
+<Armor />

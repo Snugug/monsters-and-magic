@@ -198,6 +198,42 @@ const weapons = defineCollection({
   }),
 });
 
+const foci = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    properties: z.array(
+      z.enum(['assail', 'extend', 'empower', 'two-handed', 'versatile']),
+    ),
+    cost: z.number(),
+    weight: z.number(),
+    crafting: z.object({
+      wood: z.number(),
+      cloth: z.number(),
+      hide: z.number(),
+      metal: z.number(),
+    }),
+  }),
+});
+
+const armor = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    ac: z.number(),
+    type: z.enum(['light', 'medium', 'heavy', 'shield']),
+    power: z.number(),
+    cost: z.number(),
+    weight: z.number(),
+    crafting: z.object({
+      wood: z.number(),
+      cloth: z.number(),
+      hide: z.number(),
+      metal: z.number(),
+    }),
+  }),
+});
+
 const monster = defineCollection({
   type: 'content',
   schema: z.object({
@@ -276,4 +312,6 @@ export const collections = {
   cantrips,
   charms,
   weapons,
+  foci,
+  armor,
 };

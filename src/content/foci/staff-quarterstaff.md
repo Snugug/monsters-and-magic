@@ -1,13 +1,8 @@
 ---
 title: Quarterstaff
-primary: true
-secondary: false
-damage: 1d4
-range: 0
 properties:
-  - simple
+  - assail
   - versatile
-mastery: ring
 cost: 1
 weight: 1
 crafting:

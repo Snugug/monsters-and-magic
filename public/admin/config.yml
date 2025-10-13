@@ -383,6 +383,137 @@ collections:
             min: 0
             default: 0
 
+  - label: Foci
+    name: foci
+    folder: src/content/foci
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Properties
+        name: properties
+        widget: select
+        multiple: true
+        options:
+          - label: Assail
+            value: assail
+          - label: Extend
+            value: extend
+          - label: Empower
+            value: empower
+          - label: Two-Handed
+            value: two-handed
+          - label: Versatile
+            value: versatile
+      - label: Cost
+        name: cost
+        widget: number
+        value_type: int
+      - label: Weight
+        name: weight
+        widget: number
+        value_type: float
+        step: .1
+        min: 0
+      - label: Crafting
+        name: crafting
+        widget: object
+        fields:
+          - label: Wood
+            name: wood
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Cloth
+            name: cloth
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Hide
+            name: hide
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Metal
+            name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+
+  - label: Armor
+    name: armor
+    folder: src/content/armor
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: AC
+        name: ac
+        widget: number
+        value_type: int
+        min: 0
+        default: 0
+      - label: Type
+        name: type
+        widget: select
+        options:
+          - label: Light
+            value: light
+          - label: Medium
+            value: medium
+          - label: Heavy
+            value: heavy
+          - label: Shield
+            value: shield
+      - label: Power
+        name: power
+        widget: number
+        value_type: int
+        min: 0
+        default: 0
+      - label: Cost
+        name: cost
+        widget: number
+        value_type: int
+      - label: Weight
+        name: weight
+        widget: number
+        value_type: float
+        step: .1
+        min: 0
+      - label: Crafting
+        name: crafting
+        widget: object
+        fields:
+          - label: Wood
+            name: wood
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Cloth
+            name: cloth
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Hide
+            name: hide
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Metal
+            name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+
   - label: Downtime Activities
     name: activities
     folder: src/content/activities
