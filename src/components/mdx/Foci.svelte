@@ -1,8 +1,6 @@
 <script lang="ts">
   import { getCollection } from 'astro:content';
 
-  let { simple = false } = $props();
-
   const foci = await Promise.all(
     (await getCollection('foci')).sort((a, b) =>
       a.data.title.localeCompare(b.data.title),

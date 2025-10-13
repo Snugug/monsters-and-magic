@@ -55,6 +55,36 @@
   }
 }
 
+:has([aria-label='“Gear” Collection']) {
+  .content:not(.combobox) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    width: 100%;
+    max-width: 800px;
+    margin-inline: auto;
+  }
+
+  [data-key-path='count'],
+  [data-key-path='cost'],
+  [data-key-path='weight'] {
+    grid-column: span 2;
+  }
+}
+
+[data-key-path='title'],
+[data-key-path='body'] {
+  grid-column: 1 / -1;
+}
+
+[data-key-path='crafting'] {
+  grid-column: 1 / -1;
+
+  .item-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 // [aria-label='“Items” Field'] .item-body,
 // [aria-label='“Labeling” Field'] .item-list,
 // [aria-label='“Servings” Field'] .item-body,

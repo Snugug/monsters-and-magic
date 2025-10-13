@@ -119,3 +119,88 @@ You can also equip a shield. Shields provide a bonus to your AC while wielding i
 import Armor from '$components/mdx/Armor.svelte';
 
 <Armor />
+
+## Gear & Kits
+
+Weapons and armor aren't the only things you need to survive on your adventure, you need gear too! Gear can be broken down into three categories: adventuring gear, musical instruments, and tools.
+
+Adventuring Gear
+: Gear and equipment an adventurer may need throughout their travels.
+
+Musical instruments
+: A tool to play music. If you have a talent that would give you proficiency with a musical instrument, you can typically earn extra gold when you perform with one when you use the Get a Job downtime activity. Under some circumstances, a GM may let you use a musical instrument as a focus.
+
+Tools
+: Let you Work on a Project that requires special tools when you're not in a settlement that has a permanent workshop dedicated to the required craft.
+
+When you start your adventure, you get 50 gold to spend on gear and kits.
+
+import Gear from '$components/mdx/Gear.svelte';
+
+<Gear />
+
+## Crafting
+
+As you adventure, in addition to picking up gear and weapons, you'll pick up crafting material that can either be sold or used to create new equipment. Crafting material comes in two varieties: standard crafting material and rare crafting material.
+
+<table>
+  <thead>
+    <tr>
+      <th>Material</th>
+      <th style="width: 6ch; text-align: center;">Value</th>
+      <th style="width: 8ch; text-align: center;">Weight</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th colspan="3">Standard</th>
+    </tr>
+    <tr>
+      <td>Junk</td>
+      <td style="text-align: center">1g</td>
+      <td style="text-align: center">light</td>
+    </tr>
+    <tr>
+      <td>Cloth</td>
+      <td style="text-align: center">2g</td>
+      <td style="text-align: center">light</td>
+    </tr>
+    <tr>
+      <td>Hide</td>
+      <td style="text-align: center">3g</td>
+      <td style="text-align: center">light</td>
+    </tr>
+    <tr>
+      <td>Wood</td>
+      <td style="text-align: center">2g</td>
+      <td style="text-align: center">light</td>
+    </tr>
+    <tr>
+      <td>Metal</td>
+      <td style="text-align: center">5g</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <th colspan="3">Rare</th>
+    </tr>
+    <tr>
+      <td>Elemental Essence</td>
+      <td style="text-align: center">100g</td>
+      <td style="text-align: center">light</td>
+    </tr>
+    <tr>
+      <td>Mithril</td>
+      <td style="text-align: center">100g</td>
+      <td style="text-align: center">light</td>
+    </tr>
+    <tr>
+      <td>Fade Essence</td>
+      <td style="text-align: center">200g</td>
+      <td style="text-align: center">light</td>
+    </tr>
+  </tbody>
+</table>
+
+import Crafting from '$components/mdx/Crafting.svelte';
+
+<Crafting />

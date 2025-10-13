@@ -234,6 +234,36 @@ const armor = defineCollection({
   }),
 });
 
+const gear = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    tool: z.boolean(),
+    instrument: z.boolean(),
+    cost: z.number(),
+    weight: z.number(),
+    crafting: z.object({
+      wood: z.number(),
+      cloth: z.number(),
+      hide: z.number(),
+      metal: z.number(),
+    }),
+  }),
+});
+
+const kits = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    contents: z.array(
+      z.object({
+        item: reference('gear'),
+        count: z.number(),
+      }),
+    ),
+  }),
+});
+
 const monster = defineCollection({
   type: 'content',
   schema: z.object({
@@ -314,4 +344,6 @@ export const collections = {
   weapons,
   foci,
   armor,
+  gear,
+  kits,
 };
