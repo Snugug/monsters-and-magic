@@ -36,9 +36,9 @@ function cost(c) {
 }
 ---
 
-<div class='filter'>
-  <select name='charm-list' class='charm-list'>
-    <option value='all'>All</option>
+<div class="filter">
+  <select name="charm-list" class="charm-list">
+    <option value="all">All</option>
     {cantrips.map((c) => <option value={c.slug}>{c.title}</option>)}
   </select>
 </div>
@@ -47,53 +47,53 @@ function cost(c) {
   charms.map((c) => (
     <section
       id={c.slug}
-      class='charms'
+      class="charms"
       data-list={c.data.spells.map((s) => s.id).join(', ')}
     >
       <h3>
         <span>{c.data.title}</span>
         {c.data.concentration && (
-          <Icon label='Concentration' icon='concentration' />
+          <Icon label="Concentration" icon="concentration" />
         )}
-        {c.data.reaction && <Icon label='Reaction' icon='rxn' />}
+        {c.data.reaction && <Icon label="Reaction" icon="rxn" />}
         {c.data.duration && (
-          <Icon label={`Ritual: ${c.data.duration}`} icon='ritual' />
+          <Icon label={`Ritual: ${c.data.duration}`} icon="ritual" />
         )}
       </h3>
 
-      <ul class='tags'>
+      <ul class="tags">
         {c.data.spells.map((l) => (
-          <li class='tag'>{l.id}</li>
+          <li class="tag">{l.id}</li>
         ))}
       </ul>
 
       {cost(c) && <p>{cost(c)}</p>}
 
-      <ul class='tags'>
+      <ul class="tags">
         {c.data.tags.map((t) => (
-          <li class='tag'>{t}</li>
+          <li class="tag">{t}</li>
         ))}
       </ul>
 
       {c.data.reaction && (
-        <p class='reaction'>
-          <Icon label='Reaction' icon='rxn' />
+        <p class="reaction">
+          <Icon label="Reaction" icon="rxn" />
           {c.data.reaction}
         </p>
       )}
       {c.data.duration && (
-        <p class='reaction'>
-          <Icon label={`Ritual: ${c.data.duration}`} icon='ritual' />
+        <p class="reaction">
+          <Icon label={`Ritual: ${c.data.duration}`} icon="ritual" />
           {c.data.duration}
         </p>
       )}
 
-      <div class='type' set:html={c.rendered.html} />
+      <div class="type" set:html={c.rendered.html} />
     </section>
   ))
 }
 
-<script type='module'>
+<script type="module">
   const select = document.querySelectorAll('.charm-list');
   const charms = document.querySelectorAll('.charms');
 
@@ -126,7 +126,7 @@ function cost(c) {
   }
 </script>
 
-<style lang='scss'>
+<style lang="scss">
   section {
     display: grid;
     gap: 1rem;

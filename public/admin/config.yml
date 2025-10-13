@@ -278,6 +278,111 @@ collections:
       - label: Description
         name: body
         widget: markdown
+
+  - label: Weapons
+    name: weapons
+    folder: src/content/weapons
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Primary Weapon
+        name: primary
+        widget: boolean
+        default: true
+        required: false
+      - label: Secondary Weapon
+        name: secondary
+        widget: boolean
+        default: false
+        required: false
+      - label: Damage
+        name: damage
+      - label: Range
+        name: range
+        widget: number
+        value_type: int
+      - label: Properties
+        name: properties
+        widget: select
+        required: false
+        multiple: true
+        options:
+          - label: Agile
+            value: agile
+          - label: Heavy
+            value: heavy
+          - label: Precise
+            value: precise
+          - label: Reload
+            value: reload
+          - label: Two-Handed
+            value: two-handed
+          - label: Thrown
+            value: thrown
+          - label: Versatile
+            value: versatile
+          - label: Simple
+            value: simple
+          - label: Piercing
+            value: piercing
+          - label: Reach
+            value: reach
+      - label: Mastery
+        name: mastery
+        widget: select
+        options:
+          - label: Nick
+            value: nick
+          - label: Graze
+            value: graze
+          - label: Ring
+            value: ring
+          - label: Cleave
+            value: cleave
+          - label: Sap
+            value: sap
+          - label: Pinpoint
+            value: pinpoint
+      - label: Cost
+        name: cost
+        widget: number
+        value_type: int
+      - label: Weight
+        name: weight
+        widget: number
+        value_type: float
+        step: .1
+        min: 0
+      - label: Crafting
+        name: crafting
+        widget: object
+        fields:
+          - label: Wood
+            name: wood
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Cloth
+            name: cloth
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Hide
+            name: hide
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Metal
+            name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+
   - label: Downtime Activities
     name: activities
     folder: src/content/activities

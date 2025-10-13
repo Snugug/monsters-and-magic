@@ -162,6 +162,42 @@ const charms = defineCollection({
   }),
 });
 
+const weapons = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    primary: z.boolean(),
+    secondary: z.boolean(),
+    damage: z.string(),
+    range: z.number(),
+    properties: z
+      .array(
+        z.enum([
+          'agile',
+          'heavy',
+          'precise',
+          'reload',
+          'two-handed',
+          'thrown',
+          'versatile',
+          'simple',
+          'piercing',
+          'reach',
+        ]),
+      )
+      .optional(),
+    mastery: z.enum(['nick', 'graze', 'ring', 'cleave', 'sap', 'pinpoint']),
+    cost: z.number(),
+    weight: z.number(),
+    crafting: z.object({
+      wood: z.number(),
+      cloth: z.number(),
+      hide: z.number(),
+      metal: z.number(),
+    }),
+  }),
+});
+
 const monster = defineCollection({
   type: 'content',
   schema: z.object({
@@ -239,4 +275,5 @@ export const collections = {
   monster,
   cantrips,
   charms,
+  weapons,
 };

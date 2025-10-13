@@ -1,0 +1,84 @@
+---
+title: Equipment
+chapter: 7
+---
+
+import Weapons from '$components/mdx/Weapons.svelte';
+
+## Weight and carrying capacity
+
+While adventuring, you're going to pick up stuff, and that stuff has weight. How much weight you can lug around is your carrying capacity, and how much you're currently carrying is your load.
+
+Each 1 weight weighs approximately 5-10 lbs. There are some items, though, that have a negligible effect on your load; they have 0 weight. Other items only have an effect on your load when you've got a bunch of them, those are marked as light weight. 10 light weight items, in any combination, weighs 1 weight. Some items, like a backpack, make it easier to carry more; their weight is negative. Any combination of 1000 gold and gems that don't have their own weight has 1 weight.
+
+Your carrying capacity is the most you can carry before becoming encumbered and is equal to double your +POWER plus 10. When you're encumbered, you have -1 movement and take -1 ongoing to all rolls until you're no longer encumbered. Your load can never be more than your carrying capacity +3.
+
+## Weapons
+
+Weapons deal damage! If you have mastery with a weapon, you gain its technique for free, as long as you continue to have mastery of it. Some weapons also have properties describing how they can, or need to, be used.
+
+Unarmed and improvised attacks deal 1 damage.
+
+:::message[Weapons in Story Mode]
+
+If playing in story mode, you deal half the weapon's damage die instead of rolling for damage, so a dagger that deals 1d4 damage would deal 2 damage. If a weapon deals more than 1 die of damage, you deal damage for each die, plus 1 for each die above 1. For a maul that deals 2d6 damage, for instance, you'd deal 3 + 3 + 1 damage for a total of 7 damage.
+
+:::
+
+Some weapons have special weapon properties—every property always applies to the weapon when wielded. All weapons also have a mastery property—if you gain weapon mastery of that weapon, you can use the mastery property.
+
+<Weapons simple={true} />
+
+<Weapons simple={false} />
+
+### Weapon Properties
+
+Agile
+: Can use +CUNNING instead of +POWER for attack and damage rolls. If wielding two agile weapons and deal damage or fatigue to a creature with your primary weapon, you can spend 1-fatigue to attack it with your secondary weapon; this damage does not include your ability score.
+
+Heavy
+: Requires +POWER of 1 or greater to wield.
+
+Piercing
+: Ignore an amount of AC equal to the piercing amount when dealing weapon damage, or deal additional fatigue equal to ½ the piercing amount (minimum 1) when dealing fatigue.
+
+Precise
+: Rewards careful strikes over brute force, can use +FOCUS instead of +POWER for attack and damage rolls.
+
+Reach
+: Melee weapons only. Your reach with this weapon is 10' instead of the normal 5'.
+
+Reload
+: Takes extra effort to reload-it can only be fired once per turn
+
+Simple
+: Basic weapons anyone can use.
+
+Thrown
+: Can be thrown. If thrown, it's treated as a ranged weapon (but cannot use ammunition) and has a range of 30'.
+
+Two-handed
+: Unwieldy and must be used with two hands
+
+Versatile
+: Can wield with one hand or two; if wielding with two, add +1 damage to damage rolls when used as a melee weapon. Can swap between one handed and two handed by using Use Item
+
+### Weapon Mastery
+
+Nick
+: When you strike with this weapon, mark 1-fatigue on a strong hit to apply sundered
+
+Graze
+: When you strike with this weapon and miss, deal damage equal to your +POWER.
+
+Ring
+: When you strike with this weapon, mark 2-fatigue on a hit to apply impaired
+
+Cleave
+: When you strike with this weapon, mark 1-fatigue to deal half the damage you dealt to your target to another creature within the weapon's reach.
+
+Sap
+: When you strike with this weapon, mark 1-fatigue on a hit to apply weakened
+
+Pinpoint
+: When you strike with this weapon, mark 1-fatigue on a hit to become prepared for your next attack roll against your target.
