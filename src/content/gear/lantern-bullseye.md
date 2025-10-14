@@ -2,6 +2,7 @@
 title: Lantern, bullseye
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 20
 weight: 0.1

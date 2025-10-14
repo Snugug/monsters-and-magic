@@ -2,6 +2,7 @@
 title: Manacles
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 4
 weight: 1

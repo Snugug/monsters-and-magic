@@ -2,6 +2,7 @@
 title: Tackle Box
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 2
 weight: 0.1
@@ -11,4 +12,5 @@ crafting:
   hide: 1
   metal: 1
 ---
+
 A small wooden box of containing hooks and lures for fishing.

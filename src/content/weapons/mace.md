@@ -7,11 +7,12 @@ range: 0
 properties:
   - simple
 mastery: sap
-cost: 1
+cost: 8
 weight: 1
 crafting:
-  wood: 0
+  wood: 1
   cloth: 0
   hide: 0
-  metal: 3
+  metal: 1
 ---
+

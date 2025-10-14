@@ -2,6 +2,7 @@
 title: Leatherworker's Tools
 tool: true
 instrument: false
+potion: false
 count: 1
 cost: 10
 weight: 1

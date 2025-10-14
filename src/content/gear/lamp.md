@@ -2,6 +2,7 @@
 title: Lamp
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 1
 weight: 0.1

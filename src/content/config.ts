@@ -240,6 +240,7 @@ const gear = defineCollection({
     title: z.string(),
     tool: z.boolean(),
     instrument: z.boolean(),
+    potion: z.boolean(),
     count: z.number(),
     cost: z.number(),
     weight: z.number(),

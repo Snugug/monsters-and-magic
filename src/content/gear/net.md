@@ -2,6 +2,7 @@
 title: Net
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 2
 weight: 1

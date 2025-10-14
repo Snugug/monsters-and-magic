@@ -2,6 +2,7 @@
 title: Mason's Tools
 tool: true
 instrument: false
+potion: false
 count: 1
 cost: 20
 weight: 1

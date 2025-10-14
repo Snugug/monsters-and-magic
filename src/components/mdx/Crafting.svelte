@@ -12,7 +12,8 @@
           item.data.crafting.cloth +
           item.data.crafting.hide +
           item.data.crafting.metal) *
-        2,
+          2 +
+        Math.floor(item.data.cost / 50),
       type,
     });
   }

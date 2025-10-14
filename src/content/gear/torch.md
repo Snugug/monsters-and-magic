@@ -2,6 +2,7 @@
 title: Torch
 tool: false
 instrument: false
+potion: false
 count: 5
 cost: 1
 weight: 0.1

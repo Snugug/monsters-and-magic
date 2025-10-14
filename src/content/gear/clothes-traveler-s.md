@@ -2,6 +2,7 @@
 title: Clothes, traveler's
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 6
 weight: 0.1

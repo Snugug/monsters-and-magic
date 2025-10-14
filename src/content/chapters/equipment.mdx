@@ -122,7 +122,7 @@ import Armor from '$components/mdx/Armor.svelte';
 
 ## Gear & Packs
 
-Weapons and armor aren't the only things you need to survive on your adventure, you need gear too! Gear can be broken down into three categories: adventuring gear, musical instruments, and tools.
+Weapons and armor aren't the only things you need to survive on your adventure, you need gear too! Gear can be broken down into four categories: adventuring gear, musical instruments, tools, and potions.
 
 Adventuring Gear
 : Gear and equipment an adventurer may need throughout their travels.
@@ -133,13 +133,38 @@ Musical instruments
 Tools
 : Let you Work on a Project that requires special tools when you're not in a settlement that has a permanent workshop dedicated to the required craft.
 
+Potions
+: One-time use items that typically bestow an an effect, like healing, curing a condition, or granting a status.
+
 Packs are specially priced collections of predefined adventuring gear (presented weights are approximates). When you start your adventure, you get 50 gold to spend on gear and kits.
 
 import Gear from '$components/mdx/Gear.svelte';
 
-<Gear />
+### Packs
+
+<Gear type="packs" />
+
+### Adventuring Gear
+
+<Gear type="gear" />
+
+### Musical Instruments
+
+<Gear type="instruments" />
+
+### Tools
+
+<Gear type="tools" />
+
+### Potions
+
+<Gear type="potions" />
 
 ## Crafting
+
+Who buys stuff nowadays when making your own is so easy.
+
+### Crafting Material
 
 As you adventure, in addition to picking up gear and weapons, you'll pick up crafting material that can either be sold or used to create new equipment. Crafting material comes in two varieties: standard crafting material and rare crafting material.
 
@@ -194,12 +219,26 @@ As you adventure, in addition to picking up gear and weapons, you'll pick up cra
       <td style="text-align: center">light</td>
     </tr>
     <tr>
-      <td>Fade Essence</td>
+      <td>Fade Cutting</td>
       <td style="text-align: center">200g</td>
       <td style="text-align: center">light</td>
     </tr>
   </tbody>
 </table>
+
+Standard crafting material is fairly common to buy and sell—most towns and cities should have a store where you can buy them. Buying material generally costs twice its value. Junk can generally be sold to general stores and taverns as well—think of it like rotten food, or silverware or plates.
+
+Rare crafting material is harder to come by. You typically need a speciality vendor, and it typically sells for three times its value. Elemental essence is usually the easiest of the three rare materials to come across—think of things like glands from a magical beast, or magically petrified wood, and the like. These are items that have been touched by elemental magic. Mithril is a catch-all phrase either for standard material that has been deeply steeped in magic, like floorboards from a magical academy or the cloth wrappings of an ancient holy text. It may also come from special material, like a dragon's bone. Fade cuttings are the most rare—they are cuttings of material that can bend magic on their own, like a piece of a lich's robes, or a horn of a devil.
+
+When crafting with rare materials, work with your GM to determine what standard crafting material can be replaced with what rare materials you have.
+
+### Time and Cost
+
+In order to craft an item, you either need to be under the instruction of an artisan of the kind of item you're trying to craft (like a blacksmith), or you yourself have a background or proficiency in crafting the kind of item (likely from a talent or a class). You also need the relevant [tools](#tools) available.
+
+With those prerequisites met, you craft an item by taking the **work on a project** downtime activity. Each item has a countdown associated with it—the total amount of work you need to do to complete the item. An item's countdown is equal to twice the total number of crafting material required, plus the total cost divided by 50 (this is the effort and skill required to properly craft the item). Before you can start crafting an item, you need at least half of its material. Crafting an item consumes the material used in its crafting.
+
+Multiple people can work on the same item—they all must meet the crafting prerequisites in order to do so, and share the countdown for the item.
 
 import Crafting from '$components/mdx/Crafting.svelte';
 

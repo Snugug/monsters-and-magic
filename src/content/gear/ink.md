@@ -2,6 +2,7 @@
 title: Ink
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 15
 weight: 0

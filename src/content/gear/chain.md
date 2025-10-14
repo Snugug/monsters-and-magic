@@ -2,6 +2,7 @@
 title: Chain
 tool: false
 instrument: false
+potion: false
 count: 1
 cost: 10
 weight: 1

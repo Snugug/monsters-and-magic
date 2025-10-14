@@ -10,7 +10,7 @@ properties:
   - thrown
   - simple
 mastery: nick
-cost: 4
+cost: 6
 weight: 0.1
 crafting:
   wood: 0

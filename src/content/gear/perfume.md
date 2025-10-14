@@ -2,6 +2,7 @@
 title: Perfume
 tool: false
 instrument: false
+potion: false
 count: 10
 cost: 10
 weight: 0

@@ -8,7 +8,7 @@ properties:
   - agile
   - simple
 mastery: nick
-cost: 2
+cost: 8
 weight: 0.1
 crafting:
   wood: 1
@@ -16,3 +16,4 @@ crafting:
   hide: 0
   metal: 1
 ---
+

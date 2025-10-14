@@ -2,6 +2,7 @@
 title: Horn
 tool: false
 instrument: true
+potion: false
 count: 1
 cost: 6
 weight: 0.1
@@ -11,4 +12,5 @@ crafting:
   hide: 0
   metal: 2
 ---
+
 Musical instrument

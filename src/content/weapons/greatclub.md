@@ -8,11 +8,12 @@ properties:
   - two-handed
   - simple
 mastery: ring
-cost: 1
+cost: 7
 weight: 1
 crafting:
-  wood: 4
+  wood: 3
   cloth: 0
   hide: 0
   metal: 0
 ---
+

@@ -8,7 +8,7 @@ properties:
   - simple
   - versatile
 mastery: ring
-cost: 1
+cost: 7
 weight: 1
 crafting:
   wood: 3

@@ -9,7 +9,7 @@ properties:
   - thrown
   - simple
 mastery: graze
-cost: 5
+cost: 10
 weight: 0.1
 crafting:
   wood: 2
@@ -17,3 +17,4 @@ crafting:
   hide: 0
   metal: 1
 ---
+

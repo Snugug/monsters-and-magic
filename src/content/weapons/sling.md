@@ -9,7 +9,7 @@ properties:
   - precise
   - simple
 mastery: pinpoint
-cost: 1
+cost: 4
 weight: 0
 crafting:
   wood: 0

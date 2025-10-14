@@ -2,6 +2,7 @@
 title: Weaver's Tools
 tool: true
 instrument: false
+potion: false
 count: 1
 cost: 6
 weight: 1
