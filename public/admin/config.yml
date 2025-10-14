@@ -577,6 +577,38 @@ collections:
             min: 0
             default: 0
 
+  - label: Packs
+    name: packs
+    folder: src/content/packs
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Description
+        name: body
+        widget: text
+      - label: Cost
+        name: cost
+        widget: number
+        value_type: int
+      - label: Contents
+        name: contents
+        widget: list
+        fields:
+          - label: Item
+            name: item
+            widget: relation
+            collection: gear
+            value_field: '{{slug}}'
+            display_fields:
+              - '{{title}} - {{count}}'
+          - label: Count
+            name: count
+            widget: number
+            value_type: int
+            min: 0
+            default: 1
+
   - label: Downtime Activities
     name: activities
     folder: src/content/activities

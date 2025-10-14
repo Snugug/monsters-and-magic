@@ -1,14 +1,14 @@
 ---
-title: Lock
+title: Bell
 tool: false
 instrument: false
 count: 1
-cost: 20
-weight: 0.1
+cost: 1
+weight: 0
 crafting:
   wood: 0
   cloth: 0
   hide: 0
   metal: 1
 ---
-Locks come with keys.
+A small bell that can be heard from up to 60' away

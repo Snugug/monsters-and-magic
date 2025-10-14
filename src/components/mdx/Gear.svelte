@@ -1,10 +1,32 @@
 <script lang="ts">
-  import { getCollection } from 'astro:content';
+  import { getCollection, getEntry } from 'astro:content';
 
   const gear = await Promise.all(
     (await getCollection('gear')).sort((a, b) =>
       a.data.title.localeCompare(b.data.title),
     ),
+  );
+
+  const packs = await Promise.all(
+    (await getCollection('packs'))
+      .sort((a, b) => a.data.title.localeCompare(b.data.title))
+      .map(async (p) => {
+        let weight = 0;
+        // if (p.slug === 'fisherman-s-pack') {
+        for (const c of p.data.contents) {
+          const i = gear.find((g) => g.slug === c.item.id);
+          if (i) {
+            weight += i.data.weight * c.count;
+          } else {
+            const w = await getEntry('weapons', c.item.id);
+            weight += w?.data.weight * c.count;
+          }
+        }
+
+        p.data.weight = weight;
+
+        return p;
+      }),
   );
 </script>
 
@@ -19,6 +41,21 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <th colspan="4">Packs</th>
+      </tr>
+      {#each packs as p}
+        <tr>
+          <td>{p.data.title}</td>
+          <td>{@html p.rendered.html}</td>
+          <td style="text-align: center;">{p.data.cost}</td>
+          <td style="text-align: center;"
+            >{p.data.weight > 0 && p.data.weight <= 0.5
+              ? 'light'
+              : Math.round(p.data.weight)}</td
+          >
+        </tr>
+      {/each}
       <tr>
         <th colspan="4">Adventuring Gear</th>
       </tr>

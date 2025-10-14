@@ -240,6 +240,7 @@ const gear = defineCollection({
     title: z.string(),
     tool: z.boolean(),
     instrument: z.boolean(),
+    count: z.number(),
     cost: z.number(),
     weight: z.number(),
     crafting: z.object({
@@ -251,10 +252,11 @@ const gear = defineCollection({
   }),
 });
 
-const kits = defineCollection({
+const packs = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    cost: z.number(),
     contents: z.array(
       z.object({
         item: reference('gear'),
@@ -345,5 +347,5 @@ export const collections = {
   foci,
   armor,
   gear,
-  kits,
+  packs,
 };

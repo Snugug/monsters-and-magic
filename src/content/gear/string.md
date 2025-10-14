@@ -1,14 +1,14 @@
 ---
-title: Lock
+title: String
 tool: false
 instrument: false
 count: 1
-cost: 20
-weight: 0.1
+cost: 1
+weight: 0
 crafting:
   wood: 0
-  cloth: 0
+  cloth: 1
   hide: 0
-  metal: 1
+  metal: 0
 ---
-Locks come with keys.
+10' of string.

@@ -11,5 +11,4 @@ crafting:
   hide: 0
   metal: 0
 ---
-
 Holds up to 10 sheets of parchment

@@ -11,5 +11,4 @@ crafting:
   hide: 0
   metal: 0
 ---
-
 50' of hempen rope
