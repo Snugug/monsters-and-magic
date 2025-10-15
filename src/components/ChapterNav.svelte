@@ -12,9 +12,7 @@
   let wrapper: HTMLElement | undefined = $state();
 
   $effect(() => {
-    console.log('Effect');
     if (wrapper && ResizeObserver) {
-      console.log(wrapper);
       const resize = new ResizeObserver(([entry]) => {
         document.body.style.setProperty(
           '--chapnav-height',

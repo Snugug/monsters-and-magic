@@ -83,7 +83,7 @@ export async function buildChapter(
     const rare = techniques
       .filter((a) => a.data.type === 'rare')
       .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
-    console.log(headings);
+    // console.log(headings);
 
     const bi = headings.findIndex((h) => h.slug === 'basic-techniques');
     headings = insert(headings, bi, basic);

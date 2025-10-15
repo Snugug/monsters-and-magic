@@ -2,7 +2,6 @@
   let { character } = $props();
 
   const enabled = $derived(!!character);
-  console.log(enabled);
 </script>
 
 <div class="lu">

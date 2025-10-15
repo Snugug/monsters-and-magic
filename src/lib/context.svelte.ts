@@ -19,10 +19,10 @@ class CharacterStore {
   constructor() {}
 
   async load(id) {
-    console.log('Banana');
+    // console.log('Banana');
     try {
       const c = await db.character.get(id);
-      console.log(c);
+      // console.log(c);
 
       // TODO: Remove to not plop in half-baked character
       if (c) {
