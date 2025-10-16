@@ -267,6 +267,27 @@ const packs = defineCollection({
   }),
 });
 
+const modifications = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    type: z.enum(['rune', 'seal']),
+    rare: z.boolean(),
+    weapon: z.string().optional(),
+    armor: z.string().optional(),
+    focus: z.string().optional(),
+    crafting: z.object({
+      wood: z.number(),
+      cloth: z.number(),
+      hide: z.number(),
+      metal: z.number(),
+      elemental: z.number(),
+      mithril: z.number(),
+      fade: z.number(),
+    }),
+  }),
+});
+
 const monster = defineCollection({
   type: 'content',
   schema: z.object({
@@ -349,4 +370,5 @@ export const collections = {
   armor,
   gear,
   packs,
+  modifications,
 };

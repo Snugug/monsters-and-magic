@@ -13,7 +13,8 @@
           item.data.crafting.hide +
           item.data.crafting.metal) *
           2 +
-        Math.floor(item.data.cost / 50),
+        Math.floor(item.data.cost / 50) +
+        2,
       type,
     });
   }
@@ -28,10 +29,12 @@
 
   const armor = (await getCollection('armor')).map(normalize('armor'));
 
+  const gear = (await getCollection('gear')).map(normalize('gear'));
+
   const order = ['weapons', 'foci', 'armor', 'gear'];
 
   const equipment = Object.groupBy(
-    Array.from(new Set([...weapons, ...foci, ...armor])).sort((a, b) =>
+    Array.from(new Set([...weapons, ...foci, ...armor, ...gear])).sort((a, b) =>
       a.title.localeCompare(b.title),
     ),
     (a) => a.type,

@@ -13,6 +13,6 @@ crafting:
   wood: 0
   cloth: 0
   hide: 1
-  metal: 1
+  metal: 2
 ---
 

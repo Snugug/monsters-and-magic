@@ -13,7 +13,7 @@ weight: 0.1
 crafting:
   wood: 0
   cloth: 0
-  hide: 2
+  hide: 3
   metal: 0
 ---
 

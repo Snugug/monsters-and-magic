@@ -10,12 +10,12 @@ properties:
   - thrown
   - simple
 mastery: nick
-cost: 6
+cost: 12
 weight: 0.1
 crafting:
   wood: 0
   cloth: 0
-  hide: 0
-  metal: 1
+  hide: 1
+  metal: 2
 ---
 

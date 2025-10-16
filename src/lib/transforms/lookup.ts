@@ -98,7 +98,7 @@ export const typed = {
 };
 
 export const replacementRegExp = new RegExp(
-  `(((\\+|-)?\\d+(\\s|-))(${Object.keys(modified).join('|')}))\\b` +
+  `(((\\+|-|\\dd)?\\d+(\\s|-))(${Object.keys(modified).join('|')}))\\b` +
     '|' +
     `\\b(${Object.keys(sized).join('|')})\\s\\d\\b` +
     `|` +

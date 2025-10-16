@@ -9,10 +9,10 @@ properties:
   - thrown
   - simple
 mastery: pinpoint
-cost: 10
+cost: 20
 weight: 0.1
 crafting:
-  wood: 1
+  wood: 2
   cloth: 0
   hide: 0
   metal: 1

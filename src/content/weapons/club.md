@@ -8,12 +8,11 @@ properties:
   - agile
   - simple
 mastery: sap
-cost: 3
+cost: 6
 weight: 0.1
 crafting:
-  wood: 1
+  wood: 2
   cloth: 0
-  hide: 0
+  hide: 1
   metal: 0
 ---
-

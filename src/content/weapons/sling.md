@@ -9,12 +9,12 @@ properties:
   - precise
   - simple
 mastery: pinpoint
-cost: 4
+cost: 8
 weight: 0
 crafting:
   wood: 0
   cloth: 0
-  hide: 1
-  metal: 0
+  hide: 2
+  metal: 1
 ---
 

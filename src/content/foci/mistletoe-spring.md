@@ -1,13 +1,12 @@
 ---
 title: Mistletoe Spring
-
 properties:
   - empower
-cost: 10
+cost: 20
 weight: 0
 crafting:
-  wood: 1
-  cloth: 0
+  wood: 2
+  cloth: 1
   hide: 0
   metal: 0
 ---

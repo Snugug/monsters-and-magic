@@ -609,6 +609,84 @@ collections:
             min: 0
             default: 1
 
+  - label: Runes & Seals
+    name: modifications
+    folder: src/content/modifications
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Type
+        name: type
+        widget: select
+        options:
+          - label: Rune
+            value: rune
+          - label: Seal
+            value: seal
+      - label: Rare
+        name: rare
+        widget: boolean
+        required: false
+      - label: Weapon
+        name: weapon
+        widget: text
+        required: false
+      - label: Armor
+        name: armor
+        widget: text
+        required: false
+      - label: Focus
+        name: focus
+        widget: text
+        required: false
+      - label: Crafting
+        name: crafting
+        widget: object
+        fields:
+          - label: Wood
+            name: wood
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Cloth
+            name: cloth
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Hide
+            name: hide
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Metal
+            name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Elemental Essence
+            name: elemental
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Mithril
+            name: mithril
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Fade Essence
+            name: fade
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+
   - label: Downtime Activities
     name: activities
     folder: src/content/activities

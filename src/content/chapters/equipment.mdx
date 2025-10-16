@@ -122,7 +122,7 @@ import Armor from '$components/mdx/Armor.svelte';
 
 ## Gear & Packs
 
-Weapons and armor aren't the only things you need to survive on your adventure, you need gear too! Gear can be broken down into four categories: adventuring gear, musical instruments, tools, and potions.
+Weapons and armor aren't the only things you need to survive on your adventure, you need gear too! Gear can be broken down into four categories: adventuring gear, musical instruments, and tools.
 
 Adventuring Gear
 : Gear and equipment an adventurer may need throughout their travels.
@@ -133,32 +133,107 @@ Musical instruments
 Tools
 : Let you Work on a Project that requires special tools when you're not in a settlement that has a permanent workshop dedicated to the required craft.
 
-Potions
-: One-time use items that typically bestow an an effect, like healing, curing a condition, or granting a status.
-
-Packs are specially priced collections of predefined adventuring gear (presented weights are approximates). When you start your adventure, you get 50 gold to spend on gear and kits.
+Packs are specially priced collections of predefined adventuring gear (presented weights are approximates). When you start your adventure, you get 50 gold to spend on gear and packs.
 
 import Gear from '$components/mdx/Gear.svelte';
 
 ### Packs
 
+Packs are specially priced collections of predefined adventuring gear (presented weights are approximates)
+
 <Gear type="packs" />
 
 ### Adventuring Gear
+
+Gear and equipment an adventurer may need throughout their travels.
 
 <Gear type="gear" />
 
 ### Musical Instruments
 
+A tool to play music. If you have a talent that would give you proficiency with a musical instrument, you can typically earn extra gold when you perform with one when you use the Get a Job downtime activity. Under some circumstances, a GM may let you use a musical instrument as a focus.
+
 <Gear type="instruments" />
 
 ### Tools
 
+Let you Work on a Project that requires special tools when you're not in a settlement that has a permanent workshop dedicated to the required craft.
+
 <Gear type="tools" />
+
+## Potions and Spell Scrolls
+
+Potions and spell scrolls are both containers for magic, allowing even those without magical inclination to dabble in the arcane arts. When using a potion or spell scroll, if the spell being cast calls for your spellcasting modifier (+SPELL) and the spell either isn't from your spellcasting source or you can't cast spells, treat +SPELL as 0.
+
+Potions and spell scrolls both cost the same amount, and are based on how much fatigue is required to cast them:
+
+| Fatigue | Cost  | Rarity    | Count |
+| :-----: | :---: | :-------- | :---: |
+|    0    | 200g  | Common    |   8   |
+|    1    | 300g  | Common    |   9   |
+|    2    | 500g  | Uncommon  |  10   |
+|    3    | 800g  | Uncommon  |  11   |
+|    4    | 1200g | Rare      |  12   |
+|    5    | 2300g | Rare      |  13   |
+|   6+    | 5000g | Legendary |  14   |
+
+The materials required to craft potions and spell scrolls depends on their rarity:
+
+Common & Uncommon
+: 1 elemental essence plus 1 per fatigue, plus 1 metal
+
+Rare & Legendary
+: 1 fade essence plus 1 per fatigue, plus 1 metal
 
 ### Potions
 
-<Gear type="potions" />
+Potions can be made from any spell that can target a single creature, or with spells with targeting charms that emanate from the caster (like **blast**, **emanate**, and **spray**). When quaffing a potion, you don't need to pay its upfront fatigue cost, but if you need to concentrate on it, or if there's a fatigue cost beyond activation, you do. For spells that can have varying fatigue cost when cast (like cure wounds), the potion name should include a number to distinguish how much fatigue is covered, e.g. _Potion of Cure Wounds I_ for a 1-fatigue version, _Potion of Cure Wounds II_ for a 2-fatigue version, _Potion of Cure Wounds III_ for a 3-fatigue version, etc…. Potions can be used by using Use Item, and they last for the full duration of the spell without requiring concentration.
+
+### Spell Scrolls
+
+Spell scrolls can be made from any spell. Whenever you read a spell from a spell scroll, it has a chance to disintegrate. If you have a spellcasting feat and the spell is part of your spell list, roll +SPELL, otherwise roll +LUCK—on a strong hit, you cast the spell, paying all costs as normal. On a weak hit, you cast the spell, paying all costs as normal, but the spell scroll disintegrates after use. On a weak hit, the spell fails; don't pay any cost (except the AP used to try and cast it) and the scroll disintegrates. Spells cast from spell scrolls can't be upcast, but can be concentrated on.
+
+### Healing Potions
+
+Healing potions are a special kind of magical item specifically meant as a quick form of healing outside of a rest. They come in three forms: a health potion, a greater health potion, and a potion of invigoration:
+
+| Potion                 |      Healing      | Cost  | Rarity   | Count |
+| :--------------------- | :---------------: | :---: | :------- | :---: |
+| Health Potion          |      1d4 HP       |  50g  | Common   |   2   |
+| Greater Health Potion  |      2d4 HP       | 100g  | Common   |   4   |
+| Potion of Invigoration | 4d4 HP +2 fatigue | 1000g | Uncommon |  16   |
+
+Healing potions can be [crafted](#crafting) for 1 wood per d4 of healing plus 1 metal.
+
+## Upgrading Equipment
+
+As you adventure, you'll want to upgrade your gear to be able to take on tougher and tougher foes. There are upgrades you can make to your equipment: you can improve it with mithril, you can refine it into a masterwork item, and you can enhance it with runes and seals.
+
+### Mithril Equipment
+
+While Mithril comes in many forms, at its core it's a material that's been seeped in magic, resulting in an incredibly strong and light material. Mithril equipment gains **1 rune slot** and its weight is reduced by 1 (reducing light weight to 0 weight and 1 weight to light weight). For armor, this also reduces the +POWER requirement to wield it by 1 (minimum 0).
+
+While working with mithril is as easy as working with common materials, the materials themselves are much more expensive, so the purchase price of mithril equipment is 100x it's **count** (see [crafting time and cost](#time-and-cost) below). If you wanted to craft mithril equipment yourself, replace all of the material required material with mithril, but keep it's count.
+
+### Masterwork Equipment
+
+Masterwork equipment is the pinnacle of craftsmanship—perfectly fit and balanced, finely decorated, and of the highest quality. All masterwork equipment at their core are made of mithril, so they gain all the benefits of mithril equipment. Additionally, they all gain **1 seal slot** and, for weapons and foci, +1 piercing, for armor, +1 AC.
+
+The attention to detail required to create masterwork equipment requires a significant time investment, and its cost shows. Masterwork equipment costs twice as much as its mithril equivalent, and if you wanted to craft it on your own, it's count would be doubled (but the material amount would remain the same). You can only attempt to make masterwork equipment yourself if you have expertise in the talent that lets you craft.
+
+### Runes & Seals
+
+Runes and seals are magical enhancements to weapons and armor. Runes generally modify existing properties of an item, whereas seals generally add new properties to an item. Runes and seals are not permanent—if you have a talent that lets you craft the kind of item it's attached to, you can remove them intact and replace them as a 1 count project per item. Some items you find in the wild may have runes or seals on them and aren't mithril or masterwork equipment—while you can remove the runes and seals from these items, you can't replace them once you do.
+
+import RunesSeals from '$components/mdx/RunesSeals.svelte';
+
+#### Runes
+
+<RunesSeals type="rune" />
+
+#### Seals
+
+<RunesSeals type="seal" />
 
 ## Crafting
 

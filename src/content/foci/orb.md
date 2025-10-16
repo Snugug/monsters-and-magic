@@ -1,13 +1,13 @@
 ---
 title: Orb
-
 properties:
   - extend
-cost: 15
+cost: 30
 weight: 0.1
 crafting:
   wood: 0
-  cloth: 0
+  cloth: 1
   hide: 0
-  metal: 1
+  metal: 2
 ---
+
