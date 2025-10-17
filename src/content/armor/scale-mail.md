@@ -7,8 +7,7 @@ cost: 100
 weight: 2
 crafting:
   wood: 0
-  cloth: 0
-  hide: 2
   metal: 4
+  textile: 2
+  stone: 0
 ---
-
