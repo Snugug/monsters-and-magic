@@ -1,26 +1,44 @@
 <script>
   import { getCollection } from 'astro:content';
+  import { modificationCost } from '$lib/modifications';
 
   function normalize(type) {
     return (item) => {
-      const craft =
+      let cost = item.data.cost;
+
+      if (type === 'runes' || type === 'seals') {
+        cost = modificationCost(item);
+      }
+
+      let craft =
         item.data.crafting.wood +
         item.data.crafting.textile +
         item.data.crafting.stone +
         item.data.crafting.metal;
 
-      let countdown = Math.floor(item.data.cost / 50) + 2;
+      if (type === 'runes' || type === 'seals') {
+        craft =
+          item.data.crafting.elementalis +
+          item.data.crafting.mithril +
+          item.data.crafting.fadeite;
+      }
+
+      let countdown = Math.floor(cost / 50) + 2;
 
       if (craft > 0) {
         countdown += craft * 2;
+
+        if (type === 'runes' || type === 'seals') {
+          countdown = Math.round(countdown / 10) * 10;
+        }
       } else {
         countdown = '-';
       }
 
       return {
         title: item.data.title,
-        cost: item.data.cost,
-        weight: item.data.weight,
+        cost: cost,
+        weight: item.data.weight || 0,
         crafting: item.data.crafting,
         countdown,
         type,
@@ -40,19 +58,37 @@
 
   const gear = (await getCollection('gear')).map(normalize('gear'));
 
-  const order = ['weapons', 'foci', 'armor', 'gear'];
+  const modifications = await getCollection('modifications');
+
+  const runes = modifications
+    .filter((m) => m.data.type === 'rune')
+    .sort((a, b) => {
+      if (a.data.rare && !b.data.rare) return 1;
+      if (!a.data.rare && b.data.rare) return -1;
+      return 0;
+    })
+    .map(normalize('runes'));
+
+  const seals = modifications
+    .filter((m) => m.data.type === 'seal')
+    .sort((a, b) => {
+      if (a.data.rare && !b.data.rare) return 1;
+      if (!a.data.rare && b.data.rare) return -1;
+      return 0;
+    })
+    .map(normalize('seals'));
+
+  const order = ['weapons', 'foci', 'armor', 'gear', 'runes', 'seals'];
 
   const equipment = Object.groupBy(
-    Array.from(new Set([...weapons, ...foci, ...armor, ...gear])).sort((a, b) =>
-      a.title.localeCompare(b.title),
-    ),
+    Array.from(
+      new Set([...weapons, ...foci, ...armor, ...gear, ...runes, ...seals]),
+    ).sort((a, b) => a.title.localeCompare(b.title)),
     (a) => a.type,
   );
 
   function buildMaterial(item) {
     const required = [];
-
-    console.log(item);
 
     for (const [k, v] of Object.entries(item.crafting)) {
       if (v > 0) {

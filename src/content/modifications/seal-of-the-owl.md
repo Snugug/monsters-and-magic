@@ -11,6 +11,7 @@ crafting:
   metal: 0
   stone: 0
   elementalis: 0
-  mithril: 0
-  fadeite: 3
+  mithril: 2
+  fadeite: 8
 ---
+
