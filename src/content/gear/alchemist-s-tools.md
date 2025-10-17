@@ -8,9 +8,9 @@ cost: 100
 weight: 1
 crafting:
   wood: 0
-  cloth: 2
-  hide: 0
   metal: 3
+  textile: 2
+  stone: 0
 ---
 
 A portable set of tools to make potions

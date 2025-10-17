@@ -8,9 +8,9 @@ cost: 1
 weight: 0
 crafting:
   wood: 0
-  cloth: 1
-  hide: 0
   metal: 0
+  textile: 1
+  stone: 0
 ---
 
 10' of string.

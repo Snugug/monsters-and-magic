@@ -8,9 +8,9 @@ cost: 35
 weight: 0.1
 crafting:
   wood: 2
-  cloth: 0
-  hide: 0
   metal: 1
+  textile: 0
+  stone: 0
 ---
 
 Musical instrument

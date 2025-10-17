@@ -8,9 +8,9 @@ cost: 50
 weight: 0.1
 crafting:
   wood: 0
-  cloth: 1
-  hide: 0
   metal: 2
+  textile: 1
+  stone: 0
 ---
 
 A portable set of tools to make and repair jewelry and assess gems

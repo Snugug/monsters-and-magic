@@ -8,9 +8,9 @@ cost: 6
 weight: 0.1
 crafting:
   wood: 0
-  cloth: 2
-  hide: 0
   metal: 0
+  textile: 2
+  stone: 0
 ---
 
 Basic clothing of a local traveller or a robe.

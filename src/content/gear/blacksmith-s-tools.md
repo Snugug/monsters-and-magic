@@ -8,9 +8,9 @@ cost: 40
 weight: 2
 crafting:
   wood: 0
-  cloth: 0
-  hide: 2
   metal: 4
+  textile: 2
+  stone: 0
 ---
 
 A portable set of tools for working with metal.

@@ -7,11 +7,11 @@ armor: Take 2 additional damage that ignores armor when hit by enemy in close ra
 focus: Take 1 physical damage to inflict +2 damage that ignores armor.
 crafting:
   wood: 0
-  cloth: 0
-  hide: 0
   metal: 0
   elemental: 0
   mithril: 2
   fade: 1
+  textile: 0
+  stone: 0
 ---
 

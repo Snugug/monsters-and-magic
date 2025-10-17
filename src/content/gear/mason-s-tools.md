@@ -8,9 +8,9 @@ cost: 20
 weight: 1
 crafting:
   wood: 1
-  cloth: 1
-  hide: 0
   metal: 1
+  textile: 1
+  stone: 0
 ---
 
 A portable set of tools for chiseling and working with stone

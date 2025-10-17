@@ -8,9 +8,9 @@ cost: 5
 weight: 1
 crafting:
   wood: 0
-  cloth: 0
-  hide: 0
   metal: 1
+  textile: 0
+  stone: 0
 ---
 
 A set of small files, a small handle-mounted mirror, narrow scissors, a small set of pliers, and lockpicks.
