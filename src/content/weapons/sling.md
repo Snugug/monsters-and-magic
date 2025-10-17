@@ -12,9 +12,12 @@ mastery: pinpoint
 cost: 8
 weight: 0
 crafting:
+  textile: 2
   wood: 0
   metal: 1
-  textile: 2
   stone: 0
+  elementalis: 0
+  mithril: 0
+  fadeite: 0
 ---
 

@@ -7,10 +7,13 @@ count: 1
 cost: 1
 weight: 1
 crafting:
+  textile: 1
   wood: 0
   metal: 0
-  textile: 1
   stone: 0
+  elementalis: 0
+  mithril: 0
+  fadeite: 0
 ---
 
 A watertight container that can hold 2 days worth of water (weight when full).

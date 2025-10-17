@@ -11,9 +11,12 @@ mastery: sap
 cost: 20
 weight: 0.1
 crafting:
+  textile: 3
   wood: 0
   metal: 0
-  textile: 3
   stone: 0
+  elementalis: 0
+  mithril: 0
+  fadeite: 0
 ---
 

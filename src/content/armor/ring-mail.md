@@ -6,8 +6,11 @@ power: 2
 cost: 60
 weight: 4
 crafting:
+  textile: 4
   wood: 0
   metal: 6
-  textile: 4
   stone: 0
+  elementalis: 0
+  mithril: 0
+  fadeite: 0
 ---

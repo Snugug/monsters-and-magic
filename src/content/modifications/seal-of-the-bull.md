@@ -6,12 +6,11 @@ weapon: ''
 armor: +1 +POWER to a maximum of +6
 focus: ''
 crafting:
+  textile: 0
   wood: 0
   metal: 0
-  elemental: 0
-  mithril: 0
-  fade: 3
-  textile: 0
   stone: 0
+  elementalis: 0
+  mithril: 0
+  fadeite: 3
 ---
-

@@ -358,26 +358,44 @@ collections:
         name: crafting
         widget: object
         fields:
+          - label: Textile
+            name: textile
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
           - label: Wood
             name: wood
             widget: number
             value_type: int
             min: 0
             default: 0
-          - label: Cloth
-            name: cloth
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
-          - label: Hide
-            name: hide
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
           - label: Metal
             name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Stone
+            name: stone
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Elementalis
+            name: elementalis
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Mithril
+            name: mithril
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Fadeite
+            name: fadeite
             widget: number
             value_type: int
             min: 0
@@ -419,26 +437,44 @@ collections:
         name: crafting
         widget: object
         fields:
+          - label: Textile
+            name: textile
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
           - label: Wood
             name: wood
             widget: number
             value_type: int
             min: 0
             default: 0
-          - label: Cloth
-            name: cloth
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
-          - label: Hide
-            name: hide
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
           - label: Metal
             name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Stone
+            name: stone
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Elementalis
+            name: elementalis
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Mithril
+            name: mithril
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Fadeite
+            name: fadeite
             widget: number
             value_type: int
             min: 0
@@ -489,26 +525,44 @@ collections:
         name: crafting
         widget: object
         fields:
+          - label: Textile
+            name: textile
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
           - label: Wood
             name: wood
             widget: number
             value_type: int
             min: 0
             default: 0
-          - label: Cloth
-            name: cloth
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
-          - label: Hide
-            name: hide
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
           - label: Metal
             name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Stone
+            name: stone
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Elementalis
+            name: elementalis
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Mithril
+            name: mithril
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Fadeite
+            name: fadeite
             widget: number
             value_type: int
             min: 0
@@ -552,26 +606,44 @@ collections:
         name: crafting
         widget: object
         fields:
+          - label: Textile
+            name: textile
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
           - label: Wood
             name: wood
             widget: number
             value_type: int
             min: 0
             default: 0
-          - label: Cloth
-            name: cloth
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
-          - label: Hide
-            name: hide
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
           - label: Metal
             name: metal
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Stone
+            name: stone
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Elementalis
+            name: elementalis
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Mithril
+            name: mithril
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Fadeite
+            name: fadeite
             widget: number
             value_type: int
             min: 0
@@ -644,20 +716,14 @@ collections:
         name: crafting
         widget: object
         fields:
+          - label: Textile
+            name: textile
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
           - label: Wood
             name: wood
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
-          - label: Cloth
-            name: cloth
-            widget: number
-            value_type: int
-            min: 0
-            default: 0
-          - label: Hide
-            name: hide
             widget: number
             value_type: int
             min: 0
@@ -668,8 +734,14 @@ collections:
             value_type: int
             min: 0
             default: 0
-          - label: Elemental Essence
-            name: elemental
+          - label: Stone
+            name: stone
+            widget: number
+            value_type: int
+            min: 0
+            default: 0
+          - label: Elementalis
+            name: elementalis
             widget: number
             value_type: int
             min: 0
@@ -680,8 +752,8 @@ collections:
             value_type: int
             min: 0
             default: 0
-          - label: Fade Essence
-            name: fade
+          - label: Fadeite
+            name: fadeite
             widget: number
             value_type: int
             min: 0

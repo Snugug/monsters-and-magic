@@ -2,21 +2,30 @@
   import { getCollection } from 'astro:content';
 
   function normalize(type) {
-    return (item) => ({
-      title: item.data.title,
-      cost: item.data.cost,
-      weight: item.data.weight,
-      crafting: item.data.crafting,
-      countdown:
-        (item.data.crafting.wood +
-          item.data.crafting.cloth +
-          item.data.crafting.hide +
-          item.data.crafting.metal) *
-          2 +
-        Math.floor(item.data.cost / 50) +
-        2,
-      type,
-    });
+    return (item) => {
+      const craft =
+        item.data.crafting.wood +
+        item.data.crafting.textile +
+        item.data.crafting.stone +
+        item.data.crafting.metal;
+
+      let countdown = Math.floor(item.data.cost / 50) + 2;
+
+      if (craft > 0) {
+        countdown += craft * 2;
+      } else {
+        countdown = '-';
+      }
+
+      return {
+        title: item.data.title,
+        cost: item.data.cost,
+        weight: item.data.weight,
+        crafting: item.data.crafting,
+        countdown,
+        type,
+      };
+    };
   }
 
   const weapons = (await getCollection('weapons')).map(normalize('weapons'));
@@ -39,17 +48,32 @@
     ),
     (a) => a.type,
   );
+
+  function buildMaterial(item) {
+    const required = [];
+
+    console.log(item);
+
+    for (const [k, v] of Object.entries(item.crafting)) {
+      if (v > 0) {
+        required.push(`${v} ${k}`);
+      }
+    }
+
+    if (required.length === 0) {
+      required.push('-');
+    }
+
+    return required.join(', ');
+  }
 </script>
 
 <div class="wrapper">
   <table>
     <thead>
       <tr>
-        <th style="width: 100%;">Item</th>
-        <th style="width: 7ch; text-align: center;">Cloth</th>
-        <th style="width: 7ch; text-align: center;">Hide</th>
-        <th style="width: 7ch; text-align: center;">Wood</th>
-        <th style="width: 7ch; text-align: center;">Metal</th>
+        <th style="width: 100%">Item</th>
+        <th style="width: 100%">Material</th>
         <th style="width: 7ch; text-align: center;">Count</th>
       </tr>
     </thead>
@@ -62,10 +86,7 @@
           {#each equipment[o] as e}
             <tr>
               <td>{e.title}</td>
-              <td style="text-align: center;">{e.crafting.cloth}</td>
-              <td style="text-align: center;">{e.crafting.hide}</td>
-              <td style="text-align: center;">{e.crafting.wood}</td>
-              <td style="text-align: center;">{e.crafting.metal}</td>
+              <td>{buildMaterial(e)}</td>
               <td style="text-align: center;">{e.countdown}</td>
             </tr>
           {/each}

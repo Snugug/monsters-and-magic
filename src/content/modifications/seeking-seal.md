@@ -6,12 +6,11 @@ weapon: +1 to attack rolls
 armor: ''
 focus: +1 to attack rolls and spell save DCs
 crafting:
+  textile: 0
   wood: 0
   metal: 0
-  elemental: 0
-  mithril: 1
-  fade: 2
-  textile: 0
   stone: 0
+  elementalis: 0
+  mithril: 1
+  fadeite: 2
 ---
-

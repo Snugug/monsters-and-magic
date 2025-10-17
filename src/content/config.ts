@@ -167,9 +167,9 @@ const crafting = z.object({
   wood: z.number(),
   metal: z.number(),
   stone: z.number(),
-  elemental: z.number(),
+  elementalis: z.number(),
   mithril: z.number(),
-  fade: z.number(),
+  fadeite: z.number(),
 });
 
 const weapons = defineCollection({
