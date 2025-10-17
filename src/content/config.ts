@@ -162,6 +162,16 @@ const charms = defineCollection({
   }),
 });
 
+const crafting = z.object({
+  textile: z.number(),
+  wood: z.number(),
+  metal: z.number(),
+  stone: z.number(),
+  elemental: z.number(),
+  mithril: z.number(),
+  fade: z.number(),
+});
+
 const weapons = defineCollection({
   type: 'content',
   schema: z.object({
@@ -189,12 +199,7 @@ const weapons = defineCollection({
     mastery: z.enum(['nick', 'graze', 'ring', 'cleave', 'sap', 'pinpoint']),
     cost: z.number(),
     weight: z.number(),
-    crafting: z.object({
-      wood: z.number(),
-      cloth: z.number(),
-      hide: z.number(),
-      metal: z.number(),
-    }),
+    crafting,
   }),
 });
 
@@ -207,12 +212,7 @@ const foci = defineCollection({
     ),
     cost: z.number(),
     weight: z.number(),
-    crafting: z.object({
-      wood: z.number(),
-      cloth: z.number(),
-      hide: z.number(),
-      metal: z.number(),
-    }),
+    crafting,
   }),
 });
 
@@ -225,12 +225,7 @@ const armor = defineCollection({
     power: z.number(),
     cost: z.number(),
     weight: z.number(),
-    crafting: z.object({
-      wood: z.number(),
-      cloth: z.number(),
-      hide: z.number(),
-      metal: z.number(),
-    }),
+    crafting,
   }),
 });
 
@@ -244,12 +239,7 @@ const gear = defineCollection({
     count: z.number(),
     cost: z.number(),
     weight: z.number(),
-    crafting: z.object({
-      wood: z.number(),
-      cloth: z.number(),
-      hide: z.number(),
-      metal: z.number(),
-    }),
+    crafting,
   }),
 });
 
@@ -276,15 +266,7 @@ const modifications = defineCollection({
     weapon: z.string().optional(),
     armor: z.string().optional(),
     focus: z.string().optional(),
-    crafting: z.object({
-      wood: z.number(),
-      cloth: z.number(),
-      hide: z.number(),
-      metal: z.number(),
-      elemental: z.number(),
-      mithril: z.number(),
-      fade: z.number(),
-    }),
+    crafting,
   }),
 });
 
