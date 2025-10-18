@@ -25,7 +25,11 @@
         <th>Weapon</th>
         <th>Armor</th>
         <th>Focus</th>
-        <th style="width: 7ch;">Cost</th>
+        <th style="width: 8ch; text-align: center;">
+          <span class="center">
+            <Icon label="cost" icon="coin" />
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -52,7 +56,7 @@
           <td style={!item.data.focus ? 'text-align: center' : ''}
             >{item.data.focus || '-'}</td
           >
-          <td>{modificationCost(item)}</td>
+          <td style="text-align: center">{modificationCost(item)}g</td>
         </tr>
       {/each}
     </tbody>

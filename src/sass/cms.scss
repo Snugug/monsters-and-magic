@@ -58,17 +58,17 @@
 :has([aria-label='“Gear” Collection']) {
   .content:not(.combobox) {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     width: 100%;
     max-width: 800px;
     margin-inline: auto;
   }
 
-  [data-key-path='count'],
-  [data-key-path='cost'],
-  [data-key-path='weight'] {
-    grid-column: span 2;
-  }
+  // [data-key-path='count'],
+  // [data-key-path='cost'],
+  // [data-key-path='weight'] {
+  //   grid-column: span 2;
+  // }
 }
 
 [data-key-path='title'],

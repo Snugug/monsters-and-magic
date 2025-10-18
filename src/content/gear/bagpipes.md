@@ -2,7 +2,7 @@
 title: Bagpipes
 tool: false
 instrument: true
-potion: false
+consumable: false
 count: 1
 cost: 30
 weight: 1

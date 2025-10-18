@@ -2,7 +2,7 @@
 title: Healing Kit
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 10
 cost: 10
 weight: 0.1

@@ -2,7 +2,7 @@
 title: Climbing Kit
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 5
 cost: 50
 weight: 1

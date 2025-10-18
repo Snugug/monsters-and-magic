@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '$components/Icon.svelte';
   import { getCollection, getEntry } from 'astro:content';
 
   const { type } = $props();
@@ -40,8 +41,16 @@
           >{type.replace(/s$/, '')}</th
         >
         <th style="width: 70%">Description</th>
-        <th style="width: 6ch; text-align: center;">Cost</th>
-        <th style="width: 7ch; text-align: center;">Weight</th>
+        <th style="width: 6ch; text-align: center;">
+          <span class="center">
+            <Icon label="cost" icon="coin" />
+          </span>
+        </th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="weight" icon="weight" />
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -50,7 +59,7 @@
           <tr>
             <td>{p.data.title}</td>
             <td>{@html p.rendered.html}</td>
-            <td style="text-align: center;">{p.data.cost}</td>
+            <td style="text-align: center;">{p.data.cost}g</td>
             <td style="text-align: center;"
               >{p.data.weight > 0 && p.data.weight <= 0.5
                 ? 'light'
@@ -60,11 +69,11 @@
         {/each}
       {:else if type === 'gear'}
         {#each gear as g}
-          {#if g.data.tool === false && g.data.instrument === false && g.data.potion === false}
+          {#if g.data.tool === false && g.data.instrument === false && g.data.consumable === false}
             <tr>
               <td>{g.data.title}</td>
               <td>{@html g.rendered.html}</td>
-              <td style="text-align: center;">{g.data.cost}</td>
+              <td style="text-align: center;">{g.data.cost}g</td>
               <td style="text-align: center;"
                 >{g.data.weight === 0.1 ? 'light' : g.data.weight}</td
               >
@@ -77,7 +86,7 @@
             <tr>
               <td>{g.data.title}</td>
               <td>{@html g.rendered.html}</td>
-              <td style="text-align: center;">{g.data.cost}</td>
+              <td style="text-align: center;">{g.data.cost}g</td>
               <td style="text-align: center;"
                 >{g.data.weight === 0.1 ? 'light' : g.data.weight}</td
               >
@@ -90,7 +99,7 @@
             <tr>
               <td>{g.data.title}</td>
               <td>{@html g.rendered.html}</td>
-              <td style="text-align: center;">{g.data.cost}</td>
+              <td style="text-align: center;">{g.data.cost}g</td>
               <td style="text-align: center;"
                 >{g.data.weight === 0.1 ? 'light' : g.data.weight}</td
               >
@@ -99,11 +108,11 @@
         {/each}
       {:else if type === 'potions'}
         {#each gear as g}
-          {#if g.data.potion === true}
+          {#if g.data.consumable === true}
             <tr>
               <td>{g.data.title}</td>
               <td>{@html g.rendered.html}</td>
-              <td style="text-align: center;">{g.data.cost}</td>
+              <td style="text-align: center;">{g.data.cost}g</td>
               <td style="text-align: center;"
                 >{g.data.weight === 0.1 ? 'light' : g.data.weight}</td
               >

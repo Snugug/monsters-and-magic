@@ -2,7 +2,7 @@
 title: Drum
 tool: false
 instrument: true
-potion: false
+consumable: false
 count: 1
 cost: 4
 weight: 0.1

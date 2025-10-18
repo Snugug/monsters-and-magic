@@ -2,7 +2,7 @@
 title: Horn
 tool: false
 instrument: true
-potion: false
+consumable: false
 count: 1
 cost: 6
 weight: 0.1

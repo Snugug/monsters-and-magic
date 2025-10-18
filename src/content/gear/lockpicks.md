@@ -2,7 +2,7 @@
 title: Lockpicking Kit
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 10
 cost: 5
 weight: 1

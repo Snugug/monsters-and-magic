@@ -2,7 +2,7 @@
 title: Clothes, fine
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 30
 weight: 0.1

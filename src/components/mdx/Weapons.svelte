@@ -32,8 +32,16 @@
         <th style="width: 7ch; text-align: center;">Range</th>
         <th style="width: 10ch">Properties</th>
         <th style="width: 9ch;">Mastery</th>
-        <th style="width: 6ch; text-align: center;">Cost</th>
-        <th style="width: 7ch; text-align: center;">Weight</th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="cost" icon="coin" />
+          </span>
+        </th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="weight" icon="weight" />
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -54,7 +62,7 @@
                 : '-'}</td
             >
             <td>{weapon.data.mastery}</td>
-            <td style="text-align: center;">{weapon.data.cost}</td>
+            <td style="text-align: center;">{weapon.data.cost}g</td>
             <td style="text-align: center;"
               >{weapon.data.weight === 0.1 ? 'light' : weapon.data.weight}</td
             >
@@ -78,7 +86,7 @@
                 : '-'}</td
             >
             <td>{weapon.data.mastery}</td>
-            <td style="text-align: center;">{weapon.data.cost}</td>
+            <td style="text-align: center;">{weapon.data.cost}g</td>
             <td style="text-align: center;"
               >{weapon.data.weight === 0.1 ? 'light' : weapon.data.weight}</td
             >

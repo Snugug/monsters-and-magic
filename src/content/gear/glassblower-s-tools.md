@@ -2,7 +2,7 @@
 title: Glassblower's Tools
 tool: true
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 60
 weight: 1

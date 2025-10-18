@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getCollection } from 'astro:content';
+  import Icon from '$components/Icon.svelte';
 
   const foci = await Promise.all(
     (await getCollection('foci')).sort((a, b) =>
@@ -14,8 +15,16 @@
       <tr>
         <th style="width: 100%">Foci</th>
         <th style="width: 10ch">Properties</th>
-        <th style="width: 6ch; text-align: center;">Cost</th>
-        <th style="width: 7ch; text-align: center;">Weight</th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="cost" icon="coin" />
+          </span>
+        </th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="weight" icon="weight" />
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -27,7 +36,7 @@
               ? focus.data.properties.join(', ')
               : '-'}</td
           >
-          <td style="text-align: center;">{focus.data.cost}</td>
+          <td style="text-align: center;">{focus.data.cost}g</td>
           <td style="text-align: center;"
             >{focus.data.weight === 0.1 ? 'light' : focus.data.weight}</td
           >

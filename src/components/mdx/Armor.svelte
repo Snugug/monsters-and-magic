@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '$components/Icon.svelte';
   import { getCollection } from 'astro:content';
 
   const order = ['light', 'medium', 'heavy', 'shield'];
@@ -18,8 +19,16 @@
         <th style="width: 4ch; text-align: center">AC</th>
         <th style="width: 8ch; text-align: center">Type</th>
         <th style="width: 7ch; text-align: center">Power</th>
-        <th style="width: 6ch; text-align: center;">Cost</th>
-        <th style="width: 7ch; text-align: center;">Weight</th>
+        <th style="width: 7ch; text-align: center;">
+          <span class="center">
+            <Icon label="cost" icon="coin" />
+          </span>
+        </th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="weight" icon="weight" />
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -33,7 +42,7 @@
             >{a.data.type}</td
           >
           <td style="text-align: center;">{a.data.power}</td>
-          <td style="text-align: center;">{a.data.cost}</td>
+          <td style="text-align: center;">{a.data.cost}g</td>
           <td style="text-align: center;"
             >{a.data.weight === 0.1 ? 'light' : a.data.weight}</td
           >

@@ -1,6 +1,7 @@
 <script>
   import { getCollection } from 'astro:content';
   import { modificationCost } from '$lib/modifications';
+  import Icon from '$components/Icon.svelte';
 
   function normalize(type) {
     return (item) => {
@@ -56,7 +57,15 @@
 
   const armor = (await getCollection('armor')).map(normalize('armor'));
 
-  const gear = (await getCollection('gear')).map(normalize('gear'));
+  const allGear = await getCollection('gear');
+
+  const gear = allGear
+    .filter((g) => g.data.consumable === false)
+    .map(normalize('gear'));
+
+  const consumables = allGear
+    .filter((g) => g.data.consumable === true)
+    .map(normalize('consumables'));
 
   const modifications = await getCollection('modifications');
 
@@ -78,11 +87,27 @@
     })
     .map(normalize('seals'));
 
-  const order = ['weapons', 'foci', 'armor', 'gear', 'runes', 'seals'];
+  const order = [
+    'weapons',
+    'foci',
+    'armor',
+    'gear',
+    'consumables',
+    'runes',
+    'seals',
+  ];
 
   const equipment = Object.groupBy(
     Array.from(
-      new Set([...weapons, ...foci, ...armor, ...gear, ...runes, ...seals]),
+      new Set([
+        ...weapons,
+        ...foci,
+        ...armor,
+        ...gear,
+        ...consumables,
+        ...runes,
+        ...seals,
+      ]),
     ).sort((a, b) => a.title.localeCompare(b.title)),
     (a) => a.type,
   );
@@ -110,7 +135,11 @@
       <tr>
         <th style="width: 100%">Item</th>
         <th style="width: 100%">Material</th>
-        <th style="width: 7ch; text-align: center;">Count</th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="Count" icon="hourglass" />
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>

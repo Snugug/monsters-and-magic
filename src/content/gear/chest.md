@@ -2,7 +2,7 @@
 title: Chest
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 10
 weight: 3

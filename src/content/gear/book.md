@@ -2,7 +2,7 @@
 title: Book
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 25
 weight: 0.1

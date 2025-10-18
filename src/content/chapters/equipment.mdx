@@ -3,6 +3,40 @@ title: Equipment
 chapter: 7
 ---
 
+import Icon from '$components/Icon.svelte';
+
+<table>
+  <caption style="background-color: var(--dark-red); color: var(--white); padding: .5rem; font-weight: bold;">
+    Equipment Icons
+  </caption>
+  <tbody>
+    <tr>
+      <td style="width: 5ch;">
+        <span style="display: flex; justify-content: center;">
+          <Icon label="Cost" icon="coin" />
+        </span>
+      </td>
+      <td>Cost</td>
+    </tr>
+    <tr>
+      <td style="width: 5ch;">
+        <span style="display: flex; justify-content: center;">
+          <Icon label="Weight" icon="weight" />
+        </span>
+      </td>
+      <td>Weight</td>
+    </tr>
+    <tr>
+      <td style="width: 5ch;">
+        <span style="display: flex; justify-content: center;">
+          <Icon label="Count" icon="hourglass" />
+        </span>
+      </td>
+      <td>Count</td>
+    </tr>
+  </tbody>
+</table>
+
 ## Weight and carrying capacity
 
 While adventuring, you're going to pick up stuff, and that stuff has weight. How much weight you can lug around is your carrying capacity, and how much you're currently carrying is your load.
@@ -165,25 +199,58 @@ Let you Work on a Project that requires special tools when you're not in a settl
 
 Potions and spell scrolls are both containers for magic, allowing even those without magical inclination to dabble in the arcane arts. When using a potion or spell scroll, if the spell being cast calls for your spellcasting modifier (+SPELL) and the spell either isn't from your spellcasting source or you can't cast spells, treat +SPELL as 0.
 
-Potions and spell scrolls both cost the same amount, and are based on how much fatigue is required to cast them:
+Potions and spell scrolls both cost the same amount, potions have a light weight, spell scrolls have a 0 weight, and their cost and rarity are based on how much fatigue is required to cast them:
 
-| Fatigue | Cost  | Rarity    | Count |
-| :-----: | :---: | :-------- | :---: |
-|    0    | 200g  | Common    |   8   |
-|    1    | 300g  | Common    |   9   |
-|    2    | 500g  | Uncommon  |  10   |
-|    3    | 800g  | Uncommon  |  11   |
-|    4    | 1200g | Rare      |  12   |
-|    5    | 2300g | Rare      |  13   |
-|   6+    | 5000g | Legendary |  14   |
-
-The materials required to craft potions and spell scrolls depends on their rarity:
-
-Common & Uncommon
-: 1 elemental essence plus 1 per fatigue, plus 1 metal
-
-Rare & Legendary
-: 1 fade essence plus 1 per fatigue, plus 1 metal
+<table>
+  <thead>
+    <tr>
+      <th>Fatigue</th>
+      <th>Rarity</th>
+      <th style="width: 7ch; text-align: center;">
+        <span class="center">
+          <Icon label="cost" icon="coin" />
+        </span>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">0</td>
+      <td>Common</td>
+      <td style="text-align: center">200g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td>Common</td>
+      <td style="text-align: center">300g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td>Common</td>
+      <td style="text-align: center">500g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td>Common</td>
+      <td style="text-align: center">800g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td>Rare</td>
+      <td style="text-align: center">1200g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td>Rare</td>
+      <td style="text-align: center">2300g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6+</td>
+      <td>Rare</td>
+      <td style="text-align: center">5000g</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Potions
 
@@ -195,15 +262,38 @@ Spell scrolls can be made from any spell. Whenever you read a spell from a spell
 
 ### Healing Potions
 
-Healing potions are a special kind of magical item specifically meant as a quick form of healing outside of a rest. They come in three forms: a health potion, a greater health potion, and a potion of invigoration:
+Healing potions are a special kind of magical item specifically meant as a quick form of healing outside of a rest. They come in three forms and all have a light weight: a health potion, a greater health potion, and a potion of invigoration:
 
-| Potion                 |      Healing      | Cost  | Rarity   | Count |
-| :--------------------- | :---------------: | :---: | :------- | :---: |
-| Health Potion          |      1d4 HP       |  50g  | Common   |   2   |
-| Greater Health Potion  |      2d4 HP       | 100g  | Common   |   4   |
-| Potion of Invigoration | 4d4 HP +2 fatigue | 1000g | Uncommon |  16   |
-
-Healing potions can be [crafted](#crafting) for 1 wood per d4 of healing plus 1 metal.
+<table>
+  <thead>
+    <tr>
+      <th>Potion</th>
+      <th>Healing</th>
+      <th style="width: 7ch; text-align: center;">
+        <span class="center">
+          <Icon label="cost" icon="coin" />
+        </span>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Health Potion</td>
+      <td>1d4 HP</td>
+      <td style="text-align: center">50g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Greater Health Potion</td>
+      <td>2d4 HP</td>
+      <td style="text-align: center">50g</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Potion of Invigoration</td>
+      <td>4d4 HP | +2 fatigue</td>
+      <td style="text-align: center">1000g</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Upgrading Equipment
 
@@ -247,8 +337,16 @@ As you adventure, in addition to picking up gear and weapons, you'll pick up cra
   <thead>
     <tr>
       <th>Material</th>
-      <th style="width: 6ch; text-align: center;">Value</th>
-      <th style="width: 8ch; text-align: center;">Weight</th>
+      <th style="width: 6ch; text-align: center;">
+          <span class="center">
+            <Icon label="cost" icon="coin" />
+          </span>
+        </th>
+        <th style="width: 5ch; text-align: center;">
+          <span class="center">
+            <Icon label="weight" icon="weight" />
+          </span>
+        </th>
     </tr>
   </thead>
   <tbody>
@@ -262,23 +360,23 @@ As you adventure, in addition to picking up gear and weapons, you'll pick up cra
     </tr>
     <tr>
       <td>Textile</td>
-      <td style="text-align: center">2g</td>
+      <td style="text-align: center">4g</td>
       <td style="text-align: center">light</td>
     </tr>
 
     <tr>
       <td>Wood</td>
-      <td style="text-align: center">2g</td>
+      <td style="text-align: center">6g</td>
       <td style="text-align: center">light</td>
     </tr>
     <tr>
       <td>Metal</td>
-      <td style="text-align: center">5g</td>
+      <td style="text-align: center">10g</td>
       <td style="text-align: center">1</td>
     </tr>
     <tr>
       <td>Stone</td>
-      <td style="text-align: center">3g</td>
+      <td style="text-align: center">6g</td>
       <td style="text-align: center">1</td>
     </tr>
     <tr>
@@ -286,24 +384,24 @@ As you adventure, in addition to picking up gear and weapons, you'll pick up cra
     </tr>
     <tr>
       <td>Elementalis</td>
-      <td style="text-align: center">50g</td>
+      <td style="text-align: center">150g</td>
       <td style="text-align: center">light</td>
     </tr>
     <tr>
       <td>Mithril</td>
-      <td style="text-align: center">100g</td>
+      <td style="text-align: center">200g</td>
       <td style="text-align: center">light</td>
     </tr>
     <tr>
       <td>Fadeite</td>
-      <td style="text-align: center">200g</td>
+      <td style="text-align: center">400g</td>
       <td style="text-align: center">light</td>
     </tr>
 
   </tbody>
 </table>
 
-Standard crafting material is fairly common to buy and sell—most towns and cities should have a store where you can buy them. Buying material generally costs twice its value. Junk can generally be sold to general stores and taverns as well—think of it like rotten food, or silverware or plates.
+Standard crafting material is fairly common to buy and sell—most towns and cities should have a store where you can buy them. Junk can generally be sold to general stores and taverns as well—think of it like rotten food, or silverware or plates.
 
 Rare crafting material is harder to come by. You typically need a speciality vendor, and it typically sells for three times its value. There are three kinds of rare crafting material, Elementalis, Mithril, and Fadeite.
 

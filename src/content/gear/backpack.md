@@ -2,7 +2,7 @@
 title: Backpack
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 4
 weight: -2

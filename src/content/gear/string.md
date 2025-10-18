@@ -2,7 +2,7 @@
 title: String
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 1
 weight: 0

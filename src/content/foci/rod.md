@@ -7,8 +7,8 @@ weight: 0.1
 crafting:
   textile: 0
   wood: 2
-  metal: 1
-  stone: 0
+  metal: 0
+  stone: 1
   elementalis: 0
   mithril: 0
   fadeite: 0

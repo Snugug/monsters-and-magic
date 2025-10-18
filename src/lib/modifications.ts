@@ -1,9 +1,9 @@
 export function modificationCost(item) {
   let c = 0;
 
-  c += item.data.crafting.elementalis * 225;
-  c += item.data.crafting.mithril * 300;
-  c += item.data.crafting.fadeite * 600;
+  c += item.data.crafting.elementalis * 150;
+  c += item.data.crafting.mithril * 200;
+  c += item.data.crafting.fadeite * 400;
 
   if (item.data.type === 'rune') {
     c *= 1.5;

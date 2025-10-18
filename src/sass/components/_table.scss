@@ -30,6 +30,19 @@ table {
     .term-popover & {
       background-color: var(--dark-purple);
     }
+
+    th:has(svg) {
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      svg {
+        height: 1.25em;
+        width: 1.25em;
+      }
+    }
   }
 
   tbody {
@@ -39,9 +52,11 @@ table {
         var(--yellow) 100%,
         var(--white) 100%
       );
-      // text-align: left;
+      text-align: left;
       border-color: var(--grey);
       width: max-content;
+      font-size: 1em;
+      font-size: 0.9em;
     }
   }
 

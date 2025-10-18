@@ -2,7 +2,7 @@
 title: Lock
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 20
 weight: 0.1

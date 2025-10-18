@@ -2,7 +2,7 @@
 title: Ball Bearings
 tool: false
 instrument: false
-potion: false
+consumable: false
 count: 1
 cost: 2
 weight: 0.1
