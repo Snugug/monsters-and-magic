@@ -37,10 +37,25 @@
     'fatigue',
   ];
 
+  const abilities = $state({
+    focus: {
+      min: -5,
+      max: 5,
+    },
+    power: {
+      min: -5,
+      max: 5,
+    },
+    cunning: {
+      min: -5,
+      max: 5,
+    },
+  });
+
   const monster = $state({
     title: '',
     size: 'medium',
-    type: '',
+    type: 'beast',
     body: '',
     focus: 0,
     power: 0,
@@ -48,11 +63,9 @@
     // luck: 0,
 
     vicious: 0,
-    timid: 0,
-    specialized: 0,
+    specialized: [] as Array<string>,
     savage: 0,
     strong: 0,
-    weak: 0,
     energetic: 0,
     conditioned: 0,
     skilled: 0,
@@ -60,32 +73,105 @@
     charming: 0,
     upcast: 0,
     grappler: 0,
-    elemental: [],
-    spicy: [],
+    elemental: '',
+    spicy: '',
+  });
+
+  const dieSizes = [
+    '1',
+    '1d2',
+    '1d4',
+    '1d6',
+    '1d8',
+    '1d10',
+    '1d12',
+    '2d6',
+    '3d4',
+  ];
+
+  $effect(() => {
+    abilities.focus.max = 5;
+    abilities.focus.min = -5;
+    abilities.power.max = 5;
+    abilities.power.min = -5;
+    abilities.cunning.max = 5;
+    abilities.cunning.min = -5;
+    monster.focus = 0;
+    monster.power = 0;
+    monster.cunning = 0;
+
+    switch (monster.type) {
+      case 'beast':
+        abilities.focus.max = 0;
+        monster.focus = -1;
+        monster.power = 1;
+        monster.cunning = 2;
+        break;
+      case 'humanoid':
+        abilities.focus.min = -2;
+        abilities.power.min = -2;
+        abilities.cunning.min = -2;
+        monster.focus = 1;
+        monster.power = 1;
+        break;
+      case 'celestial':
+        abilities.focus.min = 0;
+        abilities.power.min = -2;
+        monster.focus = 1;
+        monster.power = 1;
+        break;
+      case 'fiend':
+        abilities.cunning.min = 0;
+        abilities.power.min = -2;
+        monster.cunning = 1;
+        monster.power = 1;
+        break;
+      case 'undead':
+        monster.power = 2;
+        break;
+      case 'elemental':
+        monster.power = 2;
+        monster.spicy = 'fire';
+        break;
+      case 'ooze':
+        abilities.focus.max = 0;
+        abilities.cunning.max = 0;
+        monster.power = 2;
+        monster.spicy = 'acid';
+        break;
+      case 'aberration':
+        monster.focus = 3;
+        monster.power = -1;
+        monster.cunning = 2;
+        break;
+      case 'fey':
+        monster.power = -1;
+        monster.cunning = 3;
+        break;
+      case 'dragon':
+        monster.power = 2;
+        monster.cunning = 1;
+        monster.focus = 1;
+        break;
+      case 'construct':
+        monster.power = 2;
+        break;
+      case 'monstrosity':
+        monster.power = 2;
+    }
   });
 
   const preview = $derived.by(() => {
-    const dieSizes = [
-      '1',
-      '1d2',
-      '1d4',
-      '1d6',
-      '1d8',
-      '1d10',
-      '1d12',
-      '2d6',
-      '3d4',
-    ];
-
     const base = {
       hp: 5,
       fatigue: 2,
       exhaustion: 1,
       ac: 0,
       damage: '1d6',
+      tags: [] as Array<string>,
     };
     const p = {
-      points: -4,
+      points: 0,
       speed: 30,
       cr: 0,
       bonus: 0,
@@ -125,10 +211,7 @@
     }
 
     // Abilities
-    p.points += points(monster.focus, 2);
-    p.points += points(monster.power, 2);
-    console.log(points(monster.cunning, 2));
-    p.points += points(monster.cunning, 2);
+    p.points += points(monster.focus + monster.power + monster.cunning - 2, 2);
     p.ac += monster.cunning;
     // p.points += points(monster.luck, 2);
 
@@ -138,24 +221,49 @@
       const di = dieSizes.findIndex((e) => e === damage);
       p.damage = dieSizes[di + monster.vicious];
       p.points += points(monster.vicious);
+      if (monster.vicious > 0) {
+        p.tags.push('vicious');
+      } else if (monster.vicious < 0) {
+        p.tags.push('timid');
+      }
     }
-    if (monster.timid !== 0) {
-      const { damage } = p;
-      const di = dieSizes.findIndex((e) => e === damage);
-      p.damage = dieSizes[di + monster.timid];
-      p.points += points(monster.timid);
-    }
+
     if (monster.savage !== 0) {
       p.piercing += monster.savage;
+      console.log(p);
       p.points += points(monster.savage, 2);
+      p.tags.push('savage');
     }
     if (monster.strong !== 0) {
       p.bonus += monster.strong * 2;
       p.points += points(monster.strong, 2);
+      if (monster.strong > 0) {
+        p.tags.push('strong');
+      } else if (monster.strong < 0) {
+        p.tags.push('weak');
+      }
     }
-    if (monster.weak !== 0) {
-      p.bonus -= Math.abs(monster.weak) * 2;
-      p.points += points(monster.weak, 2);
+
+    if (monster.energetic !== 0) {
+      p.fatigue += monster.energetic * 3;
+      p.points += points(monster.energetic, 2);
+      p.tags.push('energetic');
+    }
+
+    if (monster.conditioned !== 0) {
+      p.exhaustion += 2 * monster.conditioned;
+      p.points += points(monster.conditioned, 4);
+      p.tags.push('conditioned');
+    }
+
+    if (monster.elemental !== '') {
+      p.points += 1;
+      p.tags.push('elemental');
+    }
+
+    if (monster.spicy !== '') {
+      p.points += 4;
+      p.tags.push('spicy');
     }
 
     // Set CR at the end
@@ -222,6 +330,10 @@
 
   $inspect(monster);
   $inspect(preview);
+
+  function capitalize(str: string) {
+    return str.charAt(0).toLocaleUpperCase() + str.slice(1);
+  }
 </script>
 
 {#if !folder}
@@ -234,12 +346,12 @@
   <form onsubmit={saveMonster}>
     <div class="group">
       <label for="title">Name</label>
-      <input type="text" name="title" bind:value={monster.title} />
+      <input type="text" name="title" bind:value={monster.title} required />
     </div>
 
     <div class="group">
       <label for="size">Size</label>
-      <select name="size" bind:value={monster.size}>
+      <select name="size" bind:value={monster.size} required>
         <option value="tiny">Tiny</option>
         <option value="small">Small</option>
         <option value="medium" selected>Medium</option>
@@ -251,9 +363,9 @@
 
     <div class="group">
       <label for="type">Type</label>
-      <select name="type" bind:value={monster.type}>
+      <select name="type" bind:value={monster.type} required>
         <option value="beast">Beast</option>
-        <option value="humanoid" selected>Humanoid</option>
+        <option value="humanoid">Humanoid</option>
         <option value="celestial">Celestial</option>
         <option value="fiend">Fiend</option>
         <option value="undead">Undead</option>
@@ -269,7 +381,7 @@
 
     <div class="group">
       <label for="body">Description</label>
-      <textarea name="body" bind:value={monster.body}></textarea>
+      <textarea name="body" bind:value={monster.body} required></textarea>
     </div>
 
     <div class="image">
@@ -278,17 +390,42 @@
 
     <fieldset>
       <legend>Abilities</legend>
+      <p>
+        Abilities can be purchased for 2+/2-, the first two ability increases
+        are free.
+      </p>
       <div class="group">
         <label for="focus">Focus</label>
-        <input type="number" name="focus" bind:value={monster.focus} />
+        <input
+          type="number"
+          name="focus"
+          bind:value={monster.focus}
+          min={abilities.focus.min}
+          max={abilities.focus.max}
+          required
+        />
       </div>
       <div class="group">
         <label for="power">Power</label>
-        <input type="number" name="power" bind:value={monster.power} />
+        <input
+          type="number"
+          name="power"
+          bind:value={monster.power}
+          min={abilities.power.min}
+          max={abilities.focus.max}
+          required
+        />
       </div>
       <div class="group">
         <label for="cunning">Cunning</label>
-        <input type="number" name="cunning" bind:value={monster.cunning} />
+        <input
+          type="number"
+          name="cunning"
+          bind:value={monster.cunning}
+          min={abilities.cunning.min}
+          max={abilities.cunning.max}
+          required
+        />
       </div>
       <!-- <div class="group">
         <label for="luck">Luck</label>
@@ -304,18 +441,8 @@
           type="number"
           name="vicious"
           bind:value={monster.vicious}
-          min="0"
-          max="5"
-        />
-      </div>
-      <div class="group">
-        <label for="vicious">Timid</label>
-        <input
-          type="number"
-          name="vicious"
-          bind:value={monster.timid}
           min="-3"
-          max="0"
+          max="5"
         />
       </div>
 
@@ -329,17 +456,51 @@
         />
       </div>
       <div class="group">
-        <label for="vicious">Strong</label>
+        <label for="vicious">Strength</label>
+        <input type="number" name="vicious" bind:value={monster.strong} />
+      </div>
+
+      <div class="group">
+        <label for="energetic">Energetic</label>
         <input
           type="number"
-          name="vicious"
-          bind:value={monster.strong}
+          name="energetic"
+          bind:value={monster.energetic}
           min="0"
         />
       </div>
       <div class="group">
-        <label for="vicious">Weak</label>
-        <input type="number" name="vicious" bind:value={monster.weak} max="0" />
+        <label for="conditioned">Conditioned</label>
+        <input
+          type="number"
+          name="conditioned"
+          bind:value={monster.conditioned}
+        />
+      </div>
+
+      <div class="group">
+        <label for="grappler">Grappler</label>
+        <input type="number" name="grappler" bind:value={monster.grappler} />
+      </div>
+
+      <div class="group">
+        <label for="type">Elemental</label>
+        <select name="type" bind:value={monster.elemental}>
+          <option value="">-</option>
+          {#each elements as e}
+            <option value={e}>{capitalize(e)}</option>
+          {/each}
+        </select>
+      </div>
+
+      <div class="group">
+        <label for="type">Spicy</label>
+        <select name="type" bind:value={monster.spicy}>
+          <option value="">-</option>
+          {#each elements as e}
+            <option value={e}>{capitalize(e)}</option>
+          {/each}
+        </select>
       </div>
     </fieldset>
   </form>
