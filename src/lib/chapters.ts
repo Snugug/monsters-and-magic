@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import type { MarkdownHeading } from 'astro';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import slugify from 'slugify';
+import { sortFeats } from '$lib/helpers';
 
 export interface Chapter {
   title: string;
@@ -53,17 +54,29 @@ export async function buildChapter(
   }
 
   if (c.slug === 'character-classes') {
+    const feats = Object.groupBy(
+      sortFeats((await getCollection('feats')).filter((a) => a.data.class)),
+      (o) => o.data.class.id,
+    );
     headings = (await getCollection('classes'))
       .sort((a, b) => a.data.title.localeCompare(b.data.title))
       .map((cla) => {
         const h = [{ depth: 2, slug: cla.slug, text: cla.data.title }];
-        for (const feat of cla.data.feats) {
+        const f = feats[cla.slug];
+        for (const feat of f) {
           h.push({
             depth: 3,
-            slug: slugify(feat.title, { lower: true }),
-            text: feat.title,
+            slug: feat.slug,
+            text: feat.data.title,
           });
         }
+        // for (const feat of cla.data.feats) {
+        //   h.push({
+        //     depth: 3,
+        //     slug: slugify(feat.title, { lower: true }),
+        //     text: feat.title,
+        //   });
+        // }
 
         return h;
       })

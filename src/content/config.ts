@@ -102,15 +102,17 @@ const classes = defineCollection({
       techniques: z.number().step(1).min(0),
     }),
     hp: z.number().step(1),
-    feats: z.array(
-      z.object({
-        title: z.string(),
-        core: z.boolean(),
-        spellcasting: z.boolean(),
-        rare: z.boolean(),
-        description: z.string(),
-      }),
-    ),
+  }),
+});
+
+const feats = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    core: z.boolean(),
+    spellcasting: z.boolean(),
+    rare: z.boolean(),
+    class: reference('classes').optional(),
   }),
 });
 
@@ -343,6 +345,7 @@ export const collections = {
   lineage,
   activities,
   classes,
+  feats,
   heritage,
   monster,
   cantrips,

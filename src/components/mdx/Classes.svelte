@@ -1,25 +1,17 @@
 <script>
   import { getCollection } from 'astro:content';
   import Icon from '$components/Icon.svelte';
-  import { createMarkdownProcessor } from '@astrojs/markdown-remark';
-  import { markdown } from '$$lib/markdown';
-  import slugify from 'slugify';
-
-  const md = await createMarkdownProcessor(markdown);
+  import { sortFeats } from '$lib/helpers';
 
   const classes = await Promise.all(
-    (await getCollection('classes'))
-      .sort((a, b) => a.data.title.localeCompare(b.data.title))
-      .map(async (p) => {
-        p.data.feats = await Promise.all(
-          p.data.feats.map(async (f) => {
-            const desc = await md.render(f.description);
-            f.description = desc.code;
-            return f;
-          }),
-        );
-        return p;
-      }),
+    (await getCollection('classes')).sort((a, b) =>
+      a.data.title.localeCompare(b.data.title),
+    ),
+  );
+
+  const feats = Object.groupBy(
+    sortFeats((await getCollection('feats')).filter((a) => a.data.class)),
+    (o) => o.data.class.id,
   );
 </script>
 
@@ -39,18 +31,18 @@
     </header>
     <div class="type" set:html={a.rendered.html} />
     <section>
-      {#each a.data.feats as t}
-        <h3 id={slugify(t.title, { lower: true })} class="type--h3 feat--title">
-          <span>{t.title}</span>
-          {#if t.core || t.spellcasting || t.rare}
+      {#each feats[a.slug] as t}
+        <h3 id={t.slug} class="type--h3 feat--title">
+          <span>{t.data.title}</span>
+          {#if t.data.core || t.data.spellcasting || t.data.rare}
             <span class="icons">
-              {#if t.core}
+              {#if t.data.core}
                 <Icon label="Core Feat" icon="diamond" />
               {/if}
-              {#if t.spellcasting}
+              {#if t.data.spellcasting}
                 <Icon label="Spellcasting Feat" icon="wand" />
               {/if}
-              {#if t.rare}
+              {#if t.data.rare}
                 <span class="rare">
                   <Icon label="Rare Feat" icon="flare" />
                 </span>
@@ -60,7 +52,7 @@
         </h3>
 
         <div class="type">
-          {@html t.description}
+          {@html t.rendered.html}
         </div>
       {/each}
     </section>

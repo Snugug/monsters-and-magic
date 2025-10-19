@@ -100,27 +100,37 @@ collections:
         widget: number
         value_type: int
         default: 25
-      - label: Feats
-        name: feats
-        widget: list
-        fields:
-          - label: Title
-            name: title
-          - label: Core
-            name: core
-            widget: boolean
-            required: false
-          - label: Spellcasting
-            name: spellcasting
-            widget: boolean
-            required: false
-          - label: Rare
-            name: rare
-            widget: boolean
-            required: false
-          - label: Description
-            name: description
-            widget: markdown
+
+  - label: Feats
+    name: feats
+    folder: src/content/feats
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Class
+        name: class
+        widget: relation
+        collection: classes
+        value_field: '{{slug}}'
+        multiple: true
+        display_fields:
+          - title
+      - label: Core
+        name: core
+        widget: boolean
+        required: false
+      - label: Spellcasting
+        name: spellcasting
+        widget: boolean
+        required: false
+      - label: Rare
+        name: rare
+        widget: boolean
+        required: false
+      - label: Description
+        name: body
+        widget: markdown
   - label: Techniques
     name: technique
     folder: src/content/techniques
