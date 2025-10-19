@@ -16,6 +16,7 @@
     "@google/genai": "^1.25.0",
     "@sveltia/cms": "^0.105.2",
     "astro": "^5.14.1",
+    "idb-keyval": "^6.2.2",
     "install": "^0.13.0",
     "pagefind": "^1.4.0",
     "posthtml": "^0.16.6",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@astrojs/markdown-remark": "^6.3.7",
+    "@types/wicg-file-system-access": "^2023.10.7",
     "hastscript": "^9.0.1",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",

@@ -23,6 +23,7 @@
   let loading = $state(false);
   let select = $state(!image);
   let popover: HTMLFormElement;
+  let imagepreview: HTMLElement;
 
   const instance = `i-${crypto.randomUUID()}`;
 
@@ -147,7 +148,13 @@ Draw an image of the following:\n`;
       <button class="switch--picker" onclick={chooseImage}>
         <Icon label="Select an Image" icon="imagesearch" />
       </button>
-      <button class="switch--picker" popovertarget={instance}>
+      <button
+        class="switch--picker"
+        onclick={(e) => {
+          e.preventDefault();
+          popover.togglePopover();
+        }}
+      >
         <Icon label="Generate an Imag" icon="imagegen" />
       </button>
     </div>
@@ -155,17 +162,50 @@ Draw an image of the following:\n`;
 
   {#if !select}
     {#if image}
-      <img src={image} alt="" class="img" />
+      <button
+        class="big-preview"
+        onclick={(e) => {
+          e.preventDefault();
+          imagepreview.togglePopover();
+        }}
+      >
+        <img src={image} alt="" class="img" />
+      </button>
       {#if editable}
         <button class="change" onclick={() => (select = true)}
           >Change Image</button
         >
       {/if}
     {:else if preview}
-      <img src={preview} alt="" class="img" />
+      <button
+        class="big-preview"
+        onclick={(e) => {
+          e.preventDefault();
+          imagepreview.togglePopover();
+        }}
+      >
+        <img src={preview} alt="" class="img" />
+      </button>
       <button class="change" onclick={clearPreview}>Clear Preview</button>
     {/if}
   {/if}
+</div>
+
+<div class="image-preview" id="image-preview" popover bind:this={imagepreview}>
+  <div class="inner">
+    {#if image}
+      <img src={image} alt="" />
+    {:else if preview}
+      <img src={preview} alt="" />
+    {/if}
+    <button
+      class="close"
+      onclick={(e) => {
+        e.preventDefault();
+        imagepreview.togglePopover();
+      }}><Icon label="close" icon="close" /></button
+    >
+  </div>
 </div>
 
 <form
@@ -205,8 +245,60 @@ Draw an image of the following:\n`;
     position: relative;
   }
 
+  .big-preview {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .close {
+    position: absolute;
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    border-radius: 100%;
+    top: 0.25rem;
+    right: 0.25rem;
+    height: 1.5rem;
+    width: 1.5rem;
+    background: var(--light-grey);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+
+    :global(.icon) {
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+  }
+
   .img {
     object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
+
+  .image-preview:popover-open {
+    max-height: 80vh;
+    max-width: 80vw;
+    margin-inline: auto;
+    margin-block: auto;
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 1rem;
+
+    .inner {
+      background-color: white;
+      padding: 1rem;
+      border: 1px solid black;
+      box-shadow: 0px 0px 5px 2.5px rgba(0, 0, 0, 0.5);
+    }
   }
 
   .generate {
@@ -223,7 +315,6 @@ Draw an image of the following:\n`;
       width: 25ch;
       margin-inline-start: 1rem;
       position-area: center right;
-      position-try-fallbacks: flip-inline, flip-block;
     }
 
     label {
