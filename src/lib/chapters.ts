@@ -29,15 +29,22 @@ export async function buildChapter(
 
   // Insert table headers
   if (c.slug === 'character-origins') {
+    const traits = Object.groupBy(
+      (await getCollection('traits')).sort((a, b) =>
+        a.data.title.localeCompare(b.data.title),
+      ),
+      (o) => o.data.lineage.id,
+    );
+
     const l = (await getCollection('lineage'))
       .sort((a, b) => a.data.title.localeCompare(b.data.title))
       .map((lin) => {
         const h = [{ depth: 3, slug: lin.slug, text: lin.data.title }];
-        for (const trait of lin.data.traits) {
+        for (const trait of traits[lin.slug]) {
           h.push({
             depth: 4,
-            slug: slugify(trait.title, { lower: true }),
-            text: trait.title,
+            slug: trait.slug,
+            text: trait.data.title,
           });
         }
         return h;

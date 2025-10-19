@@ -7,19 +7,17 @@
 
   const md = await createMarkdownProcessor(markdown);
 
+  const traits = Object.groupBy(
+    (await getCollection('traits')).sort((a, b) =>
+      a.data.title.localeCompare(b.data.title),
+    ),
+    (o) => o.data.lineage.id,
+  );
+
   const lineage = await Promise.all(
-    (await getCollection('lineage'))
-      .sort((a, b) => a.data.title.localeCompare(b.data.title))
-      .map(async (p) => {
-        p.data.traits = await Promise.all(
-          p.data.traits.map(async (t) => {
-            const desc = await md.render(t.description);
-            t.description = desc.code;
-            return t;
-          }),
-        );
-        return p;
-      }),
+    (await getCollection('lineage')).sort((a, b) =>
+      a.data.title.localeCompare(b.data.title),
+    ),
   );
 </script>
 
@@ -37,17 +35,17 @@
     </div>
     <section>
       <ul role="list">
-        {#each a.data.traits as t}
+        {#each traits[a.slug] as t}
           <li>
-            <h4
-              id={slugify(t.title, { lower: true })}
-              class="type--h3 trait--title"
-            >
-              <span>{t.title}</span>
-              <Icon label={`Points: ${t.points}`} icon={`c${t.points}`} />
+            <h4 id={t.slug} class="type--h3 trait--title">
+              <span>{t.data.title}</span>
+              <Icon
+                label={`Points: ${t.data.points}`}
+                icon={`c${t.data.points}`}
+              />
             </h4>
             <div class="type">
-              {@html t.description}
+              {@html t.rendered.html}
             </div>
           </li>
         {/each}

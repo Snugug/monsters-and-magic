@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import slug from 'slugify';
 
 export function chapterTitle(
   chapter: number,
@@ -25,4 +26,11 @@ export function sortFeats(feats: Array<CollectionEntry<'feats'>>) {
       if (!a.data.rare && b.data.rare) return -1;
       return 0;
     });
+}
+
+export function slugify(s: string) {
+  return slug(s, {
+    lower: true,
+    strict: true,
+  });
 }

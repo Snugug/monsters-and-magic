@@ -74,13 +74,15 @@ const lineage = defineCollection({
   schema: z.object({
     title: z.string(),
     size: z.array(z.enum(['small', 'medium'])),
-    traits: z.array(
-      z.object({
-        title: z.string(),
-        points: z.number().step(1).min(1).max(3),
-        description: z.string(),
-      }),
-    ),
+  }),
+});
+
+const traits = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    points: z.number().step(1).min(1).max(3),
+    lineage: reference('lineage'),
   }),
 });
 
@@ -343,6 +345,7 @@ export const collections = {
   glossary,
   techniques,
   lineage,
+  traits,
   activities,
   classes,
   feats,

@@ -40,22 +40,31 @@ collections:
             value: small
           - label: Medium
             value: medium
-      - label: Traits
-        name: traits
-        widget: list
-        fields:
-          - label: Title
-            name: title
-          - label: Points
-            name: points
-            widget: number
-            value_type: int
-            default: 1
-            min: 1
-            max: 3
-          - label: Description
-            name: description
-            widget: markdown
+
+  - label: Traits
+    name: traits
+    folder: src/content/traits
+    create: true
+    fields:
+      - label: Title
+        name: title
+      - label: Lineage
+        name: lineage
+        widget: relation
+        collection: lineage
+        value_field: '{{slug}}'
+        display_fields:
+          - title
+      - label: Points
+        name: points
+        widget: number
+        value_type: int
+        default: 1
+        min: 1
+        max: 3
+      - label: Description
+        name: body
+        widget: markdown
 
   - label: Heritages
     name: heritage
@@ -113,7 +122,7 @@ collections:
         widget: relation
         collection: classes
         value_field: '{{slug}}'
-        multiple: true
+        required: false
         display_fields:
           - title
       - label: Core
@@ -131,6 +140,7 @@ collections:
       - label: Description
         name: body
         widget: markdown
+
   - label: Techniques
     name: technique
     folder: src/content/techniques
