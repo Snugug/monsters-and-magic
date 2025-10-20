@@ -16,6 +16,8 @@
     "@google/genai": "^1.25.0",
     "@sveltia/cms": "^0.105.2",
     "astro": "^5.14.1",
+    "comlink": "^4.4.2",
+    "dexie": "^4.2.1",
     "idb-keyval": "^6.2.2",
     "install": "^0.13.0",
     "pagefind": "^1.4.0",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@astrojs/markdown-remark": "^6.3.7",
+    "@types/sharedworker": "^0.0.188",
     "@types/wicg-file-system-access": "^2023.10.7",
     "hastscript": "^9.0.1",
     "prettier": "^3.6.2",
@@ -39,11 +42,11 @@
     "sirv": "^3.0.2",
     "unist-util-visit": "^5.0.0"
   },
-  "engines": {
-    "node": ">=24.8.0"
-  },
+  "packageManager": "pnpm@10.18.3+sha512.bbd16e6d7286fd7e01f6b3c0b3c932cda2965c06a908328f74663f10a9aea51f1129eea615134bf992831b009eabe167ecb7008b597f40ff9bc75946aadfb08d",
   "volta": {
-    "node": "24.8.0"
+    "node": "24.10.0"
   },
-  "packageManager": "pnpm@10.17.0+sha512.fce8a3dd29a4ed2ec566fb53efbb04d8c44a0f05bc6f24a73046910fb9c3ce7afa35a0980500668fa3573345bd644644fa98338fa168235c80f4aa17aa17fbef"
+  "engines": {
+    "node": "24.10.0"
+  }
 }

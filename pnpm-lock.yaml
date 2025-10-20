@@ -23,6 +23,12 @@ importers:
       astro:
         specifier: ^5.14.1
         version: 5.14.1(@types/node@24.5.2)(idb-keyval@6.2.2)(rollup@4.50.2)(sass@1.92.1)(typescript@5.9.2)
+      comlink:
+        specifier: ^4.4.2
+        version: 4.4.2
+      dexie:
+        specifier: ^4.2.1
+        version: 4.2.1
       idb-keyval:
         specifier: ^6.2.2
         version: 6.2.2
@@ -51,6 +57,9 @@ importers:
       '@astrojs/markdown-remark':
         specifier: ^6.3.7
         version: 6.3.7
+      '@types/sharedworker':
+        specifier: ^0.0.188
+        version: 0.0.188
       '@types/wicg-file-system-access':
         specifier: ^2023.10.7
         version: 2023.10.7
@@ -769,6 +778,9 @@ packages:
   '@types/node@24.5.2':
     resolution: {integrity: sha512-FYxk1I7wPv3K2XBaoyH2cTnocQEu8AOZ60hPbsyukMPLv5/5qr7V1i8PLHdl6Zf87I+xZXFvPCXYjiTFq+YSDQ==}
 
+  '@types/sharedworker@0.0.188':
+    resolution: {integrity: sha512-wq+Y3nGwJ1YZtWcYtdWy69pTLVkH8C5HIZeLi8O5ycBo11p1TD3XdBi1iviFmrPPKNaDKDLWiW86ysW77EgxpQ==}
+
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
 
@@ -912,6 +924,9 @@ packages:
   collapse-white-space@2.1.0:
     resolution: {integrity: sha512-loKTxY1zCOuG4j9f6EPnuyyYkf58RnhhWTvRoZEokgB+WbdXehfjFviyOVYkqzEWz1Q5kRiZdBYS5SwxbQYwzw==}
 
+  comlink@4.4.2:
+    resolution: {integrity: sha512-OxGdvBmJuNKSCMO4NTl1L47VRp6xn2wG4F/2hYzB6tiCb709otOxtEYCSvK80PtjODfXXZu8ds+Nw5kVCjqd2g==}
+
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
@@ -987,6 +1002,9 @@ packages:
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
+
+  dexie@4.2.1:
+    resolution: {integrity: sha512-Ckej0NS6jxQ4Po3OrSQBFddayRhTCic2DoCAG5zacOfOVB9P2Q5Xc5uL/nVa7ZVs+HdMnvUPzLFCB/JwpB6Csg==}
 
   dfa@1.2.0:
     resolution: {integrity: sha512-ED3jP8saaweFTjeGX8HQPjeC1YYyZs98jGNZx6IiBvxW7JG5v492kamAQB3m2wop07CvU/RQmzcKr6bgcC5D/Q==}
@@ -2925,6 +2943,8 @@ snapshots:
     dependencies:
       undici-types: 7.12.0
 
+  '@types/sharedworker@0.0.188': {}
+
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
@@ -3128,6 +3148,8 @@ snapshots:
 
   collapse-white-space@2.1.0: {}
 
+  comlink@4.4.2: {}
+
   comma-separated-tokens@2.0.3: {}
 
   common-ancestor-path@1.0.1: {}
@@ -3186,6 +3208,8 @@ snapshots:
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
+
+  dexie@4.2.1: {}
 
   dfa@1.2.0: {}
 

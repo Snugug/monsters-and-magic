@@ -26,6 +26,9 @@ export default defineConfig({
     resolve: {
       alias: aliases,
     },
+    worker: {
+      format: 'es',
+    },
   },
   markdown,
 });

@@ -1,6 +1,15 @@
 <script lang="ts">
   import ImagePicker from '$components/ImagePicker.svelte';
   import { get, set } from 'idb-keyval';
+  import { db } from '$lib/db';
+  console.log('~~~');
+  const bell = await db.gear.get('bell');
+  const rope = await db.gear.get('rope');
+  const elf = await db.lineage.get('elf');
+  console.log(bell);
+  console.log(rope);
+  console.log(elf);
+  console.log('!!!!');
 
   let folder = $state(await get('project'));
 
@@ -328,8 +337,8 @@
     return sum;
   }
 
-  $inspect(monster);
-  $inspect(preview);
+  // $inspect(monster);
+  // $inspect(preview);
 
   function capitalize(str: string) {
     return str.charAt(0).toLocaleUpperCase() + str.slice(1);
