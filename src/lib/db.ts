@@ -1,8 +1,5 @@
 import * as Comlink from 'comlink';
 import type { Database } from '$lib/workers/db';
-// import Database from '$lib/workers/db.ts?sharedworker';
-
-// const database = new Database();
 
 export const database = Comlink.wrap<{
   db: Database;
@@ -15,4 +12,4 @@ export const database = Comlink.wrap<{
 
 await database.init();
 
-export const db = database.db;
+export const db = database.db as unknown as Database;

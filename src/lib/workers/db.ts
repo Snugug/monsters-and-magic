@@ -1,5 +1,6 @@
 import * as Comlink from 'comlink';
 import { Dexie, type EntityTable } from 'dexie';
+import type { CollectionEntry } from 'astro:content';
 
 const tables = [
   'activities',
@@ -20,21 +21,26 @@ const tables = [
   'weapons',
 ] as const;
 
-type CollectionKeys = typeof tables;
-
 export interface CollectionData {
   id: string;
   collection: string;
   title: string;
 }
 
-export type Database = Dexie & {
-  meta: EntityTable<CollectionData, 'id'>;
-  characters: EntityTable<CollectionData, 'id'>;
-  [K in CollectionKeys]: EntityTable<CollectionData, 'id'>;
-};
+export interface MetaCollection {
+  id: string;
+  hash: string;
+  path: string;
+}
 
-//
+export type Database = Dexie & {
+  meta: EntityTable<MetaCollection, 'id'>;
+} & {
+  [K in (typeof tables)[number]]: EntityTable<
+    CollectionData & CollectionEntry<K>['data'],
+    'id'
+  >;
+};
 
 const stores = {
   meta: 'id',
@@ -52,7 +58,9 @@ export const db = new Dexie('mnm') as Database;
 db.version(1).stores(stores);
 
 async function init() {
-  const collections = await (await fetch('/data/meta.json')).json();
+  const collections = (await (
+    await fetch('/data/meta.json')
+  ).json()) as Array<MetaCollection>;
 
   for (const data of collections) {
     const meta = await db.meta.get(data.id);
@@ -62,9 +70,11 @@ async function init() {
       const hashes = meta.hash === data.hash;
       if (!hashes) {
         const d = await (await fetch(data.path)).json();
-        await db[data.id].clear();
-        await db[data.id].bulkPut(d);
-        await db.meta.put(data);
+        if (db[data.id]) {
+          await db[data.id].clear();
+          await db[data.id].bulkPut(d);
+          await db.meta.put(data);
+        }
       }
     }
   }
