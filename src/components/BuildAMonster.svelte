@@ -2,10 +2,19 @@
   import ImagePicker from '$components/ImagePicker.svelte';
   import { get, set } from 'idb-keyval';
   import { db } from '$lib/db';
+  import { sizes, elements } from '$lib/shared';
+  import {
+    calculatePoints,
+    types as monsterTypes,
+    type Monster,
+  } from '$lib/monsters';
 
-  const bell = await db.gear.get('bell');
-  const rope = await db.gear.get('rope');
-  const elf = await db.lineage.get('elf');
+  const lineages = await db.lineage.toArray();
+  const armor = await db.armor.toArray();
+  const techniques = await db.techniques.toArray();
+  const traits = await db.traits.toArray();
+  const classes = await db.classes.toArray();
+  const feats = await db.feats.toArray();
 
   let folder = $state(await get('project'));
 
@@ -13,10 +22,9 @@
 
   let image = $state('');
   let file = $state(null);
-
-  // $inspect(image);
-  // $inspect(file);
-  // $inspect(image);
+  let lineage = $state('') as string | undefined;
+  let type = $state('') as (typeof monsterTypes)[number];
+  let size = $state('') as (typeof sizes)[number];
 
   async function chooseFolder(e: Event) {
     folder = await showDirectoryPicker();
@@ -28,19 +36,6 @@
   async function saveMonster(e: SubmitEvent) {
     e.preventDefault();
   }
-
-  const elements = [
-    'fire',
-    'cold',
-    'force',
-    'lightning',
-    'poison',
-    'acid',
-    'radiant',
-    'necrotic',
-    'physical',
-    'fatigue',
-  ];
 
   const abilities = $state({
     focus: {
@@ -55,283 +50,184 @@
       min: -5,
       max: 5,
     },
+    luck: {
+      min: -2,
+      max: 5,
+    },
   });
 
   const monster = $state({
     title: '',
     size: 'medium',
-    type: 'beast',
+    type: monsterTypes[0],
     body: '',
     focus: 0,
     power: 0,
     cunning: 0,
-    // luck: 0,
+    luck: 0,
+
+    // Humanoids get Lineage, Traits, and Class
+    lineage: '',
+    traits: [],
+    feats: [],
+
+    // Humanoid, Celestial, Fiend, Undead, Fey, and Construct get equipment
+    weapons: [],
+    armor: [],
 
     vicious: 0,
-    specialized: [] as Array<string>,
     savage: 0,
     strong: 0,
     energetic: 0,
     conditioned: 0,
-    skilled: 0,
-    caster: 0,
-    charming: 0,
-    upcast: 0,
     grappler: 0,
-    elemental: '',
-    spicy: '',
-  });
+    elemental: undefined,
+    spicy: undefined,
+  }) as Monster;
 
-  const dieSizes = [
-    '1',
-    '1d2',
-    '1d4',
-    '1d6',
-    '1d8',
-    '1d10',
-    '1d12',
-    '2d6',
-    '3d4',
-  ];
-
+  // Set defaults based on monster type;
   $effect(() => {
-    abilities.focus.max = 5;
-    abilities.focus.min = -5;
-    abilities.power.max = 5;
-    abilities.power.min = -5;
-    abilities.cunning.max = 5;
-    abilities.cunning.min = -5;
-    monster.focus = 0;
-    monster.power = 0;
-    monster.cunning = 0;
+    const t = type !== monster.type;
+    const s = size !== monster.size;
+    if (t) {
+      abilities.focus.max = 5;
+      abilities.focus.min = -5;
+      abilities.power.max = 5;
+      abilities.power.min = -5;
+      abilities.cunning.max = 5;
+      abilities.cunning.min = -5;
+      abilities.luck.max = 5;
+      abilities.luck.min = -2;
+      monster.focus = 0;
+      monster.power = 0;
+      monster.cunning = 0;
+      monster.luck = 0;
 
-    switch (monster.type) {
-      case 'beast':
-        abilities.focus.max = 0;
-        monster.focus = -1;
-        monster.power = 1;
-        monster.cunning = 2;
-        break;
-      case 'humanoid':
-        abilities.focus.min = -2;
-        abilities.power.min = -2;
-        abilities.cunning.min = -2;
-        monster.focus = 1;
-        monster.power = 1;
-        break;
-      case 'celestial':
-        abilities.focus.min = 0;
-        abilities.power.min = -2;
-        monster.focus = 1;
-        monster.power = 1;
-        break;
-      case 'fiend':
-        abilities.cunning.min = 0;
-        abilities.power.min = -2;
-        monster.cunning = 1;
-        monster.power = 1;
-        break;
-      case 'undead':
-        monster.power = 2;
-        break;
-      case 'elemental':
-        monster.power = 2;
-        monster.spicy = 'fire';
-        break;
-      case 'ooze':
-        abilities.focus.max = 0;
-        abilities.cunning.max = 0;
-        monster.power = 2;
-        monster.spicy = 'acid';
-        break;
-      case 'aberration':
-        monster.focus = 3;
-        monster.power = -1;
-        monster.cunning = 2;
-        break;
-      case 'fey':
-        monster.power = -1;
-        monster.cunning = 3;
-        break;
-      case 'dragon':
-        monster.power = 2;
-        monster.cunning = 1;
-        monster.focus = 1;
-        break;
-      case 'construct':
-        monster.power = 2;
-        break;
-      case 'monstrosity':
-        monster.power = 2;
+      switch (monster.type) {
+        case 'beast':
+          abilities.focus.max = 0;
+          monster.focus = -1;
+          monster.power = 1;
+          monster.cunning = 2;
+          break;
+        case 'humanoid':
+          abilities.focus.min = -2;
+          abilities.power.min = -2;
+          abilities.cunning.min = -2;
+          monster.focus = 1;
+          monster.power = 1;
+          break;
+        case 'celestial':
+          abilities.focus.min = 0;
+          abilities.power.min = -2;
+          monster.focus = 1;
+          monster.power = 1;
+          monster.luck = 1;
+          break;
+        case 'fiend':
+          abilities.cunning.min = 0;
+          abilities.power.min = -2;
+          monster.cunning = 1;
+          monster.power = 1;
+          monster.luck = 1;
+          break;
+        case 'undead':
+          monster.power = 2;
+          break;
+        case 'elemental':
+          monster.power = 2;
+          monster.spicy = 'fire';
+          break;
+        case 'ooze':
+          abilities.focus.max = 0;
+          abilities.cunning.max = 0;
+          monster.power = 2;
+          monster.spicy = 'acid';
+          break;
+        case 'aberration':
+          monster.focus = 3;
+          monster.power = -1;
+          monster.cunning = 2;
+          break;
+        case 'fey':
+          monster.power = -1;
+          monster.cunning = 3;
+          monster.luck = 1;
+          break;
+        case 'dragon':
+          monster.power = 2;
+          monster.cunning = 1;
+          monster.focus = 1;
+          monster.luck = 1;
+          break;
+        case 'construct':
+          monster.power = 2;
+          break;
+        case 'monstrosity':
+          monster.power = 2;
+      }
+      type = monster.type;
+    }
+
+    if (s || t) {
+      switch (size) {
+        case 'tiny':
+          abilities.power.max += 1;
+          break;
+        case 'large':
+          abilities.power.min -= 1;
+          break;
+        case 'huge':
+          abilities.power.min -= 2;
+          break;
+        case 'gargantuan':
+          abilities.power.min -= 3;
+          break;
+      }
+
+      switch (monster.size) {
+        case 'tiny':
+          abilities.power.max -= 1;
+          break;
+        case 'large':
+          abilities.power.min += 1;
+          break;
+        case 'huge':
+          abilities.power.min += 2;
+          break;
+        case 'gargantuan':
+          abilities.power.min += 3;
+          break;
+      }
+
+      if (monster.power > abilities.power.max) {
+        monster.power = abilities.power.max;
+      }
+      if (monster.power < abilities.power.min) {
+        monster.power = abilities.power.min;
+      }
+
+      size = monster.size;
+    }
+  });
+  // Reset lineage, traits, and feats if humanoid
+  $effect(() => {
+    if (monster.type !== 'humanoid') {
+      monster.lineage = '';
+      monster.traits = [];
+      monster.feats = [];
     }
   });
 
-  const preview = $derived.by(() => {
-    const base = {
-      hp: 5,
-      fatigue: 2,
-      exhaustion: 1,
-      ac: 0,
-      damage: '1d6',
-      tags: [] as Array<string>,
-    };
-    const p = {
-      points: 0,
-      speed: 30,
-      cr: 0,
-      bonus: 0,
-      piercing: 0,
-      reach: 5,
-      ...base,
-    };
-
-    // Set starting based on size
-    switch (monster.size) {
-      case 'tiny':
-        p.points -= 2;
-        p.speed = 15;
-        p.bonus -= 2;
-        break;
-      case 'large':
-        p.hp += 5;
-        p.points += 2;
-        p.reach += 5;
-        p.speed = 35;
-        p.bonus += 1;
-        break;
-      case 'huge':
-        p.hp += 10;
-        p.points += 3;
-        p.reach += 5;
-        p.speed = 40;
-        p.bonus += 3;
-        break;
-      case 'gargantuan':
-        p.hp += 15;
-        p.points += 5;
-        p.reach += 5;
-        p.speed = 40;
-        p.bonus += 3;
-        break;
+  // Reset monster traits if lineage changes
+  $effect(() => {
+    if (monster.lineage !== lineage) {
+      monster.traits = [];
+      lineage = monster.lineage;
     }
-
-    // Abilities
-    p.points += points(monster.focus + monster.power + monster.cunning - 2, 2);
-    p.ac += monster.cunning;
-    // p.points += points(monster.luck, 2);
-
-    // Offense
-    if (monster.vicious !== 0) {
-      const { damage } = p;
-      const di = dieSizes.findIndex((e) => e === damage);
-      p.damage = dieSizes[di + monster.vicious];
-      p.points += points(monster.vicious);
-      if (monster.vicious > 0) {
-        p.tags.push('vicious');
-      } else if (monster.vicious < 0) {
-        p.tags.push('timid');
-      }
-    }
-
-    if (monster.savage !== 0) {
-      p.piercing += monster.savage;
-      console.log(p);
-      p.points += points(monster.savage, 2);
-      p.tags.push('savage');
-    }
-    if (monster.strong !== 0) {
-      p.bonus += monster.strong * 2;
-      p.points += points(monster.strong, 2);
-      if (monster.strong > 0) {
-        p.tags.push('strong');
-      } else if (monster.strong < 0) {
-        p.tags.push('weak');
-      }
-    }
-
-    if (monster.energetic !== 0) {
-      p.fatigue += monster.energetic * 3;
-      p.points += points(monster.energetic, 2);
-      p.tags.push('energetic');
-    }
-
-    if (monster.conditioned !== 0) {
-      p.exhaustion += 2 * monster.conditioned;
-      p.points += points(monster.conditioned, 4);
-      p.tags.push('conditioned');
-    }
-
-    if (monster.elemental !== '') {
-      p.points += 1;
-      p.tags.push('elemental');
-    }
-
-    if (monster.spicy !== '') {
-      p.points += 4;
-      p.tags.push('spicy');
-    }
-
-    // Set CR at the end
-    if (p.points < 10) {
-      p.cr = 0;
-    } else if (p.points < 15) {
-      p.cr = 1;
-    } else if (p.points < 20) {
-      p.cr = 2;
-    } else if (p.points < 30) {
-      p.cr = 3;
-    } else {
-      p.cr = 4;
-    }
-
-    return p;
   });
 
-  function points(steps: number, start: number = 1) {
-    // Raw steps may be negative
-    const negative = steps < 0;
-    steps = Math.abs(steps);
-    // 1. Handle edge cases for steps
-    if (steps <= 0) {
-      return 0;
-    }
-    if (steps === 1) {
-      if (negative) {
-        return 0 - start;
-      }
-      return start;
-    }
-
-    // Initialize the first two terms and the running sum.
-    // 'a' holds the (n-2) term, 'b' holds the (n-1) term.
-    let a = start;
-    let b = start;
-
-    // The sum starts with the first two terms: start + start
-    let sum = a + b;
-
-    // Loop starts at i=3 because the first two elements (i=1 and i=2) are already accounted for.
-    // It runs up to and including 'steps' to generate the remaining terms.
-    for (let i = 3; i <= steps; i++) {
-      // Calculate the next term (n)
-      const next = a + b;
-
-      // Add the next term to the running sum
-      sum += next;
-
-      // Shift the terms for the next iteration:
-      // The old (n-1) term (b) becomes the new (n-2) term (a)
-      // The new term (nextTerm) becomes the new (n-1) term (b)
-      a = b;
-      b = next;
-    }
-
-    if (negative) {
-      return 0 - sum;
-    }
-
-    return sum;
-  }
+  const preview = $derived.by(() => calculatePoints(monster));
 
   // $inspect(monster);
   // $inspect(preview);
@@ -357,30 +253,18 @@
     <div class="group">
       <label for="size">Size</label>
       <select name="size" bind:value={monster.size} required>
-        <option value="tiny">Tiny</option>
-        <option value="small">Small</option>
-        <option value="medium" selected>Medium</option>
-        <option value="large">Large</option>
-        <option value="huge">Huge</option>
-        <option value="gargantuan">Gargantuan</option>
+        {#each sizes as s}
+          <option value={s}>{capitalize(s)}</option>
+        {/each}
       </select>
     </div>
 
     <div class="group">
       <label for="type">Type</label>
       <select name="type" bind:value={monster.type} required>
-        <option value="beast">Beast</option>
-        <option value="humanoid">Humanoid</option>
-        <option value="celestial">Celestial</option>
-        <option value="fiend">Fiend</option>
-        <option value="undead">Undead</option>
-        <option value="elemental">Elemental</option>
-        <option value="ooze">Ooze</option>
-        <option value="aberration">Aberration</option>
-        <option value="fey">Fey</option>
-        <option value="dragon">Dragon</option>
-        <option value="construct">Construct</option>
-        <option value="monstrosity">Monstrosity</option>
+        {#each monsterTypes as type}
+          <option value={type}>{capitalize(type)}</option>
+        {/each}
       </select>
     </div>
 
@@ -393,14 +277,12 @@
       <ImagePicker bind:image bind:file type="monster" />
     </div>
 
-    <fieldset>
+    <fieldset class="abilities">
       <legend>Abilities</legend>
-      <p>
-        Abilities can be purchased for 2+/2-, the first two ability increases
-        are free.
-      </p>
       <div class="group">
-        <label for="focus">Focus</label>
+        <label for="focus"
+          >Focus ({abilities.focus.min}-{abilities.focus.max})</label
+        >
         <input
           type="number"
           name="focus"
@@ -411,18 +293,22 @@
         />
       </div>
       <div class="group">
-        <label for="power">Power</label>
+        <label for="power"
+          >Power ({abilities.power.min}-{abilities.power.max})</label
+        >
         <input
           type="number"
           name="power"
           bind:value={monster.power}
           min={abilities.power.min}
-          max={abilities.focus.max}
+          max={abilities.power.max}
           required
         />
       </div>
       <div class="group">
-        <label for="cunning">Cunning</label>
+        <label for="cunning"
+          >Cunning ({abilities.cunning.min}-{abilities.cunning.max})</label
+        >
         <input
           type="number"
           name="cunning"
@@ -432,11 +318,66 @@
           required
         />
       </div>
+      <div class="group">
+        <label for="cunning"
+          >Luck ({abilities.luck.min}-{abilities.luck.max})</label
+        >
+        <input
+          type="number"
+          name="cunning"
+          bind:value={monster.luck}
+          min={abilities.luck.min}
+          max={abilities.luck.max}
+          required
+        />
+      </div>
+      <p>
+        Abilities can be purchased for 2+/2-, the first two ability increases
+        are free.
+      </p>
       <!-- <div class="group">
         <label for="luck">Luck</label>
         <input type="number" name="luck" bind:value={monster.luck} />
       </div> -->
     </fieldset>
+
+    {#if monster.type === 'humanoid'}
+      <fieldset>
+        <legend>Lineage & Class</legend>
+        <div class="group">
+          <label for="lineage">Lineage</label>
+          <select name="type" bind:value={monster.lineage}>
+            <option value="">-</option>
+            {#each lineages as l}
+              <option value={l.id}>{l.title}</option>
+            {/each}
+          </select>
+        </div>
+        <div class="group">
+          <label for="lineage">Traits</label>
+          <select
+            name="type"
+            bind:value={monster.traits}
+            disabled={!monster.lineage}
+            multiple
+          >
+            {#each traits as t}
+              {#if t.lineage.id === monster.lineage}
+                <option value={t.id}>{t.title}</option>
+              {/if}
+            {/each}
+          </select>
+        </div>
+        <div class="group">
+          <label for="lineage">Feats</label>
+          <select name="type" bind:value={monster.feats} multiple>
+            {#each feats as f}
+              <option value={f.id}>{f.title}{f.rare ? '*' : ''}</option>
+            {/each}
+          </select>
+        </div>
+      </fieldset>
+    {/if}
 
     <fieldset>
       <legend>Offense</legend>
@@ -466,47 +407,56 @@
       </div>
 
       <div class="group">
-        <label for="energetic">Energetic</label>
-        <input
-          type="number"
-          name="energetic"
-          bind:value={monster.energetic}
-          min="0"
-        />
-      </div>
-      <div class="group">
-        <label for="conditioned">Conditioned</label>
-        <input
-          type="number"
-          name="conditioned"
-          bind:value={monster.conditioned}
-        />
-      </div>
-
-      <div class="group">
         <label for="grappler">Grappler</label>
         <input type="number" name="grappler" bind:value={monster.grappler} />
       </div>
 
-      <div class="group">
-        <label for="type">Elemental</label>
-        <select name="type" bind:value={monster.elemental}>
-          <option value="">-</option>
-          {#each elements as e}
-            <option value={e}>{capitalize(e)}</option>
-          {/each}
-        </select>
-      </div>
+      <fieldset>
+        <legend>Energy</legend>
+        <div class="group">
+          <label for="energetic">Energetic</label>
+          <input
+            type="number"
+            name="energetic"
+            bind:value={monster.energetic}
+            min="0"
+          />
+        </div>
+        <div class="group">
+          <label for="conditioned">Conditioned</label>
+          <input
+            type="number"
+            name="conditioned"
+            bind:value={monster.conditioned}
+            min="0"
+            max="3"
+          />
+        </div>
+      </fieldset>
 
-      <div class="group">
-        <label for="type">Spicy</label>
-        <select name="type" bind:value={monster.spicy}>
-          <option value="">-</option>
-          {#each elements as e}
-            <option value={e}>{capitalize(e)}</option>
-          {/each}
-        </select>
-      </div>
+      <fieldset>
+        <legend>Elements</legend>
+
+        <div class="group">
+          <label for="type">Elemental</label>
+          <select name="type" bind:value={monster.elemental}>
+            <option value="">-</option>
+            {#each elements as e}
+              <option value={e}>{capitalize(e)}</option>
+            {/each}
+          </select>
+        </div>
+
+        <div class="group">
+          <label for="type">Spicy</label>
+          <select name="type" bind:value={monster.spicy}>
+            <option value="">-</option>
+            {#each elements as e}
+              <option value={e}>{capitalize(e)}</option>
+            {/each}
+          </select>
+        </div>
+      </fieldset>
     </fieldset>
   </form>
 
@@ -573,6 +523,25 @@
 
     textarea {
       resize: none;
+    }
+  }
+
+  select[multiple] {
+    height: min-content;
+  }
+
+  fieldset {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10ch, 1fr));
+    gap: 1rem;
+
+    p,
+    fieldset {
+      grid-column: 1 / -1;
+    }
+
+    p {
+      font-size: 0.9rem;
     }
   }
 </style>
