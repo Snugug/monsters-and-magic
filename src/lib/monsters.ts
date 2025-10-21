@@ -217,7 +217,9 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   // Defense
   if (monster.armored !== 0) {
     p.ac += monster.armored;
-    p.points += points(monster.armored);
+    if (!monster.armor?.length) {
+      p.points += points(monster.armored);
+    }
   }
 
   // Armor
@@ -234,7 +236,7 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
       .reduce((acc, cur) => acc + cur, 0);
 
     p.ac += a;
-    p.points += points(a) - points(monster.armored);
+    p.points += points(a + monster.armored);
   }
 
   if (p.ac > 0) {
