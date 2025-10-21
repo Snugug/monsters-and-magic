@@ -3,6 +3,8 @@ import { db } from '$lib/db';
 
 const traits = await db.traits.toArray();
 const feats = await db.feats.toArray();
+const weapons = await db.weapons.toArray();
+const armor = await db.armor.toArray();
 
 export const types = [
   'beast',
@@ -47,6 +49,9 @@ export interface Monster {
   grappler: number;
   elemental?: (typeof elements)[number];
   spicy?: (typeof elements)[number];
+
+  // Defense
+  armored: number;
 }
 
 export interface CalculatedMonster {
@@ -130,14 +135,16 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   }
 
   if (monster.type === 'humanoid' && monster.feats?.length) {
-    const spend = monster.feats.map((f) => {
-      const feat = feats.find((a) => a.id === f);
-      if (feat?.rare) {
-        return 2;
-      }
-      return 1;
-    });
-    p.points += points(monster.feats.length, 3);
+    const spend = monster.feats
+      .map((f) => {
+        const feat = feats.find((a) => a.id === f);
+        if (feat?.rare) {
+          return 2;
+        }
+        return 1;
+      })
+      .reduce((acc, cur) => acc + cur, 0);
+    p.points += points(spend, 3);
   }
 
   // Offense
@@ -150,6 +157,22 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
       p.tags.push('vicious');
     } else if (monster.vicious < 0) {
       p.tags.push('timid');
+    }
+  }
+
+  // Equipment
+  if (monster.weapons?.length) {
+    const w = monster.weapons
+      .map((w) => {
+        const { damage } = weapons.find((f) => f.id === w);
+        const di = dieSizes.findIndex((e) => e === damage);
+        const offset = dieSizes.findIndex((e) => e === p.damage);
+        return di - offset;
+      })
+      .sort()
+      .reverse()[0];
+    if (w > 0) {
+      p.points += points(monster.vicious + w) - points(monster.vicious);
     }
   }
 
@@ -189,6 +212,35 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   if (monster.spicy) {
     p.points += 4;
     p.tags.push('spicy');
+  }
+
+  // Defense
+  if (monster.armored !== 0) {
+    p.ac += monster.armored;
+    p.points += points(monster.armored);
+  }
+
+  // Armor
+  if (monster.armor?.length) {
+    const a = monster.armor
+      .map((w) => {
+        const g = armor.find((f) => f.id === w);
+        if (g) {
+          return g.ac;
+        }
+
+        return 0;
+      })
+      .reduce((acc, cur) => acc + cur, 0);
+
+    p.ac += a;
+    p.points += points(a) - points(monster.armored);
+  }
+
+  if (p.ac > 0) {
+    p.tags.push('heavily armored');
+  } else if (p.ac < 0) {
+    p.tags.push('lightly armored');
   }
 
   // Set CR at the end

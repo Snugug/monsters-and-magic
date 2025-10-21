@@ -8,12 +8,14 @@
     types as monsterTypes,
     type Monster,
   } from '$lib/monsters';
+  import Multiselect from '$components/Multiselect.svelte';
 
   const lineages = await db.lineage.toArray();
   const armor = await db.armor.toArray();
   const techniques = await db.techniques.toArray();
   const traits = await db.traits.toArray();
   const classes = await db.classes.toArray();
+  const weapons = await db.weapons.toArray();
   const feats = await db.feats.toArray();
 
   let folder = $state(await get('project'));
@@ -59,7 +61,8 @@
   const monster = $state({
     title: '',
     size: 'medium',
-    type: monsterTypes[0],
+    // type: monsterTypes[0],
+    type: 'humanoid',
     body: '',
     focus: 0,
     power: 0,
@@ -75,6 +78,7 @@
     weapons: [],
     armor: [],
 
+    // Offense
     vicious: 0,
     savage: 0,
     strong: 0,
@@ -83,6 +87,9 @@
     grappler: 0,
     elemental: undefined,
     spicy: undefined,
+
+    // Defense
+    armored: 0,
   }) as Monster;
 
   // Set defaults based on monster type;
@@ -368,14 +375,45 @@
             {/each}
           </select>
         </div>
-        <div class="group">
-          <label for="lineage">Feats</label>
-          <select name="type" bind:value={monster.feats} multiple>
-            {#each feats as f}
-              <option value={f.id}>{f.title}{f.rare ? '*' : ''}</option>
-            {/each}
-          </select>
-        </div>
+        <Multiselect
+          bind:list={monster.feats}
+          items={feats}
+          legend="Feats"
+          button="Add Feat"
+        />
+      </fieldset>
+    {/if}
+
+    {#if ['humanoid', 'celestial', 'fiend', 'undead', 'fey', 'construct'].includes(monster.type)}
+      <fieldset>
+        <legend>Equipment</legend>
+        <Multiselect
+          bind:list={monster.weapons}
+          items={weapons}
+          legend="Weapons"
+          button="Add Weapons"
+        />
+        <Multiselect
+          bind:list={monster.armor}
+          items={armor}
+          legend="Armor"
+          button="Add Armor"
+          filter={(a) => {
+            const shield = monster.armor
+              ?.map((m) => armor.find((n) => n.id === m))
+              .filter((m) => m?.type === 'shield')?.length;
+
+            if (monster.armor?.length && !shield && a.type !== 'shield') {
+              return false;
+            }
+
+            if (monster.armor.length === 2) {
+              return false;
+            }
+
+            return true;
+          }}
+        />
       </fieldset>
     {/if}
 
@@ -457,6 +495,14 @@
           </select>
         </div>
       </fieldset>
+    </fieldset>
+
+    <fieldset>
+      <legend>Defense</legend>
+      <div class="group">
+        <label for="armored">Armored</label>
+        <input type="number" name="armored" bind:value={monster.armored} />
+      </div>
     </fieldset>
   </form>
 
