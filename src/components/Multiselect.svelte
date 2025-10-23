@@ -16,7 +16,7 @@
     }>;
     legend: string;
     button: string;
-    filter: (i: any) => boolean;
+    filter?: (i: any) => boolean;
   } = $props();
 
   const options = $derived(
