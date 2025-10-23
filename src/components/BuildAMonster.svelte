@@ -4,6 +4,7 @@
   import { db } from '$lib/db';
   import { sizes, elements } from '$lib/shared';
   import {
+    baseMonster,
     calculatePoints,
     types as monsterTypes,
     type Monster,
@@ -14,9 +15,10 @@
   const armor = await db.armor.toArray();
   const techniques = await db.techniques.toArray();
   const traits = await db.traits.toArray();
-  const classes = await db.classes.toArray();
   const weapons = await db.weapons.toArray();
   const feats = await db.feats.toArray();
+  const cantrips = await db.cantrips.toArray();
+  const charms = await db.charms.toArray();
 
   let folder = $state(await get('project'));
 
@@ -58,39 +60,39 @@
     },
   });
 
-  const monster = $state({
-    title: '',
-    size: 'medium',
-    // type: monsterTypes[0],
-    type: 'humanoid',
-    body: '',
-    focus: 0,
-    power: 0,
-    cunning: 0,
-    luck: 0,
+  const monster = $state(baseMonster);
 
-    // Humanoids get Lineage, Traits, and Class
-    lineage: '',
-    traits: [],
-    feats: [],
+  const elemList = elements.map((e) => ({
+    id: e,
+    title: capitalize(e),
+  }));
+  const resistList = $derived(
+    elemList.filter(
+      (a) =>
+        !monster.immunity.includes(a.id) && !monster.vulnerable.includes(a.id),
+    ),
+  );
+  const immuneList = $derived(
+    elemList.filter(
+      (a) =>
+        !monster.resistance.includes(a.id) &&
+        !monster.vulnerable.includes(a.id),
+    ),
+  );
+  const vulnList = $derived(
+    elemList.filter(
+      (a) =>
+        !monster.resistance.includes(a.id) && !monster.immunity.includes(a.id),
+    ),
+  );
 
-    // Humanoid, Celestial, Fiend, Undead, Fey, and Construct get equipment
-    weapons: [],
-    armor: [],
-
-    // Offense
-    vicious: 0,
-    savage: 0,
-    strong: 0,
-    energetic: 0,
-    conditioned: 0,
-    grappler: 0,
-    elemental: undefined,
-    spicy: undefined,
-
-    // Defense
-    armored: 0,
-  }) as Monster;
+  let equipment = $derived(
+    ['humanoid', 'celestial', 'fiend', 'undead', 'fey', 'construct'].includes(
+      monster.type,
+    )
+      ? true
+      : false,
+  );
 
   // Set defaults based on monster type;
   $effect(() => {
@@ -109,6 +111,14 @@
       monster.power = 0;
       monster.cunning = 0;
       monster.luck = 0;
+      monster.resistance = [];
+      monster.vulnerable = [];
+      monster.immunity = [];
+      monster.spicy = '';
+      monster.charms = [];
+      monster.cantrips = [];
+      monster.undying = false;
+      monster.unrelenting = false;
 
       switch (monster.type) {
         case 'beast':
@@ -130,6 +140,8 @@
           monster.focus = 1;
           monster.power = 1;
           monster.luck = 1;
+          monster.resistance.push('radiant');
+          monster.vulnerable.push('necrotic');
           break;
         case 'fiend':
           abilities.cunning.min = 0;
@@ -137,38 +149,55 @@
           monster.cunning = 1;
           monster.power = 1;
           monster.luck = 1;
+          monster.vulnerable.push('radiant');
+          monster.resistance.push('fire');
           break;
         case 'undead':
           monster.power = 2;
+          monster.vulnerable.push('radiant');
+          monster.resistance.push('necrotic');
+          monster.undying = true;
           break;
         case 'elemental':
           monster.power = 2;
           monster.spicy = 'fire';
+          monster.immunity.push('fire');
           break;
         case 'ooze':
           abilities.focus.max = 0;
           abilities.cunning.max = 0;
           monster.power = 2;
           monster.spicy = 'acid';
+          monster.immunity.push('acid');
           break;
         case 'aberration':
           monster.focus = 3;
           monster.power = -1;
           monster.cunning = 2;
+          monster.cantrips.push('mind-spike');
+          monster.cantrips.push('minor-illusion');
+          monster.charms.push('control-creature');
           break;
         case 'fey':
           monster.power = -1;
           monster.cunning = 3;
           monster.luck = 1;
+          monster.cantrips.push('minor-illusion');
           break;
         case 'dragon':
           monster.power = 2;
           monster.cunning = 1;
           monster.focus = 1;
           monster.luck = 1;
+          monster.cantrips.push('fire-bolt');
+          monster.charms.push('splash');
+          monster.vulnerable.push('cold');
+          monster.resistance.push('fire');
           break;
         case 'construct':
           monster.power = 2;
+          monster.immunity.push('fatigue');
+          monster.unrelenting = true;
           break;
         case 'monstrosity':
           monster.power = 2;
@@ -252,7 +281,7 @@
   <h1 class="type--h1">Build a Monster</h1>
 
   <form onsubmit={saveMonster}>
-    <div class="group">
+    <div class="group top">
       <label for="title">Name</label>
       <input type="text" name="title" bind:value={monster.title} required />
     </div>
@@ -275,7 +304,7 @@
       </select>
     </div>
 
-    <div class="group">
+    <div class="group top">
       <label for="body">Description</label>
       <textarea name="body" bind:value={monster.body} required></textarea>
     </div>
@@ -342,10 +371,6 @@
         Abilities can be purchased for 2+/2-, the first two ability increases
         are free.
       </p>
-      <!-- <div class="group">
-        <label for="luck">Luck</label>
-        <input type="number" name="luck" bind:value={monster.luck} />
-      </div> -->
     </fieldset>
 
     {#if monster.type === 'humanoid'}
@@ -360,21 +385,16 @@
             {/each}
           </select>
         </div>
-        <div class="group">
-          <label for="lineage">Traits</label>
-          <select
-            name="type"
-            bind:value={monster.traits}
-            disabled={!monster.lineage}
-            multiple
-          >
-            {#each traits as t}
-              {#if t.lineage.id === monster.lineage}
-                <option value={t.id}>{t.title}</option>
-              {/if}
-            {/each}
-          </select>
-        </div>
+
+        {#if monster.lineage}
+          <Multiselect
+            bind:list={monster.traits}
+            items={traits}
+            legend="Traits"
+            button="Add Trait"
+            filter={(a) => a.lineage.id === monster.lineage}
+          />
+        {/if}
         <Multiselect
           bind:list={monster.feats}
           items={feats}
@@ -384,14 +404,103 @@
       </fieldset>
     {/if}
 
-    {#if ['humanoid', 'celestial', 'fiend', 'undead', 'fey', 'construct'].includes(monster.type)}
-      <fieldset>
-        <legend>Equipment</legend>
+    <fieldset>
+      <legend>Offense</legend>
+      <div class="group">
+        <label for="vicious">Vicious</label>
+        <input
+          type="number"
+          name="vicious"
+          bind:value={monster.vicious}
+          min="-3"
+          max="5"
+        />
+        <p>Increases or decreases natural damage die size</p>
+      </div>
+
+      <div class="group">
+        <label for="vicious">Savage</label>
+        <input
+          type="number"
+          name="vicious"
+          bind:value={monster.savage}
+          min="0"
+        />
+        <p>Adds piercing to natural and weapon damage</p>
+      </div>
+      <div class="group">
+        <label for="vicious">Strength</label>
+        <input type="number" name="vicious" bind:value={monster.strong} />
+        <p>Increases or decreases damage bonus</p>
+      </div>
+
+      <div class="group">
+        <label for="grappler" class="switch">
+          <span>Grappler</span>
+          <input
+            id="grappler"
+            type="checkbox"
+            bind:checked={monster.grappler}
+          />
+        </label>
+        <p>Halves the fatigue needed to keep a foe restrained</p>
+      </div>
+
+      <div class="group">
+        <label for="energetic">Energetic</label>
+        <input
+          type="number"
+          name="energetic"
+          bind:value={monster.energetic}
+          min="0"
+        />
+        <p>Increases fatigue by 3</p>
+      </div>
+      <div class="group">
+        <label for="conditioned">Conditioned</label>
+        <input
+          type="number"
+          name="conditioned"
+          bind:value={monster.conditioned}
+          min="0"
+          max="3"
+        />
+        <p>Increases exhaustion by 2</p>
+      </div>
+
+      <div class="group">
+        <label for="type">Elemental</label>
+        <select name="type" bind:value={monster.elemental}>
+          <option value="">-</option>
+          {#each elements as e}
+            {#if e !== 'physical'}
+              <option value={e}>{capitalize(e)}</option>
+            {/if}
+          {/each}
+        </select>
+        <p>Natural and weapon attack damage type</p>
+      </div>
+
+      <div class="group">
+        <label for="type">Spicy</label>
+        <select name="type" bind:value={monster.spicy}>
+          <option value="">-</option>
+          {#each elements as e}
+            <option value={e}>{capitalize(e)}</option>
+          {/each}
+        </select>
+        <p>Touching this creature deals ½ natural weapon damage of this type</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{equipment ? 'Equipment & ' : ''}Training</legend>
+      {#if equipment}
         <Multiselect
           bind:list={monster.weapons}
           items={weapons}
           legend="Weapons"
-          button="Add Weapons"
+          button="Add Weapon"
         />
         <Multiselect
           bind:list={monster.armor}
@@ -414,94 +523,160 @@
             return true;
           }}
         />
-      </fieldset>
-    {/if}
-
-    <fieldset>
-      <legend>Offense</legend>
-      <div class="group">
-        <label for="vicious">Vicious</label>
-        <input
-          type="number"
-          name="vicious"
-          bind:value={monster.vicious}
-          min="-3"
-          max="5"
+      {/if}
+      <Multiselect
+        bind:list={monster.techniques}
+        items={techniques}
+        legend="Techniques"
+        button="Add Technique"
+      />
+      <Multiselect
+        bind:list={monster.cantrips}
+        items={cantrips}
+        legend="Cantrips"
+        button="Add Cantrip"
+      />
+      {#if monster.cantrips.length}
+        <Multiselect
+          bind:list={monster.charms}
+          items={charms}
+          legend="Charms"
+          button="Add Charm"
+          filter={(a) => {
+            for (const s of a.spells) {
+              if (monster.cantrips.includes(s.id)) {
+                return true;
+              }
+            }
+            return false;
+          }}
         />
-      </div>
-
-      <div class="group">
-        <label for="vicious">Savage</label>
-        <input
-          type="number"
-          name="vicious"
-          bind:value={monster.savage}
-          min="0"
-        />
-      </div>
-      <div class="group">
-        <label for="vicious">Strength</label>
-        <input type="number" name="vicious" bind:value={monster.strong} />
-      </div>
-
-      <div class="group">
-        <label for="grappler">Grappler</label>
-        <input type="number" name="grappler" bind:value={monster.grappler} />
-      </div>
-
-      <fieldset>
-        <legend>Energy</legend>
-        <div class="group">
-          <label for="energetic">Energetic</label>
-          <input
-            type="number"
-            name="energetic"
-            bind:value={monster.energetic}
-            min="0"
-          />
-        </div>
-        <div class="group">
-          <label for="conditioned">Conditioned</label>
-          <input
-            type="number"
-            name="conditioned"
-            bind:value={monster.conditioned}
-            min="0"
-            max="3"
-          />
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Elements</legend>
-
-        <div class="group">
-          <label for="type">Elemental</label>
-          <select name="type" bind:value={monster.elemental}>
-            <option value="">-</option>
-            {#each elements as e}
-              <option value={e}>{capitalize(e)}</option>
-            {/each}
-          </select>
-        </div>
-
-        <div class="group">
-          <label for="type">Spicy</label>
-          <select name="type" bind:value={monster.spicy}>
-            <option value="">-</option>
-            {#each elements as e}
-              <option value={e}>{capitalize(e)}</option>
-            {/each}
-          </select>
-        </div>
-      </fieldset>
+      {/if}
     </fieldset>
 
     <fieldset>
       <legend>Defense</legend>
       <div class="group">
-        <label for="armored">Armored</label>
+        <label for="hp">HP</label>
+        <input type="number" name="hp" bind:value={monster.hp} />
+        <p>Increases HP by 5</p>
+      </div>
+      <div class="group">
+        <label for="armored">Armor</label>
         <input type="number" name="armored" bind:value={monster.armored} />
+        <p>Increases AC by 1</p>
+      </div>
+
+      <Multiselect
+        bind:list={monster.resistance}
+        items={resistList}
+        legend="Resistances"
+        button="Add Resistance"
+      />
+      <Multiselect
+        bind:list={monster.immunity}
+        items={immuneList}
+        legend="Immunities"
+        button="Add Immunity"
+      />
+      <Multiselect
+        bind:list={monster.vulnerable}
+        items={vulnList}
+        legend="Vulnerabilities"
+        button="Add Vulnerability"
+      />
+    </fieldset>
+
+    <fieldset>
+      <legend>Special</legend>
+      <div class="group">
+        <label for="ancient">Ancient</label>
+        <input
+          type="number"
+          name="ancient"
+          min="0"
+          bind:value={monster.ancient}
+        />
+        <p>Increases AP by 1</p>
+      </div>
+
+      <div class="group">
+        <label for="legendary" class="switch">
+          <span>Legendary</span>
+          <input
+            id="legendary"
+            type="checkbox"
+            bind:checked={monster.legendary}
+          />
+        </label>
+        <p>Can use Legendary Actions, Reactions, and Resistances</p>
+      </div>
+
+      <div class="group">
+        <label for="lair" class="switch">
+          <span>Lair</span>
+          <input id="lair" type="checkbox" bind:checked={monster.lair} />
+        </label>
+        <p>
+          Has control over its surroundings, letting it take Lair Actions at the
+          start of a round
+        </p>
+      </div>
+
+      <div class="group">
+        <label for="undying" class="switch">
+          <span>Undying</span>
+          <input id="undying" type="checkbox" bind:checked={monster.undying} />
+        </label>
+        <p>
+          When fully exhausted, at the start of its next turn can spend 1 thread
+          to recover all fatigue and 1 exhaustion.
+        </p>
+      </div>
+
+      <div class="group">
+        <label for="unrelenting" class="switch">
+          <span>Unrelenting</span>
+          <input
+            id="unrelenting"
+            type="checkbox"
+            bind:checked={monster.unrelenting}
+          />
+        </label>
+        <p>
+          When damage would drop it to 0 HP but not outright kill it, can spend
+          1 thread to drop to 1 HP instead
+        </p>
+      </div>
+
+      <div class="group">
+        <label for="bloodthirsty" class="switch">
+          <span>Bloodthirsty</span>
+          <input
+            id="bloodthirsty"
+            type="checkbox"
+            bind:checked={monster.bloodthirsty}
+          />
+        </label>
+        <p>
+          When at ½ HP or less, gain bonus to ability checks and damage rolls
+          equal to CR
+        </p>
+      </div>
+
+      <div class="group">
+        <label for="draining" class="switch">
+          <span>Draining</span>
+          <input
+            id="draining"
+            type="checkbox"
+            bind:checked={monster.draining}
+          />
+        </label>
+        <p>
+          Once per turn when dealing damage with a melee attack, recover ½
+          damage or fatigue dealt
+        </p>
       </div>
     </fieldset>
   </form>
@@ -514,6 +689,63 @@
 </div>
 
 <style lang="scss">
+  .sidebar {
+    position: sticky;
+    top: 0;
+  }
+  .switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    // justify-content: center;
+    gap: 0.5rem;
+    // max-width: min-content;
+
+    input {
+      --timing: 0.2s;
+      position: relative;
+      height: 1rem;
+      width: 2.25rem;
+      cursor: pointer;
+      appearance: none;
+      border-radius: 1rem;
+      background-image: linear-gradient(
+        to right,
+        var(--dark-green) 50%,
+        transparent 50%
+      );
+      background-size: 200%;
+      background-position: 100%;
+
+      border: 1px solid var(--black);
+      transition: background-position var(--timing) ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+
+      &:before {
+        content: '';
+        display: block;
+        height: 1.25rem;
+        width: 1.25rem;
+        cursor: pointer;
+        border: 1px solid var(--black);
+        border-radius: 1rem;
+        background-color: var(--white);
+        transition: transform var(--timing) ease;
+        transform: translateX(-0.25rem);
+      }
+
+      &:checked {
+        background-position: 0;
+        &:before {
+          transform: translateX(100%);
+        }
+      }
+    }
+  }
+
   .image {
     border: 1px solid black;
     grid-column: 1 / span 1;
@@ -545,22 +777,13 @@
     display: flex;
     flex-direction: column;
 
-    &:has([name='title']) {
-      grid-column: 2 / span 2;
-    }
-
-    &:has([name='body']) {
-      grid-column: 2 / span 2;
-      grid-row: 3 / span 2;
-    }
-
-    label {
+    label:not(:has([type='checkbox'])) {
       font-size: 0.75rem;
       text-transform: uppercase;
       line-height: 1.25;
     }
 
-    input,
+    input:not([type='checkbox']),
     select {
       width: 100%;
       height: 2rem;
@@ -578,8 +801,12 @@
 
   fieldset {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10ch, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
+
+    &.abilities {
+      grid-template-columns: repeat(4, 1fr);
+    }
 
     p,
     fieldset {
@@ -589,5 +816,9 @@
     p {
       font-size: 0.9rem;
     }
+  }
+
+  .top {
+    grid-column: span 2;
   }
 </style>

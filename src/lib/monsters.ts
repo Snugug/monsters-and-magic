@@ -1,10 +1,13 @@
 import { sizes, elements, dieSizes } from '$lib/shared';
 import { db } from '$lib/db';
+import { boolean } from 'astro:schema';
 
 const traits = await db.traits.toArray();
 const feats = await db.feats.toArray();
 const weapons = await db.weapons.toArray();
 const armor = await db.armor.toArray();
+const techniques = await db.techniques.toArray();
+const charms = await db.charms.toArray();
 
 export const types = [
   'beast',
@@ -21,69 +24,114 @@ export const types = [
   'monstrosity',
 ] as const;
 
-export interface Monster {
-  // Core
-  title: string;
-  size: (typeof sizes)[number];
-  type: (typeof types)[number];
-  body: string;
-  // Abilities
-  focus: number;
-  power: number;
-  cunning: number;
-  luck: number;
+type elem = (typeof elements)[number];
+
+export const baseMonster = {
+  title: '',
+  size: 'medium' as (typeof sizes)[number],
+  // type: monsterTypes[0],
+  type: 'beast' as (typeof types)[number],
+  body: '',
+  focus: 0,
+  power: 0,
+  cunning: 0,
+  luck: 0,
+
   // Humanoids get Lineage, Traits, and Class
-  lineage?: string;
-  traits?: Array<string>;
-  feats?: Array<string>;
+  lineage: '',
+  traits: [] as Array<string>,
+  feats: [] as Array<string>,
+
   // Humanoid, Celestial, Fiend, Undead, Fey, and Construct get equipment
-  weapons?: Array<string>;
-  armor?: Array<string>;
+  weapons: [] as Array<string>,
+  armor: [] as Array<string>,
+
+  // Senses
+  vision: '' as
+    | 'low-light'
+    | 'darkvision'
+    | 'blindsight'
+    | 'tremmorsense'
+    | 'truesight',
+  sight: 0,
+
+  // Movement
+  speed: 0,
+  flying: {
+    speed: 0,
+    has: false,
+  },
+  climbing: {
+    speed: 0,
+    has: false,
+  },
+  swimming: {
+    speed: 0,
+    has: false,
+  },
+  burrowing: {
+    speed: 0,
+    has: false,
+  },
+  walking: 0,
+  amphibious: false,
+  flyby: false,
 
   // Offense
-  vicious: number;
-  savage: number;
-  strong: number;
-  energetic: number;
-  conditioned: number;
-  grappler: number;
-  elemental?: (typeof elements)[number];
-  spicy?: (typeof elements)[number];
+  vicious: 0,
+  savage: 0,
+  strong: 0,
+  energetic: 0,
+  conditioned: 0,
+  grappler: false,
+  elemental: '' as elem,
+  spicy: '' as elem,
+
+  // Training
+  techniques: [] as Array<string>,
+  cantrips: [] as Array<string>,
+  charms: [] as Array<string>,
+  upcast: 0,
 
   // Defense
-  armored: number;
-}
+  hp: 0,
+  armored: 0,
+  resistance: [] as Array<elem>,
+  immunity: [] as Array<elem>,
+  vulnerable: [] as Array<elem>,
 
-export interface CalculatedMonster {
-  hp: number;
-  fatigue: number;
-  exhaustion: number;
-  ac: number;
-  damage: (typeof dieSizes)[number];
-  tags: Array<string>;
-  points: number;
-  speed: number;
-  cr: number;
-  bonus: number;
-  piercing: number;
-  reach: number;
-}
+  // Special
+  ancient: 0,
+  unrelenting: false,
+  undying: false,
+  legendary: false,
+  lair: false,
+  bloodthirsty: false,
+  draining: false,
+};
+
+export type Monster = typeof baseMonster;
+
+export const monsterCalc = {
+  hp: 5,
+  fatigue: 2,
+  exhaustion: 1,
+  ac: 0,
+  damage: '1d6' as (typeof dieSizes)[number],
+  tags: [] as Array<string>,
+  points: 0,
+  speed: 30,
+  cr: 0,
+  bonus: 0,
+  piercing: 0,
+  reach: 5,
+  ap: 3,
+};
+
+export type CalculatedMonster = typeof monsterCalc;
 
 export function calculatePoints(monster: Monster): CalculatedMonster {
-  const p = {
-    hp: 5,
-    fatigue: 2,
-    exhaustion: 1,
-    ac: 0,
-    damage: '1d6',
-    tags: [],
-    points: 0,
-    speed: 30,
-    cr: 0,
-    bonus: 0,
-    piercing: 0,
-    reach: 5,
-  } as CalculatedMonster;
+  const p = structuredClone(monsterCalc);
 
   // Set starting based on size
   switch (monster.size) {
@@ -135,16 +183,8 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   }
 
   if (monster.type === 'humanoid' && monster.feats?.length) {
-    const spend = monster.feats
-      .map((f) => {
-        const feat = feats.find((a) => a.id === f);
-        if (feat?.rare) {
-          return 2;
-        }
-        return 1;
-      })
-      .reduce((acc, cur) => acc + cur, 0);
-    p.points += points(spend, 3);
+    const s = spend(monster.feats, feats);
+    p.points += points(s, 3);
   }
 
   // Offense
@@ -158,6 +198,11 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     } else if (monster.vicious < 0) {
       p.tags.push('timid');
     }
+  }
+
+  if (monster.grappler) {
+    p.points += 3;
+    p.tags.push('grappler');
   }
 
   // Equipment
@@ -174,6 +219,8 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     if (w > 0) {
       p.points += points(monster.vicious + w) - points(monster.vicious);
     }
+
+    p.tags.push('armed');
   }
 
   if (monster.savage !== 0) {
@@ -214,6 +261,27 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     p.tags.push('spicy');
   }
 
+  // Training
+  if (monster.techniques.length) {
+    const s = spend(monster.techniques, techniques);
+    p.points += points(s);
+    p.tags.push('skilled');
+  }
+
+  if (monster.cantrips.length) {
+    p.points += points(monster.cantrips.length);
+  }
+
+  if (monster.charms.length) {
+    p.points += points(spend(monster.charms, charms), 2);
+  }
+
+  if (monster.cantrips.length && !monster.charms.length) {
+    p.tags.push('caster');
+  } else if (monster.cantrips.length && monster.charms.length) {
+    p.tags.push('advanced caster');
+  }
+
   // Defense
   if (monster.armored !== 0) {
     p.ac += monster.armored;
@@ -239,10 +307,78 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     p.points += points(a + monster.armored);
   }
 
-  if (p.ac > 0) {
+  // TODO: Better armor tags
+  if (p.ac - monster.cunning > 0) {
     p.tags.push('heavily armored');
-  } else if (p.ac < 0) {
+  } else if (p.ac - monster.cunning < 0) {
     p.tags.push('lightly armored');
+  }
+
+  // HP
+  if (monster.hp !== 0) {
+    p.hp += monster.hp * 5;
+    p.points += points(monster.hp);
+    if (monster.hp < 0) {
+      p.tags.push('frail');
+    } else if (monster.hp > 0) {
+      p.tags.push('stout');
+    }
+  }
+
+  // Resistance
+  if (monster.resistance.length) {
+    const physical = monster.resistance.includes('physical');
+
+    if (physical) {
+      p.points += 3;
+      p.points += points(monster.resistance.length - 1, 2);
+      p.tags.push('thick-skinned');
+      if (monster.resistance.length > 1) {
+        p.tags.push('resistant');
+      }
+    } else {
+      p.points += points(monster.resistance.length, 2);
+      p.tags.push('resistant');
+    }
+  }
+  if (monster.immunity.length) {
+    p.points += points(monster.immunity.length, 5);
+    p.tags.push('immune');
+  }
+  if (monster.vulnerable.length) {
+    p.points -= points(monster.vulnerable.length);
+    p.tags.push('vulnerable');
+  }
+
+  // Special
+  if (monster.ancient !== 0) {
+    p.ap += monster.ancient;
+    p.points += points(monster.ancient, 4);
+    p.tags.push('ancient');
+  }
+  if (monster.undying) {
+    p.points += 3;
+    p.tags.push('undying');
+  }
+  if (monster.unrelenting) {
+    p.points += 3;
+    p.tags.push('unrelenting');
+  }
+  if (monster.draining) {
+    p.points += 3;
+    p.tags.push('draining');
+  }
+  if (monster.bloodthirsty) {
+    p.points += 3;
+    p.tags.push('bloodthirsty');
+  }
+  if (monster.legendary) {
+    p.points += 10;
+    p.tags.push('legendary');
+  }
+  if (monster.lair) {
+    p.points += 5;
+    p.tags.push('lair');
   }
 
   // Set CR at the end
@@ -250,12 +386,8 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     p.cr = 0;
   } else if (p.points < 15) {
     p.cr = 1;
-  } else if (p.points < 20) {
-    p.cr = 2;
-  } else if (p.points < 30) {
-    p.cr = 3;
   } else {
-    p.cr = 4;
+    p.cr = Math.floor(p.points / 10);
   }
 
   return p;
@@ -306,4 +438,22 @@ function points(steps: number, start: number = 1) {
   }
 
   return sum;
+}
+
+function spend(
+  list: Array<string>,
+  items: Array<{
+    id: string;
+    rare: boolean;
+  }>,
+) {
+  return list
+    .map((f) => {
+      const i = items.find((a) => a.id === f);
+      if (i?.rare) {
+        return 2;
+      }
+      return 1;
+    })
+    .reduce((acc: number, cur: number) => acc + cur, 0);
 }
