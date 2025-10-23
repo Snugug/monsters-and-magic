@@ -1,6 +1,7 @@
 ---
 title: Strike
 type: basic
+rare: false
 ap: 1
 reaction: ''
 ---

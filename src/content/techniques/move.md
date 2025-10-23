@@ -1,6 +1,7 @@
 ---
 title: Move
 type: basic
+rare: false
 ap: 1
 reaction: ''
 ---

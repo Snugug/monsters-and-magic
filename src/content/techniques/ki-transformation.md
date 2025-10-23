@@ -1,6 +1,7 @@
 ---
 title: Ki Transformation
 type: feat
+rare: false
 ap: 2
 reaction: ''
 duration: ''

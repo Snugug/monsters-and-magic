@@ -1,6 +1,7 @@
 ---
 title: Flurry of Blows
 type: feat
+rare: false
 ap: null
 reaction: You hit a target with a ki blast, an unarmed strike, or a shortsword or longsword
 duration: ''

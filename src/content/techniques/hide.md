@@ -1,6 +1,7 @@
 ---
 title: Hide
 type: basic
+rare: false
 ap: 2
 reaction: ''
 ---

@@ -1,6 +1,7 @@
 ---
 title: Mount or Dismount
 type: basic
+rare: false
 ap: 1
 reaction: ''
 ---

@@ -158,10 +158,12 @@ collections:
             value: basic
           - label: Advanced
             value: advanced
-          - label: Rare
-            value: rare
           - label: Feat
             value: feat
+      - label: Rare
+        name: rare
+        widget: boolean
+        required: false
       - label: AP
         name: ap
         widget: number

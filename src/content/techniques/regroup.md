@@ -1,6 +1,7 @@
 ---
 title: Regroup
 type: basic
+rare: false
 ap: 3
 reaction: ''
 ---

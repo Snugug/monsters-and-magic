@@ -1,6 +1,7 @@
 ---
 title: Opportunity Attack
 type: basic
+rare: false
 ap: null
 reaction: A creature leaves your melee reach
 ---

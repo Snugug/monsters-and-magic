@@ -40,7 +40,8 @@ const techniques = defineCollection({
   schema: z
     .object({
       title: z.string(),
-      type: z.enum(['basic', 'advanced', 'rare', 'feat']),
+      type: z.enum(['basic', 'advanced', 'feat']),
+      rare: z.boolean(),
       ap: z.union([z.number().int().min(1), z.null()]).optional(),
       reaction: z.union([z.string(), z.null()]).optional(),
       duration: z.union([z.string(), z.null()]).optional(),

@@ -1,6 +1,7 @@
 ---
 title: Retrieve Item
 type: basic
+rare: false
 ap: 1
 reaction: ''
 ---

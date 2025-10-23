@@ -1,6 +1,7 @@
 ---
 title: Use Item
 type: basic
+rare: false
 ap: 1
 reaction: ''
 ---

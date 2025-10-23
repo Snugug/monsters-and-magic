@@ -1,6 +1,7 @@
 ---
 title: Concentrate on a Spell
 type: basic
+rare: false
 ap: 1
 reaction: ''
 ---

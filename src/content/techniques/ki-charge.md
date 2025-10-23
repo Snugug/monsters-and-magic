@@ -1,6 +1,7 @@
 ---
 title: Ki Charge
 type: feat
+rare: false
 ap: 1
 reaction: ''
 duration: ''
