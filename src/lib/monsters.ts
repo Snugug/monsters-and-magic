@@ -1,6 +1,5 @@
-import { sizes, elements, dieSizes } from '$lib/shared';
+import { sizes, elements, dieSizes, vision, speeds } from '$lib/shared';
 import { db } from '$lib/db';
-import { boolean } from 'astro:schema';
 
 const traits = await db.traits.toArray();
 const feats = await db.feats.toArray();
@@ -47,35 +46,18 @@ export const baseMonster = {
   armor: [] as Array<string>,
 
   // Senses
-  vision: '' as
-    | 'low-light'
-    | 'darkvision'
-    | 'blindsight'
-    | 'tremmorsense'
-    | 'truesight',
-  sight: 0,
+  vision: [] as Array<(typeof vision)[number]>,
+  blindsight: 10,
+  tremmorsense: 10,
+  truesight: 10,
 
   // Movement
-  speed: 0,
-  flying: {
-    speed: 0,
-    has: false,
-  },
-  climbing: {
-    speed: 0,
-    has: false,
-  },
-  swimming: {
-    speed: 0,
-    has: false,
-  },
-  burrowing: {
-    speed: 0,
-    has: false,
-  },
-  walking: 0,
-  amphibious: false,
-  flyby: false,
+  speeds: [] as Array<(typeof speeds)[number]>,
+  walking: 30,
+  flying: 0,
+  climbing: 0,
+  swimming: 0,
+  burrowing: 0,
 
   // Offense
   vicious: 0,
@@ -108,6 +90,8 @@ export const baseMonster = {
   lair: false,
   bloodthirsty: false,
   draining: false,
+  amphibious: false,
+  flyby: false,
 };
 
 export type Monster = typeof baseMonster;
@@ -120,7 +104,7 @@ export const monsterCalc = {
   damage: '1d6' as (typeof dieSizes)[number],
   tags: [] as Array<string>,
   points: 0,
-  speed: 30,
+  speed: {} as { [k: string]: number },
   cr: 0,
   bonus: 0,
   piercing: 0,
@@ -132,34 +116,20 @@ export type CalculatedMonster = typeof monsterCalc;
 
 export function calculatePoints(monster: Monster): CalculatedMonster {
   const p = structuredClone(monsterCalc);
-
+  let baseSpeed = 30;
   // Set starting based on size
   switch (monster.size) {
     case 'tiny':
-      p.points -= 2;
-      p.speed = 15;
-      p.bonus -= 2;
+      baseSpeed = 15;
       break;
     case 'large':
-      p.hp += 5;
-      p.points += 2;
       p.reach += 5;
-      p.speed = 35;
-      p.bonus += 1;
+      baseSpeed = 35;
       break;
     case 'huge':
-      p.hp += 10;
-      p.points += 3;
-      p.reach += 5;
-      p.speed = 40;
-      p.bonus += 3;
-      break;
     case 'gargantuan':
-      p.hp += 15;
-      p.points += 5;
       p.reach += 5;
-      p.speed = 40;
-      p.bonus += 3;
+      baseSpeed = 40;
       break;
   }
 
@@ -186,6 +156,68 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     const s = spend(monster.feats, feats);
     p.points += points(s, 3);
   }
+
+  const totalNeutralSpeed = baseSpeed * (monster.speeds.length + 1);
+  const totalSpentSpeed =
+    monster.walking +
+    usedSpeed(monster, 'flying') +
+    usedSpeed(monster, 'climbing') +
+    usedSpeed(monster, 'swimming') +
+    usedSpeed(monster, 'burrowing');
+
+  const speedDiff = Math.ceil((totalSpentSpeed - totalNeutralSpeed) / 10);
+
+  p.points += points(speedDiff);
+  if (speedDiff > 0) {
+    p.tags.push('fast');
+  } else if (speedDiff < 0) {
+    p.tags.push('slow');
+  }
+
+  p.speed.walking = monster.walking;
+  if (monster.speeds.includes('flying')) {
+    p.speed.flying = monster.flying;
+    p.points += 3;
+    p.tags.push('flying');
+  }
+  if (monster.speeds.includes('climbing')) {
+    p.speed.climbing = monster.climbing;
+    p.points += 1;
+    p.tags.push('climbing');
+  }
+  if (monster.speeds.includes('swimming')) {
+    p.speed.swimming = monster.swimming;
+    p.points += 1;
+    p.tags.push('swimming');
+  }
+  if (monster.speeds.includes('burrowing')) {
+    p.speed.burrowing = monster.burrowing;
+    p.points += 2;
+    p.tags.push('burrowing');
+  }
+
+  // if (monster.flying.has) {
+  //   p.points += 3;
+  //   p.tags.push('flying');
+  // }
+  // if (monster.climbing.has) {
+  //   p.points += 1;
+  //   p.tags.push('climbing');
+  // }
+  // if (monster.swimming.has) {
+  //   p.points += 1;
+  //   p.tags.push('swimming');
+  // }
+  // if (monster.burrowing.has) {
+  //   p.points += 2;
+  //   p.tags.push('burrowing');
+  // }
+
+  // console.log('----');
+  // console.log(totalNeutralSpeed);
+  // console.log(totalSpentSpeed);
+  // console.log(speedDiff);
+  // console.log('----');
 
   // Offense
   if (monster.vicious !== 0) {
@@ -380,6 +412,14 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     p.points += 5;
     p.tags.push('lair');
   }
+  if (monster.amphibious) {
+    p.points += 1;
+    p.tags.push('amphibious');
+  }
+  if (monster.flyby) {
+    p.points += 3;
+    p.tags.push('flyby');
+  }
 
   // Set CR at the end
   if (p.points < 10) {
@@ -456,4 +496,11 @@ function spend(
       return 1;
     })
     .reduce((acc: number, cur: number) => acc + cur, 0);
+}
+
+export function usedSpeed(monster: Monster, speed: (typeof speeds)[number]) {
+  if (monster.speeds.includes(speed)) {
+    return monster[speed];
+  }
+  return 0;
 }

@@ -31,3 +31,13 @@ export const dieSizes = [
   '2d6',
   '3d4',
 ] as const;
+
+export const vision = [
+  'low-light vision',
+  'darkvision',
+  'blindsight',
+  'tremmorsense',
+  'truesight',
+] as const;
+
+export const speeds = ['flying', 'climbing', 'swimming', 'burrowing'] as const;

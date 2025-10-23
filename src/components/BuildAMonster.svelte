@@ -2,12 +2,12 @@
   import ImagePicker from '$components/ImagePicker.svelte';
   import { get, set } from 'idb-keyval';
   import { db } from '$lib/db';
-  import { sizes, elements } from '$lib/shared';
+  import { sizes, elements, vision, speeds } from '$lib/shared';
   import {
     baseMonster,
     calculatePoints,
+    usedSpeed,
     types as monsterTypes,
-    type Monster,
   } from '$lib/monsters';
   import Multiselect from '$components/Multiselect.svelte';
 
@@ -58,9 +58,36 @@
       min: -2,
       max: 5,
     },
+    strong: null as null | number,
+    hp: null as null | number,
   });
 
   const monster = $state(baseMonster);
+
+  let alternateSpeed = $derived(
+    [
+      monster.flying.has,
+      monster.climbing.has,
+      monster.swimming.has,
+      monster.burrowing.has,
+    ].filter((a) => a).length,
+  );
+
+  let baseSpeed = $derived.by(() => {
+    if (monster.size === 'tiny') return 15;
+    if (monster.size === 'large') return 35;
+    if (monster.size === 'huge') return 40;
+    if (monster.size === 'gargantuan') return 40;
+    return 30;
+  });
+
+  $effect(() => {
+    for (const s of monster.speeds) {
+      if (monster[s] === 0) {
+        monster[s] = baseSpeed;
+      }
+    }
+  });
 
   const elemList = elements.map((e) => ({
     id: e,
@@ -85,6 +112,14 @@
         !monster.resistance.includes(a.id) && !monster.immunity.includes(a.id),
     ),
   );
+  const visionList = vision.map((v) => ({
+    id: v,
+    title: capitalize(v),
+  }));
+  const speedList = speeds.map((v) => ({
+    id: v,
+    title: capitalize(v),
+  }));
 
   let equipment = $derived(
     ['humanoid', 'celestial', 'fiend', 'undead', 'fey', 'construct'].includes(
@@ -206,33 +241,63 @@
     }
 
     if (s || t) {
+      // Reset
+      monster.walking = baseSpeed;
+      for (const spd of speeds) {
+        if (!monster.speeds.includes(spd)) {
+          monster[spd] = 0;
+        }
+      }
+      abilities.strong = null;
+      abilities.hp = null;
+
       switch (size) {
         case 'tiny':
           abilities.power.max += 1;
+          monster.strong += 1;
           break;
         case 'large':
           abilities.power.min -= 1;
+          monster.hp -= 1;
+          monster.strong -= 1;
           break;
         case 'huge':
           abilities.power.min -= 2;
+          monster.hp -= 2;
+          monster.strong -= 3;
           break;
         case 'gargantuan':
           abilities.power.min -= 3;
+          monster.hp -= 3;
+          monster.strong -= 3;
           break;
       }
 
       switch (monster.size) {
         case 'tiny':
           abilities.power.max -= 1;
+          monster.strong -= 1;
           break;
         case 'large':
           abilities.power.min += 1;
+          monster.hp += 1;
+          monster.strong += 1;
+          abilities.strong = 0;
+          abilities.hp = 0;
           break;
         case 'huge':
           abilities.power.min += 2;
+          monster.hp += 2;
+          monster.strong += 3;
+          abilities.strong = 2;
+          abilities.hp = 1;
           break;
         case 'gargantuan':
           abilities.power.min += 3;
+          monster.hp += 3;
+          monster.strong += 3;
+          abilities.strong = 2;
+          abilities.hp = 2;
           break;
       }
 
@@ -404,6 +469,77 @@
       </fieldset>
     {/if}
 
+    <fieldset class="megagroup">
+      <legend>Vision & Movement</legend>
+      <Multiselect
+        bind:list={monster.vision}
+        items={visionList}
+        legend="Special Vision"
+        button="Add Vision"
+        filter={(a) => {
+          if (
+            monster.vision.includes('low-light vision') &&
+            a.id === 'darkvision'
+          )
+            return false;
+
+          if (
+            monster.vision.includes('darkvision') &&
+            a.id === 'low-light vision'
+          )
+            return false;
+          return true;
+        }}
+      />
+
+      {#each monster.vision as v}
+        {#if v !== 'low-light vision' && v !== 'darkvision'}
+          <div class="group">
+            <label for={v}>{capitalize(v)} Distance</label>
+            <input
+              type="number"
+              name={v}
+              bind:value={monster[v]}
+              min="10"
+              step="10"
+            />
+            <p>Set {v} distance, in feet</p>
+          </div>
+        {/if}
+      {/each}
+
+      <Multiselect
+        bind:list={monster.speeds}
+        items={speedList}
+        legend="Special Movement"
+        button="Add Movement"
+      />
+      <div class="group">
+        <label for="speed">Walking Speed</label>
+        <input
+          type="number"
+          name="speed"
+          bind:value={monster.walking}
+          min="5"
+          step="5"
+        />
+        <p>Set walking speed, in feet</p>
+      </div>
+      {#each monster.speeds as s}
+        <div class="group">
+          <label for="{s}-speed">{capitalize(s)} Speed</label>
+          <input
+            type="number"
+            name="{s}-speed"
+            bind:value={monster[s]}
+            min="5"
+            step="5"
+          />
+          <p>Set {s} speed, in feet</p>
+        </div>
+      {/each}
+    </fieldset>
+
     <fieldset>
       <legend>Offense</legend>
       <div class="group">
@@ -430,7 +566,12 @@
       </div>
       <div class="group">
         <label for="vicious">Strength</label>
-        <input type="number" name="vicious" bind:value={monster.strong} />
+        <input
+          type="number"
+          name="vicious"
+          bind:value={monster.strong}
+          min={abilities.strong}
+        />
         <p>Increases or decreases damage bonus</p>
       </div>
 
@@ -558,7 +699,12 @@
       <legend>Defense</legend>
       <div class="group">
         <label for="hp">HP</label>
-        <input type="number" name="hp" bind:value={monster.hp} />
+        <input
+          type="number"
+          name="hp"
+          bind:value={monster.hp}
+          min={abilities.hp}
+        />
         <p>Increases HP by 5</p>
       </div>
       <div class="group">
@@ -678,12 +824,38 @@
           damage or fatigue dealt
         </p>
       </div>
+
+      <div class="group">
+        <label for="amphibious" class="switch">
+          <span>Amphibious</span>
+          <input
+            id="amphibious"
+            type="checkbox"
+            bind:checked={monster.amphibious}
+          />
+        </label>
+        <p>Can breathe are and water</p>
+      </div>
+
+      <div class="group">
+        <label for="flyby" class="switch">
+          <span>Flyby</span>
+          <input id="flyby" type="checkbox" bind:checked={monster.flyby} />
+        </label>
+        <p>Doesn't provoke reactions when leaving an enemy's reach</p>
+      </div>
     </fieldset>
   </form>
 
   <div class="sidebar">
     {#each Object.entries(preview) as [k, v]}
-      <p>{k}: {v}</p>
+      {#if Array.isArray(v)}
+        <p>{k}: {v.join(', ')}</p>
+      {:else if typeof v === 'object'}
+        <p>{k}: {JSON.stringify(v)}</p>
+      {:else}
+        <p>{k}: {v}</p>
+      {/if}
     {/each}
   </div>
 </div>

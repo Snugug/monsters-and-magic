@@ -35,10 +35,12 @@
 
   function addItem(e: Event) {
     e.preventDefault();
-    if (list === undefined) {
-      list = [selected];
-    } else {
-      list.push(selected);
+    if (selected) {
+      if (list === undefined) {
+        list = [selected];
+      } else {
+        list.push(selected);
+      }
     }
     selected = '';
   }
@@ -75,6 +77,7 @@
         class="options"
         bind:value={selected}
       >
+        <option value="">-</option>
         {#each options as o}
           <option value={o.id}>{o.title}{o.rare ? '*' : ''}</option>
         {/each}
