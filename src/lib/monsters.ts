@@ -422,12 +422,12 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   }
 
   // Set CR at the end
-  if (p.points < 10) {
+  if (p.points <= 5) {
     p.cr = 0;
   } else if (p.points < 15) {
     p.cr = 1;
   } else {
-    p.cr = Math.floor(p.points / 10);
+    p.cr = Math.round(p.points / 10);
   }
 
   return p;
