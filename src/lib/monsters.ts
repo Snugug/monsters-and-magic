@@ -30,7 +30,7 @@ export const baseMonster = {
   size: 'medium' as (typeof sizes)[number],
   // type: monsterTypes[0],
   type: 'beast' as (typeof types)[number],
-  body: '',
+  image: '',
   focus: 0,
   power: 0,
   cunning: 0,
@@ -83,7 +83,7 @@ export const baseMonster = {
   vulnerable: [] as Array<elem>,
 
   // Special
-  ancient: 0,
+  ancient: false,
   unrelenting: false,
   undying: false,
   legendary: false,
@@ -383,9 +383,9 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   }
 
   // Special
-  if (monster.ancient !== 0) {
-    p.ap += monster.ancient;
-    p.points += points(monster.ancient, 4);
+  if (monster.ancient) {
+    p.ap += 1;
+    p.points += 4;
     p.tags.push('ancient');
   }
   if (monster.undying) {

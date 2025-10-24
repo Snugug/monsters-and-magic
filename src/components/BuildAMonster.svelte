@@ -1,14 +1,24 @@
 <script lang="ts">
   import ImagePicker from '$components/ImagePicker.svelte';
-  import { get, set } from 'idb-keyval';
   import { db } from '$lib/db';
   import { sizes, elements, vision, speeds } from '$lib/shared';
   import {
     baseMonster,
     calculatePoints,
-    usedSpeed,
     types as monsterTypes,
   } from '$lib/monsters';
+  import { md } from '$lib/md';
+  import { fileToImage, stringToImage } from '$lib/images';
+  import { slugify } from '$lib/helpers';
+  import {
+    chooseFolder,
+    folder,
+    getPath,
+    writeFile,
+    writeImage,
+    getFileHandle,
+    getDir,
+  } from '$lib/fs.svelte';
   import Multiselect from '$components/Multiselect.svelte';
 
   const lineages = await db.lineage.toArray();
@@ -20,25 +30,48 @@
   const cantrips = await db.cantrips.toArray();
   const charms = await db.charms.toArray();
 
-  let folder = $state(await get('project'));
-
-  // let dir = $state(null) as File;
-
   let image = $state('');
-  let file = $state(null);
+  let file = $state() as File;
+  let handler = $state() as FileSystemFileHandle;
   let lineage = $state('') as string | undefined;
   let type = $state('') as (typeof monsterTypes)[number];
   let size = $state('') as (typeof sizes)[number];
-
-  async function chooseFolder(e: Event) {
-    folder = await showDirectoryPicker();
-    await set('project', folder);
-  }
-
-  // $inspect(folder);
+  let body = $state('');
 
   async function saveMonster(e: SubmitEvent) {
     e.preventDefault();
+    let imagePath = '';
+    const slug = slugify(monster.title);
+    const uid = Math.floor(Date.now()).toString(36);
+
+    let pth;
+    if (handler) {
+      pth = await getPath(handler);
+    } else if (image) {
+      const f = await writeImage(
+        `public/images/monsters/${slug}-${uid}.png`,
+        image,
+      );
+      pth = await getPath(f);
+    }
+
+    if (pth) {
+      if (pth[0] === 'public') {
+        pth.shift();
+      }
+      imagePath = pth.join('/');
+    }
+
+    const m = structuredClone($state.snapshot(monster));
+    m.image = imagePath;
+    try {
+      const copy = await md.compile(body, m);
+      const f = await writeFile(`src/content/monsters/${slug}.md`, copy);
+      const output = await getPath(f);
+      console.log(output);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   const abilities = $state({
@@ -62,16 +95,7 @@
     hp: null as null | number,
   });
 
-  const monster = $state(baseMonster);
-
-  let alternateSpeed = $derived(
-    [
-      monster.flying.has,
-      monster.climbing.has,
-      monster.swimming.has,
-      monster.burrowing.has,
-    ].filter((a) => a).length,
-  );
+  let monster = $state(baseMonster);
 
   let baseSpeed = $derived.by(() => {
     if (monster.size === 'tiny') return 15;
@@ -336,16 +360,54 @@
   function capitalize(str: string) {
     return str.charAt(0).toLocaleUpperCase() + str.slice(1);
   }
+
+  async function loadMonster(e: Event) {
+    e.preventDefault();
+    const [h] = await showOpenFilePicker({
+      startIn: await getDir('src/content/monsters'),
+      types: [
+        {
+          description: 'Markdown files',
+          accept: {
+            'text/*': ['.md', '.mdx'],
+          },
+        },
+      ],
+    });
+    const f = (await (await h.getFile()).text()) as string;
+    const {
+      attributes,
+      body: bdy,
+    }: {
+      attributes: Monster & {
+        image: string;
+      };
+      body: string;
+    } = await md.parse(f);
+    if (bdy) {
+      body = bdy;
+    }
+    const { image: img } = attributes;
+    delete attributes.image;
+    if (img) {
+      handler = await getFileHandle(`public/${img}`);
+      file = await handler.getFile();
+      image = await fileToImage(file);
+    }
+    monster = attributes;
+
+    // console.log(parsed);
+  }
 </script>
 
-{#if !folder}
+<!-- {#if !folder}
   <button onclick={chooseFolder}>Choose local folder</button>
-{/if}
+{/if} -->
 
-<div class="container">
+<form class="container" onsubmit={saveMonster}>
   <h1 class="type--h1">Build a Monster</h1>
 
-  <form onsubmit={saveMonster}>
+  <div class="form">
     <div class="group top">
       <label for="title">Name</label>
       <input type="text" name="title" bind:value={monster.title} required />
@@ -371,11 +433,11 @@
 
     <div class="group top">
       <label for="body">Description</label>
-      <textarea name="body" bind:value={monster.body} required></textarea>
+      <textarea name="body" bind:value={body}></textarea>
     </div>
 
     <div class="image">
-      <ImagePicker bind:image bind:file type="monster" />
+      <ImagePicker bind:image bind:file bind:handler type="monster" />
     </div>
 
     <fieldset class="abilities">
@@ -736,13 +798,10 @@
     <fieldset>
       <legend>Special</legend>
       <div class="group">
-        <label for="ancient">Ancient</label>
-        <input
-          type="number"
-          name="ancient"
-          min="0"
-          bind:value={monster.ancient}
-        />
+        <label for="ancient" class="switch">
+          <span>Ancient</span>
+          <input id="ancient" type="checkbox" bind:checked={monster.ancient} />
+        </label>
         <p>Increases AP by 1</p>
       </div>
 
@@ -845,25 +904,29 @@
         <p>Doesn't provoke reactions when leaving an enemy's reach</p>
       </div>
     </fieldset>
-  </form>
-
-  <div class="sidebar">
-    {#each Object.entries(preview) as [k, v]}
-      {#if Array.isArray(v)}
-        <p>{k}: {v.join(', ')}</p>
-      {:else if typeof v === 'object'}
-        <p>{k}: {JSON.stringify(v)}</p>
-      {:else}
-        <p>{k}: {v}</p>
-      {/if}
-    {/each}
   </div>
-</div>
+
+  <div class="container--sidebar">
+    <div class="sidebar">
+      {#each Object.entries(preview) as [k, v]}
+        {#if Array.isArray(v)}
+          <p>{k}: {v.join(', ')}</p>
+        {:else if typeof v === 'object'}
+          <p>{k}: {JSON.stringify(v)}</p>
+        {:else}
+          <p>{k}: {v}</p>
+        {/if}
+      {/each}
+      <input type="submit" value="Save Monster" />
+      <button onclick={loadMonster}>Load Monster</button>
+    </div>
+  </div>
+</form>
 
 <style lang="scss">
   .sidebar {
     position: sticky;
-    top: 0;
+    top: var(--header-height);
   }
   .switch {
     display: flex;
@@ -935,7 +998,7 @@
     margin: 0;
   }
 
-  form {
+  .form {
     display: grid;
     grid-template-columns: 200px 1fr 1fr;
     gap: 1rem;

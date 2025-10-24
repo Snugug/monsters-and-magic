@@ -1,16 +1,20 @@
 <script lang="ts">
   import type { GoogleGenAI } from '@google/genai';
+  import { fileToImage, stringToImage } from '$lib/images';
+  import { getDir } from '$lib/fs.svelte';
   import Icon from '$components/Icon.svelte';
 
   let {
     type,
     image = $bindable(''),
     file = $bindable(),
+    handler = $bindable(),
     editable = $bindable(true),
   }: {
     type: string;
     image: string;
-    file: File | null;
+    file: File;
+    handler: FileSystemFileHandle;
     editable: boolean;
   } = $props();
 
@@ -25,9 +29,15 @@
   let popover: HTMLFormElement;
   let imagepreview: HTMLElement;
 
+  $effect(() => {
+    if (image) {
+      select = !image;
+    }
+  });
+
   const instance = `i-${crypto.randomUUID()}`;
 
-  const core = `As the world's greatest artist and using the following prompt, generate an image in the style of hand painted and illustrated high fantasy art, like the kind you would find in a Dungeons & Dragons role playing book or an 80s movie poster. Do not include a border or an artist signature.
+  const core = `As the world's greatest artist and using the following prompt, generate an image in the style of hand painted and illustrated high fantasy art, like the kind you would find in a Dungeons & Dragons role playing book or an 80s movie poster. Do not include a border, an artist signature, or any text.
   
 Draw an image of the following:\n`;
 
@@ -75,7 +85,8 @@ Draw an image of the following:\n`;
 
   async function saveImage(e: SubmitEvent) {
     e.preventDefault();
-    const handler = await window.showSaveFilePicker({
+    handler = await window.showSaveFilePicker({
+      startIn: await getDir('public/images/monsters'),
       types: [
         {
           description: 'PNG File',
@@ -85,7 +96,7 @@ Draw an image of the following:\n`;
     });
     if (handler) {
       const writableStream = await handler.createWritable();
-      const imageBlob = await (await fetch(preview)).blob();
+      const imageBlob = await stringToImage(preview);
       await writableStream.write(imageBlob);
       await writableStream.close();
       file = (await handler.getFile()) as File;
@@ -102,23 +113,20 @@ Draw an image of the following:\n`;
     popover.hidePopover();
   }
 
-  async function blobToBase64(blob: Blob): Promise<string> {
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    return new Promise((resolve, reject) => {
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          resolve(reader.result);
-        } else {
-          reject('Unable to resolve as string');
+  $effect(() => {
+    if (popover) {
+      popover.addEventListener('beforetoggle', (e) => {
+        if (e.newState === 'closed') {
+          useImage(e);
         }
-      };
-    });
-  }
+      });
+    }
+  });
 
   async function chooseImage(e: Event) {
     e.preventDefault();
-    const [handler] = await window.showOpenFilePicker({
+    [handler] = await window.showOpenFilePicker({
+      startIn: await getDir('public/images/monsters'),
       types: [
         {
           description: 'PNG File',
@@ -131,14 +139,16 @@ Draw an image of the following:\n`;
       ],
     });
     file = (await handler.getFile()) as File;
-    const imageBlob = await (await fetch(URL.createObjectURL(file))).blob();
-    image = await blobToBase64(imageBlob);
+    image = await fileToImage(file);
     select = false;
   }
 
   function clearPreview(e: Event) {
     e.preventDefault();
     preview = '';
+    if (!image) {
+      select = true;
+    }
   }
 </script>
 
@@ -161,7 +171,18 @@ Draw an image of the following:\n`;
   {/if}
 
   {#if !select}
-    {#if image}
+    {#if preview}
+      <button
+        class="big-preview"
+        onclick={(e) => {
+          e.preventDefault();
+          imagepreview.togglePopover();
+        }}
+      >
+        <img src={preview} alt="" class="img" />
+      </button>
+      <button class="change" onclick={clearPreview}>Clear Preview</button>
+    {:else if image}
       <button
         class="big-preview"
         onclick={(e) => {
@@ -176,17 +197,6 @@ Draw an image of the following:\n`;
           >Change Image</button
         >
       {/if}
-    {:else if preview}
-      <button
-        class="big-preview"
-        onclick={(e) => {
-          e.preventDefault();
-          imagepreview.togglePopover();
-        }}
-      >
-        <img src={preview} alt="" class="img" />
-      </button>
-      <button class="change" onclick={clearPreview}>Clear Preview</button>
     {/if}
   {/if}
 </div>
@@ -298,6 +308,11 @@ Draw an image of the following:\n`;
       padding: 1rem;
       border: 1px solid black;
       box-shadow: 0px 0px 5px 2.5px rgba(0, 0, 0, 0.5);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
     }
   }
 
