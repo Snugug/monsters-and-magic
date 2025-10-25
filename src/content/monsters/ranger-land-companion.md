@@ -1,10 +1,11 @@
 ---
-title: Ranger Sea Companion
+title: Ranger Land Companion
 size: medium
 type: beast
+image: images/monsters/land-companion-mh4rshd0.png
 focus: -1
 power: 2
-cunning: 2
+cunning: 1
 luck: 0
 lineage: ""
 traits: []
@@ -17,22 +18,22 @@ blindsight: 10
 tremmorsense: 10
 truesight: 10
 speeds:
-  - swimming
-walking: 5
+  - climbing
+walking: 40
 flying: 0
-climbing: 0
+climbing: 40
 swimming: 60
 burrowing: 0
-vicious: 0
-savage: 0
+vicious: 1
+savage: 2
 strong: 0
 energetic: 0
 conditioned: 0
-grappler: true
+grappler: false
 elemental: ""
 spicy: ""
 techniques:
-  - pin-down
+  - charge
 cantrips: []
 charms: []
 upcast: 0
@@ -48,9 +49,16 @@ legendary: false
 lair: false
 bloodthirsty: false
 draining: false
-amphibious: true
+amphibious: false
 flyby: false
-image: images/monsters/sea-companion.png
+aquatic: false
+pack: false
+illumination: false
+escape: false
+swarm: false
+jumper: false
+compression: false
+burden: false
 ---
 
-A Ranger's companion that takes the form of a medium sea creature
+A Ranger's companion that takes the form of a medium land creature

@@ -1,10 +1,10 @@
 ---
-title: Ranger Sea Companion
-size: medium
+title: Ranger Sky Companion
+size: small
 type: beast
 focus: -1
-power: 2
-cunning: 2
+power: 0
+cunning: 3
 luck: 0
 lineage: ""
 traits: []
@@ -17,22 +17,22 @@ blindsight: 10
 tremmorsense: 10
 truesight: 10
 speeds:
-  - swimming
-walking: 5
-flying: 0
+  - flying
+walking: 10
+flying: 60
 climbing: 0
-swimming: 60
+swimming: 0
 burrowing: 0
-vicious: 0
+vicious: -1
 savage: 0
 strong: 0
-energetic: 0
+energetic: 1
 conditioned: 0
-grappler: true
+grappler: false
 elemental: ""
 spicy: ""
 techniques:
-  - pin-down
+  - duck-and-twist
 cantrips: []
 charms: []
 upcast: 0
@@ -48,9 +48,9 @@ legendary: false
 lair: false
 bloodthirsty: false
 draining: false
-amphibious: true
-flyby: false
-image: images/monsters/sea-companion.png
+amphibious: false
+flyby: true
+image: images/monsters/ranger-sky-companion.png
 ---
 
-A Ranger's companion that takes the form of a medium sea creature
+A Ranger's companion that takes the form of a small flying creature
