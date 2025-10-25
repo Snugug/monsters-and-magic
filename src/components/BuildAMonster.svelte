@@ -8,11 +8,9 @@
     types as monsterTypes,
   } from '$lib/monsters';
   import { md } from '$lib/md';
-  import { fileToImage, stringToImage } from '$lib/images';
+  import { fileToImage } from '$lib/images';
   import { slugify } from '$lib/helpers';
   import {
-    chooseFolder,
-    folder,
     getPath,
     writeFile,
     writeImage,
@@ -20,6 +18,8 @@
     getDir,
   } from '$lib/fs.svelte';
   import Multiselect from '$components/Multiselect.svelte';
+  import { tick } from 'svelte';
+  import { getMany, setMany } from 'idb-keyval';
 
   const lineages = await db.lineage.toArray();
   const armor = await db.armor.toArray();
@@ -37,34 +37,37 @@
   let type = $state('') as (typeof monsterTypes)[number];
   let size = $state('') as (typeof sizes)[number];
   let body = $state('');
+  let hp = $state(5);
+  let loaded = $state(false);
 
   async function saveMonster(e: SubmitEvent) {
     e.preventDefault();
-    let imagePath = '';
-    const slug = slugify(monster.title);
-    const uid = Math.floor(Date.now()).toString(36);
-
-    let pth;
-    if (handler) {
-      pth = await getPath(handler);
-    } else if (image) {
-      const f = await writeImage(
-        `public/images/monsters/${slug}-${uid}.png`,
-        image,
-      );
-      pth = await getPath(f);
-    }
-
-    if (pth) {
-      if (pth[0] === 'public') {
-        pth.shift();
-      }
-      imagePath = pth.join('/');
-    }
-
-    const m = structuredClone($state.snapshot(monster));
-    m.image = imagePath;
     try {
+      let imagePath = '';
+      const slug = slugify(monster.title);
+      const uid = Math.floor(Date.now()).toString(36);
+
+      let pth;
+      if (handler) {
+        pth = await getPath(handler);
+      } else if (image) {
+        const f = await writeImage(
+          `public/images/monsters/${slug}-${uid}.png`,
+          image,
+        );
+        pth = await getPath(f);
+      }
+
+      if (pth) {
+        if (pth[0] === 'public') {
+          pth.shift();
+        }
+        imagePath = pth.join('/');
+      }
+
+      const m = structuredClone($state.snapshot(monster));
+      m.image = imagePath;
+
       const copy = await md.compile(body, m);
       const f = await writeFile(`src/content/monsters/${slug}.md`, copy);
       const output = await getPath(f);
@@ -95,15 +98,17 @@
     hp: null as null | number,
   });
 
-  let monster = $state(baseMonster);
+  let monster = $state(structuredClone(baseMonster));
 
-  let baseSpeed = $derived.by(() => {
-    if (monster.size === 'tiny') return 15;
-    if (monster.size === 'large') return 35;
-    if (monster.size === 'huge') return 40;
-    if (monster.size === 'gargantuan') return 40;
+  let baseSpeed = $derived.by(() => calculateBaseSpeed(monster.size));
+
+  function calculateBaseSpeed(size: typeof monster.size) {
+    if (size === 'tiny') return 15;
+    if (size === 'large') return 35;
+    if (size === 'huge') return 40;
+    if (size === 'gargantuan') return 40;
     return 30;
-  });
+  }
 
   $effect(() => {
     for (const s of monster.speeds) {
@@ -166,162 +171,78 @@
       abilities.cunning.min = -5;
       abilities.luck.max = 5;
       abilities.luck.min = -2;
-      monster.focus = 0;
-      monster.power = 0;
-      monster.cunning = 0;
-      monster.luck = 0;
-      monster.resistance = [];
-      monster.vulnerable = [];
-      monster.immunity = [];
-      monster.spicy = '';
-      monster.charms = [];
-      monster.cantrips = [];
-      monster.undying = false;
-      monster.unrelenting = false;
 
       switch (monster.type) {
         case 'beast':
           abilities.focus.max = 0;
-          monster.focus = -1;
-          monster.power = 1;
-          monster.cunning = 2;
           break;
         case 'humanoid':
           abilities.focus.min = -2;
           abilities.power.min = -2;
           abilities.cunning.min = -2;
-          monster.focus = 1;
-          monster.power = 1;
           break;
         case 'celestial':
           abilities.focus.min = 0;
           abilities.power.min = -2;
-          monster.focus = 1;
-          monster.power = 1;
-          monster.luck = 1;
-          monster.resistance.push('radiant');
-          monster.vulnerable.push('necrotic');
           break;
         case 'fiend':
           abilities.cunning.min = 0;
           abilities.power.min = -2;
-          monster.cunning = 1;
-          monster.power = 1;
-          monster.luck = 1;
-          monster.vulnerable.push('radiant');
-          monster.resistance.push('fire');
-          break;
-        case 'undead':
-          monster.power = 2;
-          monster.vulnerable.push('radiant');
-          monster.resistance.push('necrotic');
-          monster.undying = true;
-          break;
-        case 'elemental':
-          monster.power = 2;
-          monster.spicy = 'fire';
-          monster.immunity.push('fire');
           break;
         case 'ooze':
           abilities.focus.max = 0;
           abilities.cunning.max = 0;
-          monster.power = 2;
-          monster.spicy = 'acid';
-          monster.immunity.push('acid');
           break;
-        case 'aberration':
-          monster.focus = 3;
-          monster.power = -1;
-          monster.cunning = 2;
-          monster.cantrips.push('mind-spike');
-          monster.cantrips.push('minor-illusion');
-          monster.charms.push('control-creature');
-          break;
-        case 'fey':
-          monster.power = -1;
-          monster.cunning = 3;
-          monster.luck = 1;
-          monster.cantrips.push('minor-illusion');
-          break;
-        case 'dragon':
-          monster.power = 2;
-          monster.cunning = 1;
-          monster.focus = 1;
-          monster.luck = 1;
-          monster.cantrips.push('fire-bolt');
-          monster.charms.push('splash');
-          monster.vulnerable.push('cold');
-          monster.resistance.push('fire');
-          break;
-        case 'construct':
-          monster.power = 2;
-          monster.immunity.push('fatigue');
-          monster.unrelenting = true;
-          break;
-        case 'monstrosity':
-          monster.power = 2;
       }
       type = monster.type;
     }
 
     if (s || t) {
-      // Reset
-      monster.walking = baseSpeed;
-      for (const spd of speeds) {
-        if (!monster.speeds.includes(spd)) {
-          monster[spd] = 0;
+      // Reset Speed
+      if (s) {
+        const oldSpeed = calculateBaseSpeed(size);
+        for (const spd of monster.speeds) {
+          if (monster[spd] === oldSpeed) monster[spd] = baseSpeed;
         }
+        if (monster.walking === oldSpeed) monster.walking = baseSpeed;
       }
+
       abilities.strong = null;
       abilities.hp = null;
-
-      switch (size) {
-        case 'tiny':
-          abilities.power.max += 1;
-          monster.strong += 1;
-          break;
-        case 'large':
-          abilities.power.min -= 1;
-          monster.hp -= 1;
-          monster.strong -= 1;
-          break;
-        case 'huge':
-          abilities.power.min -= 2;
-          monster.hp -= 2;
-          monster.strong -= 3;
-          break;
-        case 'gargantuan':
-          abilities.power.min -= 3;
-          monster.hp -= 3;
-          monster.strong -= 3;
-          break;
-      }
 
       switch (monster.size) {
         case 'tiny':
           abilities.power.max -= 1;
-          monster.strong -= 1;
+          abilities.cunning.max += 1;
+          hp = 3;
+          break;
+        case 'small':
+          hp = 4;
+          break;
+        case 'medium':
+          hp = 5;
           break;
         case 'large':
           abilities.power.min += 1;
-          monster.hp += 1;
-          monster.strong += 1;
           abilities.strong = 0;
           abilities.hp = 0;
+          hp = 6;
           break;
         case 'huge':
           abilities.power.min += 2;
-          monster.hp += 2;
-          monster.strong += 3;
+          abilities.power.max += 1;
+          abilities.cunning.max -= 1;
           abilities.strong = 2;
           abilities.hp = 1;
+          hp = 7;
           break;
         case 'gargantuan':
           abilities.power.min += 3;
-          monster.hp += 3;
-          monster.strong += 3;
+          abilities.power.max += 2;
+          abilities.cunning.max -= 2;
           abilities.strong = 2;
           abilities.hp = 2;
+          hp = 10;
           break;
       }
 
@@ -340,7 +261,6 @@
     if (monster.type !== 'humanoid') {
       monster.lineage = '';
       monster.traits = [];
-      monster.feats = [];
     }
   });
 
@@ -349,6 +269,37 @@
     if (monster.lineage !== lineage) {
       monster.traits = [];
       lineage = monster.lineage;
+    }
+  });
+
+  // State
+  $effect(async () => {
+    if (loaded === false) {
+      const [m, b] = await getMany([
+        'monster',
+        'body',
+        // 'handler',
+        // 'image',
+        // 'file',
+      ]);
+
+      if (m) monster = m;
+      if (b) body = b;
+      // if (h) handler = h;
+      // if (i) image = i;
+      // if (f) file = f;
+
+      loaded = true;
+    } else {
+      const m = $state.snapshot(monster);
+      const b = $state.snapshot(body);
+      await setMany([
+        ['monster', m],
+        ['body', b],
+        // ['handler', handler],
+        // ['image', image],
+        // ['file', file],
+      ]);
     }
   });
 
@@ -394,10 +345,44 @@
       file = await handler.getFile();
       image = await fileToImage(file);
     }
-    monster = attributes;
 
-    // console.log(parsed);
+    monster = structuredClone(baseMonster);
+    await tick();
+    await tick();
+
+    const combined = Object.assign(structuredClone(baseMonster), attributes);
+
+    monster = combined;
   }
+
+  const tags = {
+    amphibious: 'Can breathe air and water',
+    ancient: 'Increases AP by 1',
+    aquatic: 'Can only breathe underwater',
+
+    bloodthirsty:
+      'When at ½ HP or less, gain bonus to ability checks and damage rolls equal to CR',
+    burden: 'Carrying capacity is doubled',
+    compression:
+      'Can move through a space as narrow as 1 inch without expending extra movement',
+    draining:
+      'Once per turn when dealing damage with a melee attack, recover ½ damage or fatigue dealt',
+    escape: 'The AP cost for Disengage and Hide is reduced by 1',
+    flyby: `Doesn't provoke reactions when leaving an enemy's reach`,
+    grappler: 'Halves the fatigue needed to keep a foe restrained',
+    illumination: `Naturally emits bright light in a 10' radius, and dim light an additional 10'`,
+    jumper: 'Long jump and high jump distances are doubled',
+    lair: 'Has control over its surroundings, letting it take Lair Actions at the start of a round',
+
+    legendary: 'Can use Legendary Actions, Reactions, and Resistances',
+    pack: `When an ally is within 5' of a creature, attack rolls against that creature gain +2 ongoing. The ally can't be unconscious.`,
+    swarm: `Can occupy another creature's space and move through tiny openings, but cannot regain HP or gain temporary HP`,
+
+    undying:
+      'When fully exhausted, at the start of its next turn can spend 1 thread to recover all fatigue and 1 exhaustion.',
+    unrelenting:
+      'When damage would drop it to 0 HP but not outright kill it, can spend 1 thread to drop to 1 HP instead',
+  };
 </script>
 
 <!-- {#if !folder}
@@ -502,7 +487,7 @@
 
     {#if monster.type === 'humanoid'}
       <fieldset>
-        <legend>Lineage & Class</legend>
+        <legend>Lineage</legend>
         <div class="group">
           <label for="lineage">Lineage</label>
           <select name="type" bind:value={monster.lineage}>
@@ -522,12 +507,6 @@
             filter={(a) => a.lineage.id === monster.lineage}
           />
         {/if}
-        <Multiselect
-          bind:list={monster.feats}
-          items={feats}
-          legend="Feats"
-          button="Add Feat"
-        />
       </fieldset>
     {/if}
 
@@ -638,18 +617,6 @@
       </div>
 
       <div class="group">
-        <label for="grappler" class="switch">
-          <span>Grappler</span>
-          <input
-            id="grappler"
-            type="checkbox"
-            bind:checked={monster.grappler}
-          />
-        </label>
-        <p>Halves the fatigue needed to keep a foe restrained</p>
-      </div>
-
-      <div class="group">
         <label for="energetic">Energetic</label>
         <input
           type="number"
@@ -728,6 +695,12 @@
         />
       {/if}
       <Multiselect
+        bind:list={monster.feats}
+        items={feats}
+        legend="Feats"
+        button="Add Feat"
+      />
+      <Multiselect
         bind:list={monster.techniques}
         items={techniques}
         legend="Techniques"
@@ -767,7 +740,7 @@
           bind:value={monster.hp}
           min={abilities.hp}
         />
-        <p>Increases HP by 5</p>
+        <p>Increases HP by {hp}</p>
       </div>
       <div class="group">
         <label for="armored">Armor</label>
@@ -797,112 +770,15 @@
 
     <fieldset>
       <legend>Special</legend>
-      <div class="group">
-        <label for="ancient" class="switch">
-          <span>Ancient</span>
-          <input id="ancient" type="checkbox" bind:checked={monster.ancient} />
-        </label>
-        <p>Increases AP by 1</p>
-      </div>
-
-      <div class="group">
-        <label for="legendary" class="switch">
-          <span>Legendary</span>
-          <input
-            id="legendary"
-            type="checkbox"
-            bind:checked={monster.legendary}
-          />
-        </label>
-        <p>Can use Legendary Actions, Reactions, and Resistances</p>
-      </div>
-
-      <div class="group">
-        <label for="lair" class="switch">
-          <span>Lair</span>
-          <input id="lair" type="checkbox" bind:checked={monster.lair} />
-        </label>
-        <p>
-          Has control over its surroundings, letting it take Lair Actions at the
-          start of a round
-        </p>
-      </div>
-
-      <div class="group">
-        <label for="undying" class="switch">
-          <span>Undying</span>
-          <input id="undying" type="checkbox" bind:checked={monster.undying} />
-        </label>
-        <p>
-          When fully exhausted, at the start of its next turn can spend 1 thread
-          to recover all fatigue and 1 exhaustion.
-        </p>
-      </div>
-
-      <div class="group">
-        <label for="unrelenting" class="switch">
-          <span>Unrelenting</span>
-          <input
-            id="unrelenting"
-            type="checkbox"
-            bind:checked={monster.unrelenting}
-          />
-        </label>
-        <p>
-          When damage would drop it to 0 HP but not outright kill it, can spend
-          1 thread to drop to 1 HP instead
-        </p>
-      </div>
-
-      <div class="group">
-        <label for="bloodthirsty" class="switch">
-          <span>Bloodthirsty</span>
-          <input
-            id="bloodthirsty"
-            type="checkbox"
-            bind:checked={monster.bloodthirsty}
-          />
-        </label>
-        <p>
-          When at ½ HP or less, gain bonus to ability checks and damage rolls
-          equal to CR
-        </p>
-      </div>
-
-      <div class="group">
-        <label for="draining" class="switch">
-          <span>Draining</span>
-          <input
-            id="draining"
-            type="checkbox"
-            bind:checked={monster.draining}
-          />
-        </label>
-        <p>
-          Once per turn when dealing damage with a melee attack, recover ½
-          damage or fatigue dealt
-        </p>
-      </div>
-
-      <div class="group">
-        <label for="amphibious" class="switch">
-          <span>Amphibious</span>
-          <input
-            id="amphibious"
-            type="checkbox"
-            bind:checked={monster.amphibious}
-          />
-        </label>
-        <p>Can breathe are and water</p>
-      </div>
-
-      <div class="group">
-        <label for="flyby" class="switch">
-          <span>Flyby</span>
-          <input id="flyby" type="checkbox" bind:checked={monster.flyby} />
-        </label>
-        <p>Doesn't provoke reactions when leaving an enemy's reach</p>
-      </div>
+      {#each Object.entries(tags) as [t, d]}
+        <div class="group">
+          <label for={t} class="switch">
+            <span>{capitalize(t)}</span>
+            <input id={t} type="checkbox" bind:checked={monster[t]} />
+          </label>
+          <p>{d}</p>
+        </div>
+      {/each}
     </fieldset>
   </div>
 

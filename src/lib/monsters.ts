@@ -92,6 +92,14 @@ export const baseMonster = {
   draining: false,
   amphibious: false,
   flyby: false,
+  aquatic: false,
+  pack: false,
+  illumination: false,
+  escape: false,
+  swarm: false,
+  jumper: false,
+  compression: false,
+  burden: false,
 };
 
 export type Monster = typeof baseMonster;
@@ -117,28 +125,43 @@ export type CalculatedMonster = typeof monsterCalc;
 export function calculatePoints(monster: Monster): CalculatedMonster {
   const p = structuredClone(monsterCalc);
   let baseSpeed = 30;
+  let baseHP = 5;
   // Set starting based on size
   switch (monster.size) {
     case 'tiny':
       baseSpeed = 15;
+      baseHP = 3;
+      p.points -= 1;
+      break;
+    case 'small':
+      baseHP = 4;
       break;
     case 'large':
       p.reach += 5;
       baseSpeed = 35;
+      baseHP = 6;
+      p.points += 1;
       break;
     case 'huge':
+      p.reach += 5;
+      baseSpeed = 40;
+      baseHP = 7;
+      p.points += 2;
+      break;
     case 'gargantuan':
       p.reach += 5;
       baseSpeed = 40;
+      baseHP = 10;
+      p.points += 3;
       break;
   }
+  p.hp = baseHP + baseHP * monster.power;
 
   // Abilities
   p.points += points(
     monster.focus + monster.power + monster.cunning + monster.luck - 2,
     2,
   );
-  p.ac += monster.cunning;
 
   // Humanoid
   if (
@@ -152,10 +175,29 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     p.points += points(spend || 0);
   }
 
-  if (monster.type === 'humanoid' && monster.feats?.length) {
+  if (monster.feats?.length) {
     const s = spend(monster.feats, feats);
     p.points += points(s, 3);
   }
+
+  // Vision
+  if (monster.vision.includes('low-light vision')) {
+    p.points += 1;
+  }
+  if (monster.vision.includes('darkvision')) {
+    p.points += 2;
+  }
+  if (monster.vision.includes('blindsight')) {
+    p.points += points(monster.blindsight / 10, 2);
+  }
+  if (monster.vision.includes('tremmorsense')) {
+    p.points += points(monster.tremmorsense / 10, 2);
+  }
+  if (monster.vision.includes('truesight')) {
+    p.points += points(monster.truesight / 10, 3);
+  }
+
+  // Movement
 
   const totalNeutralSpeed = baseSpeed * (monster.speeds.length + 1);
   const totalSpentSpeed =
@@ -257,7 +299,6 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
 
   if (monster.savage !== 0) {
     p.piercing += monster.savage;
-    console.log(p);
     p.points += points(monster.savage, 2);
     p.tags.push('savage');
   }
@@ -315,6 +356,24 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   }
 
   // Defense
+
+  // Armor
+  if (monster.armor?.length) {
+    const a0 = monster.armor.map((w) => armor.find((f) => f.id === w));
+    const a = a0.map((b) => b?.ac || 0).reduce((acc, cur) => acc + cur, 0);
+    const t = a0.map((b) => b?.type);
+
+    p.ac += a;
+    if (t.includes('light')) {
+      p.ac += monster.cunning;
+    } else if (t.includes('medium')) {
+      p.ac += Math.floor(monster.cunning / 2);
+    }
+    p.points += points(a + monster.armored);
+  } else {
+    p.ac += monster.cunning;
+  }
+
   if (monster.armored !== 0) {
     p.ac += monster.armored;
     if (!monster.armor?.length) {
@@ -322,33 +381,16 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     }
   }
 
-  // Armor
-  if (monster.armor?.length) {
-    const a = monster.armor
-      .map((w) => {
-        const g = armor.find((f) => f.id === w);
-        if (g) {
-          return g.ac;
-        }
-
-        return 0;
-      })
-      .reduce((acc, cur) => acc + cur, 0);
-
-    p.ac += a;
-    p.points += points(a + monster.armored);
-  }
-
-  // TODO: Better armor tags
-  if (p.ac - monster.cunning > 0) {
-    p.tags.push('heavily armored');
-  } else if (p.ac - monster.cunning < 0) {
-    p.tags.push('lightly armored');
+  if (monster.armor.length > 0 || monster.armored > 0) {
+    p.tags.push('armored');
+  } else if (p.ac < monster.cunning) {
+    p.tags.push('exposed');
   }
 
   // HP
   if (monster.hp !== 0) {
-    p.hp += monster.hp * 5;
+    p.hp += monster.hp * baseHP;
+
     p.points += points(monster.hp);
     if (monster.hp < 0) {
       p.tags.push('frail');
@@ -419,6 +461,36 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   if (monster.flyby) {
     p.points += 3;
     p.tags.push('flyby');
+  }
+  if (monster.aquatic) {
+    p.points -= 1;
+    p.tags.push('aquatic');
+  }
+  if (monster.pack) {
+    p.points += 2;
+    p.tags.push('pack tactics');
+  }
+  if (monster.illumination) {
+    p.tags.push('illuminated');
+  }
+  if (monster.escape) {
+    p.points += 2;
+    p.tags.push('escape artist');
+  }
+  if (monster.swarm) {
+    p.tags.push('swarm');
+  }
+  if (monster.jumper) {
+    p.points += 1;
+    p.tags.push('jumper');
+  }
+  if (monster.compression) {
+    p.points += 1;
+    p.tags.push('squishy');
+  }
+  if (monster.burden) {
+    p.points += 1;
+    p.tags.push('beast of burden');
   }
 
   // Set CR at the end

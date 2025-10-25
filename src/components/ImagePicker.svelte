@@ -2,6 +2,7 @@
   import type { GoogleGenAI } from '@google/genai';
   import { fileToImage, stringToImage } from '$lib/images';
   import { getDir } from '$lib/fs.svelte';
+  import { getMany, setMany } from 'idb-keyval';
   import Icon from '$components/Icon.svelte';
 
   let {
@@ -28,10 +29,34 @@
   let select = $state(!image);
   let popover: HTMLFormElement;
   let imagepreview: HTMLElement;
+  let loaded = $state(false);
 
   $effect(() => {
     if (image) {
       select = !image;
+    }
+  });
+
+  $effect(async () => {
+    if (loaded === false) {
+      const [h, i, f, p] = await getMany([
+        'handler',
+        'image',
+        'file',
+        'prompt',
+      ]);
+      if (h) handler = h;
+      if (i) image = i;
+      if (f) file = f;
+      if (p) prompt = p;
+      loaded = true;
+    } else {
+      await setMany([
+        ['handler', handler],
+        ['image', image],
+        ['file', file],
+        ['prompt', $state.snapshot(prompt)],
+      ]);
     }
   });
 
@@ -226,24 +251,27 @@ Draw an image of the following:\n`;
   popover
   bind:this={popover}
 >
-  {#if !apiKey}
-    <div class="generate--group">
-      <label for="apikey">API Key</label>
-      <input type="text" name="apikey" bind:value={keyInput} />
-    </div>
-    <input type="submit" value="Add API Key" />
-  {:else}
-    <div class="generate--group">
-      <label for="prompt">Describe your {type}</label>
-      <textarea disabled={loading} name="prompt" bind:value={prompt}></textarea>
-    </div>
-    <input disabled={loading} type="submit" value="Generate image" />
+  <div class="generate--inner">
+    {#if !apiKey}
+      <div class="generate--group">
+        <label for="apikey">API Key</label>
+        <input type="text" name="apikey" bind:value={keyInput} />
+      </div>
+      <input type="submit" value="Add API Key" />
+    {:else}
+      <div class="generate--group">
+        <label for="prompt">Describe your {type}</label>
+        <textarea disabled={loading} name="prompt" bind:value={prompt}
+        ></textarea>
+      </div>
+      <input disabled={loading} type="submit" value="Generate image" />
 
-    {#if preview}
-      <button disabled={loading} onclick={useImage}>Use</button>
-      <button disabled={loading} onclick={saveImage}>Save</button>
+      {#if preview}
+        <button disabled={loading} onclick={useImage}>Use</button>
+        <button disabled={loading} onclick={saveImage}>Save</button>
+      {/if}
     {/if}
-  {/if}
+  </div>
 </form>
 
 <style lang="scss">
@@ -317,19 +345,39 @@ Draw an image of the following:\n`;
   }
 
   .generate {
+    position-area: center right;
     &:popover-open {
-      background-color: var(--white);
       position: absolute;
+      background: transparent;
+      border: 0;
+      height: min-content;
+      filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.75));
+    }
+
+    &--inner {
+      background-color: var(--white);
+      position: relative;
       padding: 1rem;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
-      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
-      border: 0;
       border-radius: 5px;
       width: 25ch;
-      margin-inline-start: 1rem;
-      position-area: center right;
+      margin-inline-start: 10px;
+
+      &:before {
+        position: absolute;
+        left: -10px;
+        top: calc(50% - 5px);
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+
+        border-right: 10px solid var(--white);
+      }
     }
 
     label {
@@ -341,6 +389,12 @@ Draw an image of the following:\n`;
     input,
     textarea {
       width: 100%;
+    }
+
+    textarea {
+      resize: none;
+      field-sizing: content;
+      min-height: 5rem;
     }
 
     &--group {
