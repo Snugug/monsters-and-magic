@@ -1,5 +1,20 @@
 import { z, defineCollection, reference } from 'astro:content';
 import { boolean } from 'astro:schema';
+import {
+  sizes as stdSizes,
+  elements as stdElements,
+  dieSizes as stdDieSizes,
+  vision as stdVision,
+  speeds as stdSpeeds,
+  monsterTypes as stdMonsterTypes,
+} from '$lib/shared';
+
+const monsterTypes = z.enum(stdMonsterTypes);
+const sizes = z.enum(stdSizes);
+const elements = z.enum(stdElements);
+const dieSizes = z.enum(stdDieSizes);
+const vision = z.enum(stdVision);
+const speeds = z.enum(stdSpeeds);
 
 const standalone = defineCollection({
   type: 'content',
@@ -126,20 +141,6 @@ const heritage = defineCollection({
     requirements: z.string().optional(),
   }),
 });
-
-const monsterStep = z.number().step(1).min(0);
-const elements = z.enum([
-  'fire',
-  'cold',
-  'force',
-  'lightning',
-  'poison',
-  'acid',
-  'radiant',
-  'necrotic',
-  'physical',
-  'fatigue',
-]);
 
 const cantrips = defineCollection({
   type: 'content',
@@ -275,68 +276,98 @@ const modifications = defineCollection({
   }),
 });
 
-const monster = defineCollection({
+const monsterStep = z.number().step(1).min(0);
+
+const monsters = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    size: z.enum(['tiny', 'small', 'medium', 'large', 'huge', 'gargantuan']),
-    offense: z.object({
-      vicious: monsterStep,
-      timid: monsterStep,
-      specialized: monsterStep,
-      savage: monsterStep,
-      strong: monsterStep,
-      weak: monsterStep,
-      energetic: monsterStep,
-      conditioned: monsterStep,
-      skilled: monsterStep,
-      caster: monsterStep,
-      charming: monsterStep,
-      upcast: monsterStep,
-      grappler: monsterStep,
-      elemental: elements.optional(),
-      spicy: elements.optional(),
-    }),
-    defense: z.object({
-      stout: monsterStep,
-      frail: monsterStep,
-      'heavily armored': monsterStep,
-      'lightly armored': monsterStep,
-      resistant: z.array(elements).optional(),
-      tough: z.boolean(),
-      immune: z.array(elements).optional(),
-      vulnerable: z.array(elements).optional(),
-    }),
-    movement: z.object({
-      speed: z.object({
-        // Averages
-        // 1+ for each speed above 30
-        // 1- for each speed below 30
-        walking: monsterStep.optional(),
-        flying: monsterStep.optional(), // 3 points
-        climbing: monsterStep.optional(), // 1 point
-        swimming: monsterStep.optional(), // 1 point
-        burrowing: monsterStep.optional(), // 2 points
+    size: sizes,
+    type: monsterTypes,
+    image: z.string(),
+    focus: z.number(),
+    power: z.number(),
+    cunning: z.number(),
+    luck: z.number(),
+    lineage: reference('lineage'),
+    traits: z.array(reference('traits')),
+    feats: z.array(reference('feats')),
+    weapons: z.array(reference('weapons')),
+    armor: z.array(reference('armor')),
+    vision: z.array(vision),
+    blindsight: z.number(),
+    tremmorsense: z.number(),
+    truesight: z.number(),
+    speeds: z.array(speeds),
+    walking: z.number(),
+    flying: z.number(),
+    climbing: z.number(),
+    swimming: z.number(),
+    burrowing: z.number(),
+    savage: z.number(),
+    strong: z.number(),
+    energetic: z.number(),
+    conditioned: z.number(),
+    spicy: elements.or(z.literal('')),
+    naturalWeapons: z
+      .array(
+        z.object({
+          name: z.string(),
+          damage: dieSizes,
+          element: elements,
+        }),
+      )
+      .min(1),
+    attacks: z.array(
+      z.object({
+        name: z.string(),
+        type: z.enum([
+          'attack',
+          'power',
+          'focus',
+          'cunning',
+          'reaction',
+          'other',
+        ]),
+        damage: dieSizes.or(z.literal('')),
+        element: elements.or(z.literal('')),
+        condition: reference('conditions').or(z.literal('')),
+        ap: z.number().min(2),
+        fatigue: z.number().min(0),
+        trigger: z.string(),
+        recharge: z.enum(['1d4', '1d6', '1d8', '1d10']).or(z.literal('')),
+        thread: z.boolean(),
+        description: z.string(),
       }),
-      amphibious: z.boolean(),
-      flyby: z.boolean(),
-    }),
-    vision: z.object({
-      'low-light': z.boolean(),
-      darkvision: z.boolean(),
-      blindsight: monsterStep,
-      tremorsense: monsterStep,
-      truesight: monsterStep,
-    }),
-    special: z.object({
-      ancient: monsterStep,
-      legendary: z.boolean(),
-      lair: z.boolean(),
-      bloodthirsty: monsterStep,
-      draining: z.boolean(),
-      unrelenting: z.boolean(),
-      undying: z.boolean(),
-    }),
+    ),
+    techniques: z.array(reference('techniques')),
+    cantrips: z.array(reference('cantrips')),
+    charms: z.array(reference('charms')),
+    hp: z.number(),
+    armored: z.number(),
+    resistance: z.array(elements),
+    immunity: z.array(elements),
+    vulnerable: z.array(elements),
+
+    ancient: z.boolean(),
+    unrelenting: z.boolean(),
+    undying: z.boolean(),
+    legendary: z.boolean(),
+    lair: z.boolean(),
+    bloodthirsty: z.boolean(),
+    draining: z.boolean(),
+    amphibious: z.boolean(),
+    flyby: z.boolean(),
+    aquatic: z.boolean(),
+    pack: z.boolean(),
+    illumination: z.boolean(),
+    escape: z.boolean(),
+    swarm: z.boolean(),
+    jumper: z.boolean(),
+    compression: z.boolean(),
+    burden: z.boolean(),
+    aggressive: z.boolean(),
+    grappler: z.boolean(),
   }),
 });
 
@@ -359,7 +390,7 @@ export const collections = {
   classes,
   feats,
   heritage,
-  monster,
+  monsters,
   cantrips,
   charms,
   weapons,

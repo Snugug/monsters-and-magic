@@ -8,6 +8,7 @@ power: 3
 cunning: -1
 luck: 0
 lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -28,6 +29,7 @@ energetic: 0
 conditioned: 0
 grappler: false
 spicy: ""
+spicy: ''
 naturalWeapons:
   - name: Bite
     damage: 2d10
@@ -41,10 +43,11 @@ attacks:
     damage: ""
     element: physical
     condition: Prone
-    target: ""
+    trigger: ''
     recharge: 1d8
     thread: false
-    description: Move, then strike with allosaurus' claws. If you moved more than
+    description:
+      Move, then strike with allosaurus' claws. If you moved more than
       30' in a straight line immediately before the attack and the creature
       attacked is of the allosaurus' size or smaller, on a strong hit, knock the
       target prone.
