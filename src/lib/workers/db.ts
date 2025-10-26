@@ -2,12 +2,15 @@ import * as Comlink from 'comlink';
 import { Dexie, type EntityTable } from 'dexie';
 import type { CollectionEntry } from 'astro:content';
 
+const version = 2;
+
 const tables = [
   'activities',
   'armor',
   'cantrips',
   'charms',
   'classes',
+  'conditions',
   'feats',
   'foci',
   'gear',
@@ -55,7 +58,7 @@ for (const collection of tables) {
 
 export const db = new Dexie('mnm') as Database;
 
-db.version(1).stores(stores);
+db.version(version).stores(stores);
 
 async function init() {
   const collections = (await (

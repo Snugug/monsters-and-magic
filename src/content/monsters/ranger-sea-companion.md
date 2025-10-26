@@ -2,6 +2,7 @@
 title: Ranger Sea Companion
 size: medium
 type: beast
+image: images/monsters/sea-companion.png
 focus: -1
 power: 2
 cunning: 2
@@ -23,14 +24,16 @@ flying: 0
 climbing: 0
 swimming: 60
 burrowing: 0
-vicious: 0
 savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
 grappler: true
-elemental: ""
 spicy: ""
+naturalWeapons:
+  - name: Tentacle
+    damage: 1d6
+    type: physical
 techniques:
   - pin-down
 cantrips: []
@@ -50,7 +53,17 @@ bloodthirsty: false
 draining: false
 amphibious: true
 flyby: false
-image: images/monsters/sea-companion.png
+aquatic: false
+pack: false
+illumination: false
+escape: false
+swarm: false
+jumper: false
+compression: false
+burden: false
+aggressive: false
+vicious: 0
+elemental: ""
 ---
 
 A Ranger's companion that takes the form of a medium sea creature

@@ -29,7 +29,17 @@ export const dieSizes = [
   '1d10',
   '1d12',
   '2d6',
-  '3d4',
+  '2d8',
+  '3d6',
+  '2d10',
+  '2d12',
+  '4d6',
+  '3d10',
+  '4d8',
+  '5d6',
+  '6d6',
+  '4d10',
+  '4d12',
 ] as const;
 
 export const vision = [

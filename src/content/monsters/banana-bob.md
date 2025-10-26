@@ -24,14 +24,16 @@ flying: 70
 climbing: 0
 swimming: 0
 burrowing: 0
-vicious: 0
 savage: 0
 strong: 2
 energetic: 0
 conditioned: 0
 grappler: false
-elemental: ""
 spicy: ""
+naturalWeapons:
+  - name: Fist
+    damage: 2d8
+    type: physical
 techniques: []
 cantrips: []
 charms: []
@@ -60,5 +62,9 @@ swarm: false
 jumper: false
 compression: false
 burden: false
+aggressive: false
+vicious: 0
+elemental: ""
 ---
 
+A Ranger's companion that takes the form of a medium sea creature

@@ -1,10 +1,13 @@
 <script lang="ts">
   import ImagePicker from '$components/ImagePicker.svelte';
   import { db } from '$lib/db';
-  import { sizes, elements, vision, speeds } from '$lib/shared';
+  import { sizes, elements, vision, speeds, dieSizes } from '$lib/shared';
   import {
     baseMonster,
     calculatePoints,
+    tags,
+    newWeaponBase,
+    newAttackBase,
     types as monsterTypes,
   } from '$lib/monsters';
   import { md } from '$lib/md';
@@ -18,6 +21,8 @@
     getDir,
   } from '$lib/fs.svelte';
   import Multiselect from '$components/Multiselect.svelte';
+  import Repeater from '$components/Repeater.svelte';
+  import type { RepeaterActions } from '$components/Repeater.svelte';
   import { tick } from 'svelte';
   import { getMany, setMany } from 'idb-keyval';
 
@@ -29,6 +34,11 @@
   const feats = await db.feats.toArray();
   const cantrips = await db.cantrips.toArray();
   const charms = await db.charms.toArray();
+  const conditions = (await db.conditions.toArray()).sort((a, b) => {
+    if (a.status && !b.status) return 1;
+    if (!a.status && b.status) return -1;
+    return 0;
+  });
 
   let image = $state('');
   let file = $state() as File;
@@ -158,6 +168,9 @@
       : false,
   );
 
+  const nwBase = structuredClone(newWeaponBase);
+  const nwAtkBase = structuredClone(newAttackBase);
+
   // Set defaults based on monster type;
   $effect(() => {
     const t = type !== monster.type;
@@ -177,6 +190,7 @@
           abilities.focus.max = 0;
           break;
         case 'humanoid':
+        case 'dragon':
           abilities.focus.min = -2;
           abilities.power.min = -2;
           abilities.cunning.min = -2;
@@ -189,11 +203,43 @@
           abilities.cunning.min = 0;
           abilities.power.min = -2;
           break;
+        case 'aberration':
+          abilities.cunning.min = 0;
+          abilities.focus.min = 0;
+          break;
+        case 'fey':
+          abilities.cunning.min = -2;
+          break;
         case 'ooze':
           abilities.focus.max = 0;
           abilities.cunning.max = 0;
           break;
       }
+
+      let nwSwitch = false;
+      let n = monster.naturalWeapons[0].name;
+      switch (monster.type) {
+        case 'beast':
+        case 'dragon':
+        case 'monstrosity':
+          nwBase.name = 'Claw';
+          if (n === 'Tendril' || n === 'Fist') nwSwitch = true;
+          break;
+        case 'ooze':
+        case 'aberration':
+          nwBase.name = 'Tendril';
+          if (n === 'Claw' || n === 'Fist') nwSwitch = true;
+          break;
+        default:
+          nwBase.name = 'Fist';
+          if (n === 'Tendril' || n === 'Claw') nwSwitch = true;
+          break;
+      }
+
+      if (monster.naturalWeapons.length === 1 && nwSwitch) {
+        monster.naturalWeapons[0].name = nwBase.name;
+      }
+
       type = monster.type;
     }
 
@@ -355,34 +401,14 @@
     monster = combined;
   }
 
-  const tags = {
-    amphibious: 'Can breathe air and water',
-    ancient: 'Increases AP by 1',
-    aquatic: 'Can only breathe underwater',
-
-    bloodthirsty:
-      'When at ½ HP or less, gain bonus to ability checks and damage rolls equal to CR',
-    burden: 'Carrying capacity is doubled',
-    compression:
-      'Can move through a space as narrow as 1 inch without expending extra movement',
-    draining:
-      'Once per turn when dealing damage with a melee attack, recover ½ damage or fatigue dealt',
-    escape: 'The AP cost for Disengage and Hide is reduced by 1',
-    flyby: `Doesn't provoke reactions when leaving an enemy's reach`,
-    grappler: 'Halves the fatigue needed to keep a foe restrained',
-    illumination: `Naturally emits bright light in a 10' radius, and dim light an additional 10'`,
-    jumper: 'Long jump and high jump distances are doubled',
-    lair: 'Has control over its surroundings, letting it take Lair Actions at the start of a round',
-
-    legendary: 'Can use Legendary Actions, Reactions, and Resistances',
-    pack: `When an ally is within 5' of a creature, attack rolls against that creature gain +2 ongoing. The ally can't be unconscious.`,
-    swarm: `Can occupy another creature's space and move through tiny openings, but cannot regain HP or gain temporary HP`,
-
-    undying:
-      'When fully exhausted, at the start of its next turn can spend 1 thread to recover all fatigue and 1 exhaustion.',
-    unrelenting:
-      'When damage would drop it to 0 HP but not outright kill it, can spend 1 thread to drop to 1 HP instead',
-  };
+  function resetMonster(e: Event) {
+    e.preventDefault();
+    monster = structuredClone(baseMonster);
+    body = '';
+    handler = null;
+    file = null;
+    image = null;
+  }
 </script>
 
 <!-- {#if !folder}
@@ -480,8 +506,8 @@
         />
       </div>
       <p>
-        Abilities can be purchased for 2+/2-, the first two ability increases
-        are free.
+        All monsters start with a 0/1/1/0 spread. Different creature types have
+        different minimums and maximums.
       </p>
     </fieldset>
 
@@ -561,6 +587,7 @@
           type="number"
           name="speed"
           bind:value={monster.walking}
+          required
           min="5"
           step="5"
         />
@@ -583,18 +610,6 @@
 
     <fieldset>
       <legend>Offense</legend>
-      <div class="group">
-        <label for="vicious">Vicious</label>
-        <input
-          type="number"
-          name="vicious"
-          bind:value={monster.vicious}
-          min="-3"
-          max="5"
-        />
-        <p>Increases or decreases natural damage die size</p>
-      </div>
-
       <div class="group">
         <label for="vicious">Savage</label>
         <input
@@ -639,19 +654,6 @@
       </div>
 
       <div class="group">
-        <label for="type">Elemental</label>
-        <select name="type" bind:value={monster.elemental}>
-          <option value="">-</option>
-          {#each elements as e}
-            {#if e !== 'physical'}
-              <option value={e}>{capitalize(e)}</option>
-            {/if}
-          {/each}
-        </select>
-        <p>Natural and weapon attack damage type</p>
-      </div>
-
-      <div class="group">
         <label for="type">Spicy</label>
         <select name="type" bind:value={monster.spicy}>
           <option value="">-</option>
@@ -664,7 +666,58 @@
     </fieldset>
 
     <fieldset>
-      <legend>{equipment ? 'Equipment & ' : ''}Training</legend>
+      <legend>{equipment ? 'Equipment & ' : 'Weapons & '}Training</legend>
+      <fieldset>
+        <legend>Natural Weapons</legend>
+        <div class="weapon-group">
+          <Repeater bind:list={monster.naturalWeapons} base={nwBase} min="1">
+            {#snippet item(
+              l: typeof nwBase,
+              i: number,
+              actions: RepeaterActions,
+            )}
+              <div class="group">
+                <label for="base-nw-damage-{i}">Name</label>
+                <input
+                  type="text"
+                  id="base-nw-name-{i}"
+                  bind:value={l.name}
+                  required
+                />
+              </div>
+              <div class="group">
+                <label for="base-nw-damage-{i}">Damage</label>
+                <!-- dieSizes -->
+                <select
+                  name="type"
+                  id="base-nw-damage-{i}"
+                  bind:value={l.damage}
+                  required
+                >
+                  {#each dieSizes as e}
+                    <option value={e}>{e}</option>
+                  {/each}
+                </select>
+              </div>
+              <div class="group">
+                <label for="base-nw-type-{i}">Damage Type</label>
+                <select
+                  name="type"
+                  id="base-nw-type-{i}"
+                  bind:value={l.element}
+                  required
+                >
+                  {#each elements as e}
+                    <option value={e}>{capitalize(e)}</option>
+                  {/each}
+                </select>
+              </div>
+              {@render actions.all(i)}
+            {/snippet}
+          </Repeater>
+        </div>
+      </fieldset>
+
       {#if equipment}
         <Multiselect
           bind:list={monster.weapons}
@@ -769,6 +822,168 @@
     </fieldset>
 
     <fieldset>
+      <legend>Actions</legend>
+      <div class="weapon-group">
+        <Repeater
+          bind:list={monster.attacks}
+          base={nwAtkBase}
+          empty="Add Action"
+          min={0}
+        >
+          {#snippet item(
+            l: typeof newAttackBase,
+            i: number,
+            actions: RepeaterActions,
+          )}
+            <div class="group full">
+              <label for="nwa-name-{i}">Name</label>
+              <input
+                type="text"
+                name="nwa-name-{i}"
+                id="nwa-name-{i}"
+                bind:value={l.name}
+                required
+              />
+            </div>
+            <div class="group">
+              <label for="nwa-type-{i}">Type</label>
+              <select
+                name="nwa-type-{i}"
+                id="nwa-type-{i}"
+                bind:value={l.type}
+                required
+              >
+                <option value="attack">Attack</option>
+                <option value="focus">Focus Save</option>
+                <option value="power">Power Save</option>
+                <option value="cunning">Cunning Save</option>
+                <option value="reaction">Reaction</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="group">
+              <label for="nwa-damage-{i}">Damage</label>
+              <!-- dieSizes -->
+              <select
+                name="nwa-damage-{i}"
+                id="nwa-damage-{i}"
+                bind:value={l.damage}
+                disabled={l.type === 'other'}
+              >
+                <option value="">-</option>
+                {#each dieSizes as e}
+                  <option value={e}>{e}</option>
+                {/each}
+              </select>
+            </div>
+            <div class="group">
+              <label for="nwa-element-{i}">Damage Type</label>
+              <select
+                name="nwa-element-{i}"
+                id="nwa-element-{i}"
+                bind:value={l.element}
+                disabled={l.type === 'other'}
+              >
+                <option value="">-</option>
+                {#each elements as e}
+                  <option value={e}>{capitalize(e)}</option>
+                {/each}
+              </select>
+            </div>
+            <div class="group">
+              <label for="nwa-condition-{i}">Condition or Status</label>
+              <select
+                name="nwa-condition-{i}"
+                id="nwa-condition-{i}"
+                bind:value={l.condition}
+              >
+                <option value="">-</option>
+                {#each conditions as e}
+                  <option value={e.title}>{capitalize(e.title)}</option>
+                {/each}
+              </select>
+            </div>
+
+            <div class="group">
+              <label for="nwa-ap-{i}">Action Points</label>
+              <input
+                type="number"
+                name="nwa-ap-{i}"
+                id="nwa-ap-{i}"
+                bind:value={l.ap}
+                min="2"
+                required
+                disabled={l.type === 'reaction'}
+              />
+            </div>
+
+            <div class="group">
+              <label for="nwa-fatigue-{i}">Fatigue</label>
+              <input
+                type="number"
+                name="nwa-fatigue-{i}"
+                id="nwa-fatigue-{i}"
+                bind:value={l.fatigue}
+                required
+                min="0"
+              />
+            </div>
+
+            <div class="group">
+              <label for="nwa-recharge-{i}">Recharge</label>
+              <select
+                name="nwa-recharge-{i}"
+                id="nwa-recharge-{i}"
+                bind:value={l.recharge}
+              >
+                <option value="">-</option>
+                {#each ['1d4', '1d6', '1d8', '1d10'] as e}
+                  <option value={e}>{e}</option>
+                {/each}
+              </select>
+            </div>
+            <div class="group">
+              <label for="nwa-thread-{i}" class="switch">
+                <span>Thread of Fate</span>
+                <input
+                  id="nwa-thread-{i}"
+                  name="nwa-thread-{i}"
+                  type="checkbox"
+                  bind:checked={l.thread}
+                />
+              </label>
+              <!-- <p>Requires a Thread of Fate to use</p> -->
+            </div>
+            {#if l.type === 'reaction'}
+              <div class="group full">
+                <label for="nwa-trigger-{i}">Trigger</label>
+                <input
+                  type="text"
+                  name="nwa-trigger-{i}"
+                  id="nwa-trigger-{i}"
+                  bind:value={l.trigger}
+                  required
+                />
+              </div>
+            {/if}
+            <div class="group full">
+              <label for="nwa-desc-{i}">Description</label>
+              <textarea
+                name="nwa-desc-{i}"
+                id="nwa-desc-{i}"
+                bind:value={l.description}
+                required
+              ></textarea>
+            </div>
+            <div class="attack-actions">
+              {@render actions.all(i)}
+            </div>
+          {/snippet}
+        </Repeater>
+      </div>
+    </fieldset>
+
+    <fieldset>
       <legend>Special</legend>
       {#each Object.entries(tags) as [t, d]}
         <div class="group">
@@ -793,8 +1008,11 @@
           <p>{k}: {v}</p>
         {/if}
       {/each}
-      <input type="submit" value="Save Monster" />
-      <button onclick={loadMonster}>Load Monster</button>
+      <div class="buttons">
+        <input type="submit" value="Save Monster" />
+        <button onclick={loadMonster}>Load Monster</button>
+        <button onclick={resetMonster}>Reset</button>
+      </div>
     </div>
   </div>
 </form>
@@ -931,5 +1149,41 @@
 
   .top {
     grid-column: span 2;
+  }
+
+  .buttons {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .weapon-group {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .full {
+    grid-column: 1 / -1;
+  }
+
+  .half {
+    grid-column: span 2;
+  }
+
+  .attack-actions {
+    grid-column: -2;
+  }
+
+  .group:has([required]) label {
+    &:after {
+      content: '*';
+      color: var(--dark-red);
+    }
+  }
+
+  textarea[name^='nwa-desc'] {
+    field-sizing: content;
+    min-height: 5rem;
   }
 </style>

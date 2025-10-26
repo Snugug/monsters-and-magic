@@ -34,6 +34,8 @@
   $effect(() => {
     if (image) {
       select = !image;
+    } else if (image === null) {
+      select = true;
     }
   });
 

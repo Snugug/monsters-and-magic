@@ -23,6 +23,61 @@ export const types = [
   'monstrosity',
 ] as const;
 
+export const newWeaponBase = {
+  name: 'Fist' as string,
+  damage: '1d6' as (typeof dieSizes)[number],
+  element: 'physical' as (typeof elements)[number],
+};
+
+export const newAttackBase = {
+  name: '',
+  type: 'attack' as
+    | 'attack'
+    | 'power'
+    | 'focus'
+    | 'cunning'
+    | 'reaction'
+    | 'other',
+  damage: '1d6' as (typeof dieSizes)[number] | '',
+  element: '' as (typeof elements)[number] | '',
+  condition: '',
+  ap: 2,
+  fatigue: 0,
+  trigger: '',
+  recharge: '' as '1d4' | '1d6' | '1d8' | '1d10',
+  thread: false,
+  description: '',
+};
+
+export const tags = {
+  aggressive: 'Using Strike multiple times per turn costs 1 fewer AP',
+  amphibious: 'Can breathe air and water',
+  ancient: 'Increases AP by 1',
+  aquatic: 'Can only breathe underwater',
+  bloodthirsty:
+    'When at ½ HP or less, gain bonus to ability checks and damage rolls equal to CR',
+  burden: 'Carrying capacity is doubled',
+  compression:
+    'Can move through a space as narrow as 1 inch without expending extra movement',
+  draining:
+    'Once per turn when dealing damage with a melee attack, recover ½ damage or fatigue dealt',
+  escape: 'The AP cost for Disengage and Hide is reduced by 1',
+  flyby: `Doesn't provoke reactions when leaving an enemy's reach`,
+  grappler: 'Halves the fatigue needed to keep a foe restrained',
+  illumination: `Naturally emits bright light in a 10' radius, and dim light an additional 10'`,
+  jumper: 'Long jump and high jump distances are doubled',
+  lair: 'Has control over its surroundings, letting it take Lair Actions at the start of a round',
+
+  legendary: 'Can use Legendary Actions, Reactions, and Resistances',
+  pack: `When an ally is within 5' of a creature, attack rolls against that creature gain +2 ongoing. The ally can't be unconscious.`,
+  swarm: `Can occupy another creature's space and move through tiny openings, but cannot regain HP or gain temporary HP`,
+
+  undying:
+    'When fully exhausted, at the start of its next turn can spend 1 thread to recover all fatigue and 1 exhaustion.',
+  unrelenting:
+    'When damage would drop it to 0 HP but not outright kill it, can spend 1 thread to drop to 1 HP instead',
+};
+
 type elem = (typeof elements)[number];
 
 export const baseMonster = {
@@ -32,8 +87,8 @@ export const baseMonster = {
   type: 'beast' as (typeof types)[number],
   image: '',
   focus: 0,
-  power: 0,
-  cunning: 0,
+  power: 1,
+  cunning: 1,
   luck: 0,
 
   // Humanoids get Lineage, Traits, and Class
@@ -60,14 +115,16 @@ export const baseMonster = {
   burrowing: 0,
 
   // Offense
-  vicious: 0,
+  // vicious: 0,
   savage: 0,
   strong: 0,
   energetic: 0,
   conditioned: 0,
   grappler: false,
-  elemental: '' as elem,
+  // elemental: '' as elem,
   spicy: '' as elem,
+  naturalWeapons: [newWeaponBase] as Array<typeof newWeaponBase>,
+  attacks: [] as Array<typeof newAttackBase>,
 
   // Training
   techniques: [] as Array<string>,
@@ -100,20 +157,20 @@ export const baseMonster = {
   jumper: false,
   compression: false,
   burden: false,
+  aggressive: false,
 };
 
 export type Monster = typeof baseMonster;
 
 export const monsterCalc = {
+  cr: 0,
+  points: 0,
+  tags: [] as Array<string>,
   hp: 5,
   fatigue: 2,
   exhaustion: 1,
-  ac: 0,
-  damage: '1d6' as (typeof dieSizes)[number],
-  tags: [] as Array<string>,
-  points: 0,
   speed: {} as { [k: string]: number },
-  cr: 0,
+  ac: 0,
   bonus: 0,
   piercing: 0,
   reach: 5,
@@ -126,6 +183,7 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   const p = structuredClone(monsterCalc);
   let baseSpeed = 30;
   let baseHP = 5;
+  let baseDamge = '1d6';
   // Set starting based on size
   switch (monster.size) {
     case 'tiny':
@@ -238,65 +296,7 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     p.tags.push('burrowing');
   }
 
-  // if (monster.flying.has) {
-  //   p.points += 3;
-  //   p.tags.push('flying');
-  // }
-  // if (monster.climbing.has) {
-  //   p.points += 1;
-  //   p.tags.push('climbing');
-  // }
-  // if (monster.swimming.has) {
-  //   p.points += 1;
-  //   p.tags.push('swimming');
-  // }
-  // if (monster.burrowing.has) {
-  //   p.points += 2;
-  //   p.tags.push('burrowing');
-  // }
-
-  // console.log('----');
-  // console.log(totalNeutralSpeed);
-  // console.log(totalSpentSpeed);
-  // console.log(speedDiff);
-  // console.log('----');
-
   // Offense
-  if (monster.vicious !== 0) {
-    const { damage } = p;
-    const di = dieSizes.findIndex((e) => e === damage);
-    p.damage = dieSizes[di + monster.vicious];
-    p.points += points(monster.vicious);
-    if (monster.vicious > 0) {
-      p.tags.push('vicious');
-    } else if (monster.vicious < 0) {
-      p.tags.push('timid');
-    }
-  }
-
-  if (monster.grappler) {
-    p.points += 3;
-    p.tags.push('grappler');
-  }
-
-  // Equipment
-  if (monster.weapons?.length) {
-    const w = monster.weapons
-      .map((w) => {
-        const { damage } = weapons.find((f) => f.id === w);
-        const di = dieSizes.findIndex((e) => e === damage);
-        const offset = dieSizes.findIndex((e) => e === p.damage);
-        return di - offset;
-      })
-      .sort()
-      .reverse()[0];
-    if (w > 0) {
-      p.points += points(monster.vicious + w) - points(monster.vicious);
-    }
-
-    p.tags.push('armed');
-  }
-
   if (monster.savage !== 0) {
     p.piercing += monster.savage;
     p.points += points(monster.savage, 2);
@@ -324,14 +324,94 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
     p.tags.push('conditioned');
   }
 
-  if (monster.elemental) {
-    p.points += 1;
-    p.tags.push('elemental');
-  }
-
   if (monster.spicy) {
     p.points += 4;
     p.tags.push('spicy');
+  }
+
+  // Damage
+  let vmax = null;
+
+  // Weapons
+  if (monster.weapons?.length) {
+    for (const w of monster.weapons) {
+      const fw = weapons.find((f) => f.id === w);
+      if (fw) {
+        const di = dieSizes.findIndex((e) => e === fw.damage);
+        if (vmax === null || di > vmax) {
+          vmax = di;
+        }
+      }
+    }
+    p.tags.push('armed');
+  }
+
+  // Natural Weapons
+  if (monster.naturalWeapons.length) {
+    // Damage Size
+    for (const w of monster.naturalWeapons) {
+      const di = dieSizes.findIndex((e) => e === w.damage);
+      if (vmax === null || di > vmax) {
+        vmax = di;
+      }
+    }
+  }
+
+  const damageOffset = dieSizes.findIndex((e) => e === baseDamge);
+
+  if (monster.attacks.length) {
+    for (const w of monster.attacks) {
+      let ap = 1;
+      if (w.damage) {
+        ap += points(dieSizes.findIndex((e) => e === w.damage) - damageOffset);
+      }
+
+      if (w.condition) {
+        ap += 2;
+      }
+
+      if (w.ap > 2) {
+        ap -= points(w.ap - 2);
+      }
+      if (w.fatigue > p.fatigue / 2) {
+        ap -= points(w.fatigue - p.fatigue / 2);
+      } else {
+        ap += Math.floor(p.fatigue / 2 - w.fatigue);
+      }
+
+      if (w.recharge) {
+        if (w.recharge === '1d4') {
+          ap /= points(2);
+        } else if (w.recharge === '1d6') {
+          ap /= points(3);
+        } else if (w.recharge === '1d8') {
+          ap /= points(4);
+        } else if (w.recharge === '1d10') {
+          ap /= points(5);
+        }
+
+        if (w.thread) {
+          ap /= points(2);
+        }
+      } else if (w.thread) {
+        ap /= points(6);
+      }
+
+      ap = Math.round(ap);
+
+      p.points += ap;
+    }
+  }
+
+  if (vmax !== null) {
+    const vicious = vmax - damageOffset;
+
+    p.points += points(vicious);
+    if (vicious > 0) {
+      p.tags.push('vicious');
+    } else if (vicious < 0) {
+      p.tags.push('timid');
+    }
   }
 
   // Training
@@ -491,6 +571,14 @@ export function calculatePoints(monster: Monster): CalculatedMonster {
   if (monster.burden) {
     p.points += 1;
     p.tags.push('beast of burden');
+  }
+  if (monster.aggressive) {
+    p.points += 2;
+    p.tags.push('aggressive');
+  }
+  if (monster.grappler) {
+    p.points += 3;
+    p.tags.push('grappler');
   }
 
   // Set CR at the end

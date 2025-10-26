@@ -24,14 +24,16 @@ flying: 0
 climbing: 40
 swimming: 60
 burrowing: 0
-vicious: 1
 savage: 2
 strong: 0
 energetic: 0
 conditioned: 0
 grappler: false
-elemental: ""
 spicy: ""
+naturalWeapons:
+  - name: Claw
+    damage: 1d8
+    type: physical
 techniques:
   - charge
 cantrips: []
@@ -59,6 +61,9 @@ swarm: false
 jumper: false
 compression: false
 burden: false
+aggressive: false
+vicious: 1
+elemental: ""
 ---
 
 A Ranger's companion that takes the form of a medium land creature

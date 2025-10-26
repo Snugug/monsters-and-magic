@@ -2,6 +2,7 @@
 title: Ranger Sky Companion
 size: small
 type: beast
+image: images/monsters/ranger-sky-companion.png
 focus: -1
 power: 0
 cunning: 3
@@ -23,14 +24,16 @@ flying: 60
 climbing: 0
 swimming: 0
 burrowing: 0
-vicious: -1
 savage: 0
 strong: 0
 energetic: 1
 conditioned: 0
 grappler: false
-elemental: ""
 spicy: ""
+naturalWeapons:
+  - name: Claw
+    damage: 1d4
+    type: physical
 techniques:
   - duck-and-twist
 cantrips: []
@@ -50,7 +53,17 @@ bloodthirsty: false
 draining: false
 amphibious: false
 flyby: true
-image: images/monsters/ranger-sky-companion.png
+aquatic: false
+pack: false
+illumination: false
+escape: false
+swarm: false
+jumper: false
+compression: false
+burden: false
+aggressive: false
+vicious: -1
+elemental: ""
 ---
 
 A Ranger's companion that takes the form of a small flying creature

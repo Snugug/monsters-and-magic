@@ -340,6 +340,14 @@ const monster = defineCollection({
   }),
 });
 
+const conditions = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    status: z.boolean(),
+  }),
+});
+
 export const collections = {
   standalone,
   chapters,
@@ -360,4 +368,5 @@ export const collections = {
   gear,
   packs,
   modifications,
+  conditions,
 };
