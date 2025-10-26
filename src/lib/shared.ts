@@ -51,3 +51,18 @@ export const vision = [
 ] as const;
 
 export const speeds = ['flying', 'climbing', 'swimming', 'burrowing'] as const;
+
+export const monsterTypes = [
+  'beast',
+  'humanoid',
+  'celestial',
+  'fiend',
+  'undead',
+  'elemental',
+  'ooze',
+  'aberration',
+  'fey',
+  'dragon',
+  'construct',
+  'monstrosity',
+] as const;

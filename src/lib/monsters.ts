@@ -1,4 +1,11 @@
-import { sizes, elements, dieSizes, vision, speeds } from '$lib/shared';
+import {
+  sizes,
+  elements,
+  dieSizes,
+  vision,
+  speeds,
+  monsterTypes,
+} from '$lib/shared';
 import { db } from '$lib/db';
 
 const traits = await db.traits.toArray();
@@ -8,20 +15,7 @@ const armor = await db.armor.toArray();
 const techniques = await db.techniques.toArray();
 const charms = await db.charms.toArray();
 
-export const types = [
-  'beast',
-  'humanoid',
-  'celestial',
-  'fiend',
-  'undead',
-  'elemental',
-  'ooze',
-  'aberration',
-  'fey',
-  'dragon',
-  'construct',
-  'monstrosity',
-] as const;
+export const types = monsterTypes;
 
 export const newWeaponBase = {
   name: 'Fist' as string,
@@ -120,7 +114,7 @@ export const baseMonster = {
   strong: 0,
   energetic: 0,
   conditioned: 0,
-  grappler: false,
+
   // elemental: '' as elem,
   spicy: '' as elem,
   naturalWeapons: [newWeaponBase] as Array<typeof newWeaponBase>,
@@ -158,6 +152,7 @@ export const baseMonster = {
   compression: false,
   burden: false,
   aggressive: false,
+  grappler: false,
 };
 
 export type Monster = typeof baseMonster;
