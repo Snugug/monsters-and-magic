@@ -34,6 +34,8 @@ naturalWeapons:
   - name: Fist
     damage: 2d8
     type: physical
+    element: necrotic
+attacks: []
 techniques: []
 cantrips: []
 charms: []

@@ -34,6 +34,8 @@ naturalWeapons:
   - name: Claw
     damage: 1d4
     type: physical
+    element: physical
+attacks: []
 techniques:
   - duck-and-twist
 cantrips: []

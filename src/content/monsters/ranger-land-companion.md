@@ -34,6 +34,8 @@ naturalWeapons:
   - name: Claw
     damage: 1d8
     type: physical
+    element: physical
+attacks: []
 techniques:
   - charge
 cantrips: []

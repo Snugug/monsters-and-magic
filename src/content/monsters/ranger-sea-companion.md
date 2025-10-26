@@ -34,6 +34,8 @@ naturalWeapons:
   - name: Tentacle
     damage: 1d6
     type: physical
+    element: physical
+attacks: []
 techniques:
   - pin-down
 cantrips: []
