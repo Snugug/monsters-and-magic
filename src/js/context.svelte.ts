@@ -1,4 +1,4 @@
-import { db } from '$lib/db';
+import { db } from '$js/db';
 
 export const defaultCharacter = {
   id: '',

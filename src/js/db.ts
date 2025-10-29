@@ -1,11 +1,11 @@
 import * as Comlink from 'comlink';
-import type { Database } from '$lib/workers/db';
+import type { Database } from '$js/workers/db';
 
 export const database = Comlink.wrap<{
   db: Database;
   init: () => void;
 }>(
-  new Worker(new URL('$lib/workers/db.ts?url', import.meta.url), {
+  new Worker(new URL('$js/workers/db.ts?url', import.meta.url), {
     type: 'module',
   }),
 );

@@ -1,0 +1,59 @@
+---
+import Layout from '$layouts/Layout.astro';
+import { normalizeMonster } from '$lib/normalize';
+import { getCollection } from 'astro:content';
+
+const monsters = Object.groupBy(
+  (await getCollection('monsters')).map((m) => {
+    const normalized = normalizeMonster(m.data);
+    return {
+      slug: m.slug,
+      data: normalized.monster,
+      points: normalized.points,
+      html: m.rendered?.html,
+    };
+  }),
+  (a) => a.points.cr,
+);
+---
+
+<Layout>
+  <div class='lineages'>
+    <h1 class='type--h1'>Monsters</h1>
+    {
+      Object.entries(monsters).map(([cr, ms]) => {
+        return (
+          <section>
+            <h2>
+              CR {cr} ({ms.length})
+            </h2>
+            <ul>
+              {ms
+                ?.sort((a, b) => a.points.points - b.points.points)
+                .map((m) => {
+                  return (
+                    <li>
+                      <p>
+                        {m.data.title} ({m.points.points})
+                      </p>
+                    </li>
+                  );
+                })}
+            </ul>
+          </section>
+        );
+      })
+    }
+  </div>
+
+  <!-- <SiteLanding /> -->
+</Layout>
+
+<style>
+  .lineages {
+    max-width: 70ch;
+    margin-inline: auto;
+    display: grid;
+    gap: 2rem;
+  }
+</style>

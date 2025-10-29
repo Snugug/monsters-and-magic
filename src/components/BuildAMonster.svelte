@@ -1,6 +1,6 @@
 <script lang="ts">
   import ImagePicker from '$components/ImagePicker.svelte';
-  import { db } from '$lib/db';
+  import { db } from '$js/db';
   import {
     sizes,
     elements,
@@ -12,9 +12,9 @@
     newAttackBase,
     tags,
   } from '$lib/shared';
-  import { calculatePoints, types as monsterTypes } from '$lib/monsters';
-  import { md } from '$lib/md';
-  import { fileToImage } from '$lib/images';
+  import { calculatePoints, types as monsterTypes } from '$js/monsters';
+  import { md } from '$js/md';
+  import { fileToImage } from '$js/images';
   import { slugify } from '$lib/helpers';
   import {
     getPath,
@@ -22,7 +22,7 @@
     writeImage,
     getFileHandle,
     getDir,
-  } from '$lib/fs.svelte';
+  } from '$js/fs.svelte';
   import Multiselect from '$components/Multiselect.svelte';
   import Repeater from '$components/Repeater.svelte';
   import type { RepeaterActions } from '$components/Repeater.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { GoogleGenAI } from '@google/genai';
-  import { fileToImage, stringToImage } from '$lib/images';
-  import { getDir } from '$lib/fs.svelte';
+  import { fileToImage, stringToImage } from '$js/images';
+  import { getDir } from '$js/fs.svelte';
   import { getMany, setMany } from 'idb-keyval';
   import Icon from '$components/Icon.svelte';
 
