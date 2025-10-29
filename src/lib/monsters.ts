@@ -431,7 +431,7 @@ export function calculatePoints(
     // } else if (p.points < 15) {
     //   p.cr = 1;
     // } else {
-    p.cr = Math.floor(p.points / 10);
+    p.cr = Math.round(p.points / 10);
 
     if (p.cr < 0) p.cr = 0;
     // }
