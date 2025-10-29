@@ -1,8 +1,8 @@
 ---
-title: Allosaurus
-size: large
+title: Ankylosaurus
+size: medium
 type: beast
-image: images/monsters/allosaurus-mh7uc185.png
+image: images/monsters/ankylosaurus-mhahp8b3.png
 focus: -2
 power: 3
 cunning: -1
@@ -17,7 +17,7 @@ blindsight: 10
 tremmorsense: 10
 truesight: 10
 speeds: []
-walking: 35
+walking: 30
 flying: 0
 climbing: 0
 swimming: 0
@@ -28,33 +28,28 @@ energetic: 0
 conditioned: 0
 spicy: ""
 naturalWeapons:
-  - name: Bite
-    damage: 2d10
-    element: physical
   - name: Claw
-    damage: 1d8
+    damage: 1d6
     element: physical
 attacks:
-  - name: Rush
+  - name: Tail
     type: attack
-    damage: ""
-    element: ""
+    damage: 1d10
+    element: physical
     condition: Prone
     ap: 2
-    fatigue: 1
+    fatigue: 2
     trigger: ""
-    recharge: 1d8
+    recharge: 1d4
     thread: false
-    description: Move, then strike with allosaurus' claws. If you moved more than
-      30' in a straight line immediately before the attack and the creature
-      attacked is of the allosaurus' size or smaller, on a strong hit, knock the
-      target prone.
+    description: If the target is the size of the Ankylosaurus or smaller, it is
+      knocked prone on a hit.
 techniques: []
 cantrips: []
 charms: []
 upcast: 0
-hp: 5
-armored: 2
+hp: 7
+armored: 5
 resistance: []
 immunity: []
 vulnerable: []
