@@ -1,15 +1,18 @@
 <script lang="ts">
   import ImagePicker from '$components/ImagePicker.svelte';
   import { db } from '$lib/db';
-  import { sizes, elements, vision, speeds, dieSizes } from '$lib/shared';
   import {
+    sizes,
+    elements,
+    vision,
+    speeds,
+    dieSizes,
     baseMonster,
-    calculatePoints,
-    tags,
     newWeaponBase,
     newAttackBase,
-    types as monsterTypes,
-  } from '$lib/monsters';
+    tags,
+  } from '$lib/shared';
+  import { calculatePoints, types as monsterTypes } from '$lib/monsters';
   import { md } from '$lib/md';
   import { fileToImage } from '$lib/images';
   import { slugify } from '$lib/helpers';
@@ -50,42 +53,18 @@
   let hp = $state(5);
   let loaded = $state(false);
 
-  async function saveMonster(e: SubmitEvent) {
-    e.preventDefault();
-    try {
-      let imagePath = '';
-      const slug = slugify(monster.title);
-      const uid = Math.floor(Date.now()).toString(36);
+  let message = $state([]) as Array<{
+    type: 'success' | 'error' | 'warning';
+    message: string;
+  }>;
 
-      let pth;
-      if (handler) {
-        pth = await getPath(handler);
-      } else if (image) {
-        const f = await writeImage(
-          `public/images/monsters/${slug}-${uid}.png`,
-          image,
-        );
-        pth = await getPath(f);
-      }
-
-      if (pth) {
-        if (pth[0] === 'public') {
-          pth.shift();
-        }
-        imagePath = pth.join('/');
-      }
-
-      const m = structuredClone($state.snapshot(monster));
-      m.image = imagePath;
-
-      const copy = await md.compile(body, m);
-      const f = await writeFile(`src/content/monsters/${slug}.md`, copy);
-      const output = await getPath(f);
-      console.log(output);
-    } catch (e) {
-      console.error(e);
+  $effect(() => {
+    if (message.length) {
+      setTimeout(() => {
+        message.shift();
+      }, 5000);
     }
-  }
+  });
 
   const abilities = $state({
     focus: {
@@ -356,6 +335,55 @@
 
   function capitalize(str: string) {
     return str.charAt(0).toLocaleUpperCase() + str.slice(1);
+  }
+
+  async function saveMonster(e: SubmitEvent) {
+    e.preventDefault();
+    try {
+      let imagePath = '';
+      const slug = slugify(monster.title);
+      const uid = Math.floor(Date.now()).toString(36);
+
+      let pth;
+      if (handler) {
+        pth = await getPath(handler);
+      } else if (image) {
+        const f = await writeImage(
+          `public/images/monsters/${slug}-${uid}.png`,
+          image,
+        );
+        pth = await getPath(f);
+        message.push({
+          type: 'success',
+          message: `Image for ${monster.title} saved to ${pth.join('/')}`,
+        });
+      }
+
+      if (pth) {
+        if (pth[0] === 'public') {
+          pth.shift();
+        }
+        imagePath = pth.join('/');
+      }
+
+      const m = structuredClone($state.snapshot(monster));
+      m.image = imagePath;
+
+      const copy = await md.compile(body, m);
+      const f = await writeFile(`src/content/monsters/${slug}.md`, copy);
+      const output = await getPath(f);
+      message.push({
+        type: 'success',
+        message: `${monster.title} saved to ${output.join('/')}`,
+      });
+      resetMonster(e);
+    } catch (e) {
+      message.push({
+        type: 'error',
+        message: `There was a problem saving ${monster.title}: ${e.message}`,
+      });
+      console.error(e);
+    }
   }
 
   async function loadMonster(e: Event) {
@@ -1017,7 +1045,23 @@
   </div>
 </form>
 
+{#if message.length}
+  <div class="messages">
+    {#each message as m}
+      <p class="message {m.type}">{m.message}</p>
+    {/each}
+  </div>
+{/if}
+
 <style lang="scss">
+  .messages {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
   .sidebar {
     position: sticky;
     top: var(--header-height);

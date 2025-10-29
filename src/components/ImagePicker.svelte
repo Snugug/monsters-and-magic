@@ -397,6 +397,7 @@ Draw an image of the following:\n`;
       resize: none;
       field-sizing: content;
       min-height: 5rem;
+      max-height: 10rem;
     }
 
     &--group {

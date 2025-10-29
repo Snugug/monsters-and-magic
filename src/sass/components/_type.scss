@@ -368,6 +368,11 @@
     background: var(--white);
     border: 1px solid var(--dark-yellow);
 
+    &.success {
+      background: var(--light-green);
+      border-color: var(--dark-green);
+    }
+
     &.warning {
       background: var(--light-yellow);
     }
