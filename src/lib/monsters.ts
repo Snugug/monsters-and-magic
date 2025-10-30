@@ -88,13 +88,13 @@ export function calculatePoints(
       p.points += 2;
     }
     if (monster.vision.includes('blindsight')) {
-      p.points += points(monster.blindsight / 10, 2);
+      p.points += points(monster.blindsight / 10);
     }
     if (monster.vision.includes('tremmorsense')) {
-      p.points += points(monster.tremmorsense / 10, 2);
+      p.points += points(monster.tremmorsense / 10);
     }
     if (monster.vision.includes('truesight')) {
-      p.points += points(monster.truesight / 10, 3);
+      p.points += points(monster.truesight / 10, 2);
     }
 
     // Movement
@@ -207,6 +207,7 @@ export function calculatePoints(
       for (const w of monster.attacks) {
         let ap = 1;
         if (w.damage) {
+          vmax = damageStep(w.damage);
           ap += points(damageStep(w.damage) - damageOffset);
         }
 
@@ -293,7 +294,7 @@ export function calculatePoints(
       } else if (t.includes('medium')) {
         p.ac += Math.floor(monster.cunning / 2);
       }
-      p.points += points(a + monster.armored);
+      p.points += points(a + monster.armored, 2);
     } else {
       p.ac += monster.cunning;
     }
@@ -301,7 +302,7 @@ export function calculatePoints(
     if (monster.armored !== 0) {
       p.ac += monster.armored;
       if (!monster.armor?.length) {
-        p.points += points(monster.armored);
+        p.points += points(monster.armored, 2);
       }
     }
 
@@ -402,6 +403,7 @@ export function calculatePoints(
       p.tags.push('escape artist');
     }
     if (monster.swarm) {
+      p.points += 2;
       p.tags.push('swarm');
     }
     if (monster.jumper) {
@@ -431,7 +433,7 @@ export function calculatePoints(
     // } else if (p.points < 15) {
     //   p.cr = 1;
     // } else {
-    p.cr = Math.round(p.points / 10);
+    p.cr = Math.floor(p.points / 10);
 
     if (p.cr < 0) p.cr = 0;
     // }

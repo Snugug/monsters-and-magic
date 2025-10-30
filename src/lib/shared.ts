@@ -118,7 +118,7 @@ export const tags = {
 
   legendary: 'Can use Legendary Actions, Reactions, and Resistances',
   pack: `When an ally is within 5' of a creature, attack rolls against that creature gain +2 ongoing. The ally can't be unconscious.`,
-  swarm: `Can occupy another creature's space and move through tiny openings, but cannot regain HP or gain temporary HP`,
+  swarm: `Can occupy another creature's space and move through tiny openings, but cannot regain HP or gain temporary HP. Resistant to physical damage, deals 1/2 damage when bloodied. Immune to Restrained, Prone, Stunned, Frightened conditions.`,
 
   undying:
     'When fully exhausted, at the start of its next turn can spend 1 thread to recover all fatigue and 1 exhaustion.',
