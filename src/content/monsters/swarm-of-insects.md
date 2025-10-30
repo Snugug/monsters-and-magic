@@ -2,12 +2,12 @@
 title: Swarm of Insects
 size: medium
 type: beast
-image: ''
-focus: -4
-power: -1
-cunning: -2
+image: ""
+focus: -2
+power: 2
+cunning: 1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,23 +28,12 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
+spicy: ""
 naturalWeapons:
-  - name: Claw
-    damage: 1d6
-    element: physical
-attacks:
   - name: Bites
-    type: attack
     damage: 2d4
     element: poison
-    condition: ''
-    ap: 2
-    fatigue: 0
-    trigger: ''
-    recharge: ''
-    thread: false
-    description: 'or 3 (1d4 + 1) Poison damage if the swarm is Bloodied. range: 5'
+attacks: []
 techniques: []
 cantrips: []
 charms: []

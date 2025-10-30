@@ -3,9 +3,9 @@ title: Cat
 size: tiny
 type: beast
 image: ''
-focus: -2
-power: -2
-cunning: 0
+focus: 1
+power: 0
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

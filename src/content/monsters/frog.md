@@ -3,9 +3,9 @@ title: Frog
 size: tiny
 type: beast
 image: ""
-focus: -3
-power: -3
-cunning: -2
+focus: -1
+power: -1
+cunning: 1
 luck: 0
 lineage: ""
 traits: []
@@ -28,7 +28,7 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: poison
+spicy: ""
 naturalWeapons:
   - name: Bite
     damage: "1"
@@ -38,10 +38,9 @@ techniques: []
 cantrips: []
 charms: []
 upcast: 0
-hp: 0
-armored: 2
-resistance:
-  - poison
+hp: 1
+armored: 0
+resistance: []
 immunity: []
 vulnerable: []
 ancient: false

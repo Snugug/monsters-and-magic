@@ -3,9 +3,9 @@ title: Lizard
 size: tiny
 type: beast
 image: ""
-focus: -3
-power: -2
-cunning: -2
+focus: -1
+power: 0
+cunning: 0
 luck: 0
 lineage: ""
 traits: []
@@ -31,15 +31,15 @@ conditioned: 0
 spicy: ""
 naturalWeapons:
   - name: Bite
-    damage: 1d4
+    damage: "1"
     element: physical
 attacks: []
 techniques: []
 cantrips: []
 charms: []
 upcast: 0
-hp: 3
-armored: 2
+hp: 0
+armored: 0
 resistance: []
 immunity: []
 vulnerable: []
@@ -55,7 +55,7 @@ flyby: false
 aquatic: false
 pack: false
 illumination: false
-escape: false
+escape: true
 swarm: false
 jumper: false
 compression: false

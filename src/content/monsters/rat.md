@@ -3,9 +3,9 @@ title: Rat
 size: tiny
 type: beast
 image: ''
-focus: -2
-power: -3
-cunning: -2
+focus: 0
+power: -1
+cunning: 0
 luck: 0
 lineage: ''
 traits: []

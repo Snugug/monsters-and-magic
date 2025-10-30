@@ -3,9 +3,9 @@ title: Giant Scorpion
 size: large
 type: beast
 image: ''
-focus: -3
-power: 2
-cunning: -2
+focus: -1
+power: 3
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

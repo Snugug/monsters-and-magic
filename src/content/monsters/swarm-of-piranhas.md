@@ -2,12 +2,12 @@
 title: Swarm of Piranhas
 size: medium
 type: beast
-image: ''
-focus: -4
-power: 0
-cunning: -1
+image: ""
+focus: -2
+power: 1
+cunning: 3
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,30 +28,20 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
+spicy: ""
 naturalWeapons:
-  - name: Claw
-    damage: 1d6
-    element: physical
-attacks:
   - name: Bites
-    type: attack
     damage: 2d4
     element: physical
-    condition: ''
-    ap: 2
-    fatigue: 0
-    trigger: ''
-    recharge: ''
-    thread: false
-    description: 'or 5 (1d4 + 3) Piercing damage if the swarm is Bloodied. range: 5'
+attacks: []
 techniques: []
 cantrips: []
 charms: []
 upcast: 0
 hp: 7
 armored: 0
-resistance: []
+resistance:
+  - physical
 immunity: []
 vulnerable: []
 ancient: false

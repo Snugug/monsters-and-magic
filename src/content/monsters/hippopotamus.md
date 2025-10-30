@@ -3,9 +3,9 @@ title: Hippopotamus
 size: large
 type: beast
 image: ''
-focus: -2
-power: 3
-cunning: -3
+focus: 1
+power: 5
+cunning: -2
 luck: 0
 lineage: ''
 traits: []

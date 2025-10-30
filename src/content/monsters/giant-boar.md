@@ -3,9 +3,9 @@ title: Giant Boar
 size: large
 type: beast
 image: ''
-focus: -3
+focus: -2
 power: 3
-cunning: -2
+cunning: 0
 luck: 0
 lineage: ''
 traits: []

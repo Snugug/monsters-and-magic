@@ -3,9 +3,9 @@ title: Camel
 size: large
 type: beast
 image: ''
-focus: -2
-power: 2
-cunning: -2
+focus: 0
+power: 3
+cunning: -1
 luck: 0
 lineage: ''
 traits: []

@@ -3,9 +3,9 @@ title: Tiger
 size: large
 type: beast
 image: ''
-focus: -2
-power: 2
-cunning: 1
+focus: 1
+power: 3
+cunning: 3
 luck: 0
 lineage: ''
 traits: []

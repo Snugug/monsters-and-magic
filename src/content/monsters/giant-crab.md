@@ -3,9 +3,9 @@ title: Giant Crab
 size: medium
 type: beast
 image: ''
-focus: -3
-power: 0
-cunning: -2
+focus: -1
+power: 1
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

@@ -3,9 +3,9 @@ title: Giant Shark
 size: huge
 type: beast
 image: ''
-focus: -3
-power: 5
-cunning: -2
+focus: 0
+power: 6
+cunning: 0
 luck: 0
 lineage: ''
 traits: []

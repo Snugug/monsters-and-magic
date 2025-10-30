@@ -3,9 +3,9 @@ title: Giant Wasp
 size: medium
 type: beast
 image: ''
-focus: -3
+focus: 0
 power: 0
-cunning: -1
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

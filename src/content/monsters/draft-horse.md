@@ -3,9 +3,9 @@ title: Draft Horse
 size: large
 type: beast
 image: ''
-focus: -2
-power: 3
-cunning: -1
+focus: 0
+power: 4
+cunning: 0
 luck: 0
 lineage: ''
 traits: []

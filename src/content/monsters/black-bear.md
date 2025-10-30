@@ -3,9 +3,9 @@ title: Black Bear
 size: medium
 type: beast
 image: ''
-focus: -2
+focus: 1
 power: 2
-cunning: -1
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

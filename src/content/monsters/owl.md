@@ -3,9 +3,9 @@ title: Owl
 size: tiny
 type: beast
 image: ''
-focus: -2
-power: -3
-cunning: -1
+focus: 1
+power: -1
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

@@ -4,7 +4,7 @@ size: medium
 type: beast
 image: images/monsters/ankylosaurus-mhahp8b3.png
 focus: -2
-power: 3
+power: 4
 cunning: -1
 luck: 0
 lineage: ""
@@ -28,7 +28,7 @@ energetic: 0
 conditioned: 0
 spicy: ""
 naturalWeapons:
-  - name: Claw
+  - name: Bite
     damage: 1d6
     element: physical
 attacks:
@@ -38,9 +38,9 @@ attacks:
     element: physical
     condition: Prone
     ap: 2
-    fatigue: 2
+    fatigue: 1
     trigger: ""
-    recharge: 1d4
+    recharge: ""
     thread: false
     description: If the target is the size of the Ankylosaurus or smaller, it is
       knocked prone on a hit.
@@ -49,7 +49,7 @@ cantrips: []
 charms: []
 upcast: 0
 hp: 7
-armored: 5
+armored: 6
 resistance: []
 immunity: []
 vulnerable: []
@@ -70,7 +70,7 @@ swarm: false
 jumper: false
 compression: false
 burden: false
-aggressive: false
+aggressive: true
 grappler: false
 ---
 

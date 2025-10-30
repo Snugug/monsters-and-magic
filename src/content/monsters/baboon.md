@@ -3,9 +3,9 @@ title: Baboon
 size: small
 type: beast
 image: ''
-focus: -1
-power: -1
-cunning: 0
+focus: 1
+power: 0
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

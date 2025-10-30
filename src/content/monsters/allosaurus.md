@@ -3,9 +3,9 @@ title: Allosaurus
 size: large
 type: beast
 image: images/monsters/allosaurus-mh7uc185.png
-focus: -2
-power: 3
-cunning: -1
+focus: 1
+power: 4
+cunning: 1
 luck: 0
 lineage: ""
 traits: []
@@ -17,7 +17,7 @@ blindsight: 10
 tremmorsense: 10
 truesight: 10
 speeds: []
-walking: 35
+walking: 60
 flying: 0
 climbing: 0
 swimming: 0

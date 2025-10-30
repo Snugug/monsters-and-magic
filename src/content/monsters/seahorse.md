@@ -3,9 +3,9 @@ title: Seahorse
 size: tiny
 type: beast
 image: ''
-focus: -3
-power: -3
-cunning: -2
+focus: 0
+power: -1
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

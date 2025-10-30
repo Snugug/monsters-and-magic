@@ -2,12 +2,12 @@
 title: Elk
 size: large
 type: beast
-image: ''
-focus: -2
-power: 1
-cunning: -1
+image: ""
+focus: 0
+power: 3
+cunning: 0
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -27,26 +27,26 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
+spicy: ""
 naturalWeapons:
-  - name: Claw
+  - name: Horns
     damage: 1d6
     element: physical
 attacks:
   - name: Ram
     type: attack
-    damage: 1d6
+    damage: 2d6
     element: physical
-    condition: ''
+    condition: Prone
     ap: 2
-    fatigue: 0
-    trigger: ''
-    recharge: ''
+    fatigue: 2
+    trigger: ""
+    recharge: ""
     thread: false
-    description: >-
-      If the target is a Large or smaller creature and the elk moved 20+ feet
-      straight toward it immediately before the hit, the target takes an extra 3
-      (1d6) Bludgeoning damage and has the Prone condition. range: 5
+    description: Move, then strike a creature with the elk's horns. If the elk moved
+      20+ feet in a straight line immediately before hitting the target and the
+      target is the size of the elk or smaller, it takes an extra 1d6
+      bludgeoning damage and is knocked prone.
 techniques: []
 cantrips: []
 charms: []

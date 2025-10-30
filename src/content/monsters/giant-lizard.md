@@ -3,9 +3,9 @@ title: Giant Lizard
 size: large
 type: beast
 image: ''
-focus: -2
-power: 1
-cunning: -1
+focus: 0
+power: 2
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

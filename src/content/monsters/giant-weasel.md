@@ -3,9 +3,9 @@ title: Giant Weasel
 size: medium
 type: beast
 image: ''
-focus: -1
+focus: 1
 power: 0
-cunning: 0
+cunning: 3
 luck: 0
 lineage: ''
 traits: []

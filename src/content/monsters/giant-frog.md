@@ -3,9 +3,9 @@ title: Giant Frog
 size: medium
 type: beast
 image: ''
-focus: -2
-power: 0
-cunning: -2
+focus: 0
+power: 1
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

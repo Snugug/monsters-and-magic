@@ -3,9 +3,9 @@ title: Pteranodon
 size: medium
 type: beast
 image: ''
-focus: -3
-power: 0
-cunning: -1
+focus: -1
+power: 1
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

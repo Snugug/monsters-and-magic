@@ -3,9 +3,9 @@ title: Blood Hawk
 size: small
 type: beast
 image: ''
-focus: -1
-power: -1
-cunning: -1
+focus: 2
+power: 0
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

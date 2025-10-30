@@ -2,12 +2,12 @@
 title: Octopus
 size: small
 type: beast
-image: ""
-focus: -2
-power: -2
-cunning: -1
+image: ''
+focus: 0
+power: 0
+cunning: 2
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -28,15 +28,13 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ""
+spicy: ''
 naturalWeapons:
   - name: Tentacles
-    damage: "1"
+    damage: '1'
     element: physical
 attacks: []
-techniques:
-  - duck-and-twist
-  - feint
+techniques: []
 cantrips: []
 charms: []
 upcast: 0
@@ -63,7 +61,7 @@ jumper: false
 compression: true
 burden: false
 aggressive: false
-grappler: true
+grappler: false
 ac: 0
 ---
 

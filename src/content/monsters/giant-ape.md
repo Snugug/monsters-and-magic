@@ -3,9 +3,9 @@ title: Giant Ape
 size: huge
 type: beast
 image: ''
-focus: -1
-power: 5
-cunning: 0
+focus: 1
+power: 6
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

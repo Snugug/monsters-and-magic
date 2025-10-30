@@ -3,9 +3,9 @@ title: Warhorse
 size: large
 type: beast
 image: ''
-focus: -2
-power: 2
-cunning: -1
+focus: 1
+power: 4
+cunning: 1
 luck: 0
 lineage: ''
 traits: []

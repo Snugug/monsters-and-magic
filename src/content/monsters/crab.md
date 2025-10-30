@@ -3,9 +3,9 @@ title: Crab
 size: tiny
 type: beast
 image: ''
-focus: -3
-power: -1
-cunning: -2
+focus: -1
+power: 1
+cunning: 0
 luck: 0
 lineage: ''
 traits: []

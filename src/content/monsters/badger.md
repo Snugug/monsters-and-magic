@@ -2,12 +2,12 @@
 title: Badger
 size: tiny
 type: beast
-image: ''
-focus: -2
-power: 1
-cunning: -2
+image: ""
+focus: 1
+power: 3
+cunning: 0
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,10 +28,10 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
+spicy: ""
 naturalWeapons:
   - name: Bite
-    damage: '1'
+    damage: "1"
     element: physical
 attacks: []
 techniques: []
@@ -40,7 +40,8 @@ charms: []
 upcast: 0
 hp: 0
 armored: 0
-resistance: []
+resistance:
+  - poison
 immunity: []
 vulnerable: []
 ancient: false

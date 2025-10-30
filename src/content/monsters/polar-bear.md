@@ -2,12 +2,12 @@
 title: Polar Bear
 size: large
 type: beast
-image: ''
-focus: -2
-power: 4
-cunning: 0
+image: ""
+focus: 1
+power: 5
+cunning: 2
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,7 +28,7 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
+spicy: ""
 naturalWeapons:
   - name: Rend
     damage: 1d8
@@ -40,7 +40,8 @@ charms: []
 upcast: 0
 hp: 4
 armored: 0
-resistance: []
+resistance:
+  - cold
 immunity: []
 vulnerable: []
 ancient: false

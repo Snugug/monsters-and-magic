@@ -3,9 +3,9 @@ title: Ape
 size: medium
 type: beast
 image: ''
-focus: -1
-power: 2
-cunning: 0
+focus: 1
+power: 3
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

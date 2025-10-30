@@ -3,9 +3,9 @@ title: Goat
 size: medium
 type: beast
 image: ''
-focus: -2
+focus: 0
 power: 0
-cunning: -2
+cunning: 0
 luck: 0
 lineage: ''
 traits: []

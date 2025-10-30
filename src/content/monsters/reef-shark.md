@@ -3,9 +3,9 @@ title: Reef Shark
 size: medium
 type: beast
 image: ''
-focus: -3
-power: 1
-cunning: -1
+focus: 0
+power: 2
+cunning: 2
 luck: 0
 lineage: ''
 traits: []

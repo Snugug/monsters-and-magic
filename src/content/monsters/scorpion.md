@@ -2,10 +2,10 @@
 title: Scorpion
 size: tiny
 type: beast
-image: ""
-focus: -3
-power: -3
-cunning: -2
+image: images/monsters/scorpion-mhd8h3i2.png
+focus: -1
+power: -1
+cunning: 0
 luck: 0
 lineage: ""
 traits: []
@@ -37,8 +37,8 @@ techniques: []
 cantrips: []
 charms: []
 upcast: 0
-hp: 5
-armored: 4
+hp: 1
+armored: 0
 resistance: []
 immunity: []
 vulnerable: []

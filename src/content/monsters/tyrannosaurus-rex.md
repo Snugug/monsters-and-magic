@@ -2,12 +2,12 @@
 title: Tyrannosaurus Rex
 size: huge
 type: beast
-image: ""
-focus: -2
-power: 5
-cunning: -1
+image: ''
+focus: 1
+power: 7
+cunning: 0
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -23,10 +23,10 @@ climbing: 0
 swimming: 0
 burrowing: 0
 savage: 0
-strong: 2
+strong: 0
 energetic: 0
 conditioned: 0
-spicy: ""
+spicy: ''
 naturalWeapons:
   - name: Claw
     damage: 1d6
@@ -36,27 +36,29 @@ attacks:
     type: attack
     damage: 4d12
     element: physical
-    condition: Restrained
+    condition: ''
     ap: 2
     fatigue: 0
-    trigger: ""
-    recharge: ""
+    trigger: ''
+    recharge: ''
     thread: false
-    description: "If the target is a Large or smaller creature, it has the Grappled
+    description: >-
+      If the target is a Large or smaller creature, it has the Grappled
       condition (escape DC 17). While Grappled, the target has the Restrained
-      condition and can’t be targeted by the tyrannosaurus’s Tail. range: 10"
+      condition and can’t be targeted by the tyrannosaurus’s Tail. range: 10
   - name: Tail
     type: attack
     damage: 4d8
     element: physical
-    condition: Prone
+    condition: ''
     ap: 2
     fatigue: 0
-    trigger: ""
-    recharge: ""
+    trigger: ''
+    recharge: ''
     thread: false
-    description: "If the target is a Huge or smaller creature, it has the Prone
-      condition. range: 15"
+    description: >-
+      If the target is a Huge or smaller creature, it has the Prone condition.
+      range: 15
 techniques: []
 cantrips: []
 charms: []
