@@ -107,22 +107,38 @@
     }
   });
 
-  const elemList = elements.map((e) => ({
-    id: e,
-    title: capitalize(e),
-  }));
+  const elemList = elements
+    .map((e) => ({
+      id: e,
+      title: capitalize(e),
+    }))
+    .filter((e) => {
+      if (monster.swarm && e.id === 'physical') return false;
+      return true;
+    });
   const resistList = $derived(
-    elemList.filter(
-      (a) =>
-        !monster.immunity.includes(a.id) && !monster.vulnerable.includes(a.id),
-    ),
+    elemList
+      .filter(
+        (a) =>
+          !monster.immunity.includes(a.id) &&
+          !monster.vulnerable.includes(a.id),
+      )
+      .filter((e) => {
+        if (monster.swarm && e.id === 'physical') return false;
+        return true;
+      }),
   );
   const immuneList = $derived(
-    elemList.filter(
-      (a) =>
-        !monster.resistance.includes(a.id) &&
-        !monster.vulnerable.includes(a.id),
-    ),
+    elemList
+      .filter(
+        (a) =>
+          !monster.resistance.includes(a.id) &&
+          !monster.vulnerable.includes(a.id),
+      )
+      .filter((e) => {
+        if (monster.swarm && e.id === 'physical') return false;
+        return true;
+      }),
   );
   const vulnList = $derived(
     elemList.filter(
@@ -164,36 +180,36 @@
       abilities.luck.max = 5;
       abilities.luck.min = -2;
 
-      switch (monster.type) {
-        case 'beast':
-          abilities.focus.max = 0;
-          break;
-        case 'humanoid':
-        case 'dragon':
-          abilities.focus.min = -2;
-          abilities.power.min = -2;
-          abilities.cunning.min = -2;
-          break;
-        case 'celestial':
-          abilities.focus.min = 0;
-          abilities.power.min = -2;
-          break;
-        case 'fiend':
-          abilities.cunning.min = 0;
-          abilities.power.min = -2;
-          break;
-        case 'aberration':
-          abilities.cunning.min = 0;
-          abilities.focus.min = 0;
-          break;
-        case 'fey':
-          abilities.cunning.min = -2;
-          break;
-        case 'ooze':
-          abilities.focus.max = 0;
-          abilities.cunning.max = 0;
-          break;
-      }
+      // switch (monster.type) {
+      //   case 'beast':
+      //     // abilities.focus.max = 0;
+      //     break;
+      //   case 'humanoid':
+      //   case 'dragon':
+      //     // abilities.focus.min = -2;
+      //     // abilities.power.min = -2;
+      //     // abilities.cunning.min = -2;
+      //     break;
+      //   case 'celestial':
+      //     // abilities.focus.min = 0;
+      //     // abilities.power.min = -2;
+      //     break;
+      //   case 'fiend':
+      //     // abilities.cunning.min = 0;
+      //     // abilities.power.min = -2;
+      //     break;
+      //   case 'aberration':
+      //     // abilities.cunning.min = 0;
+      //     // abilities.focus.min = 0;
+      //     break;
+      //   case 'fey':
+      //     // abilities.cunning.min = -2;
+      //     break;
+      //   case 'ooze':
+      //     // abilities.focus.max = 0;
+      //     // abilities.cunning.max = 0;
+      //     break;
+      // }
 
       let nwSwitch = false;
       let n = monster.naturalWeapons[0].name;
@@ -237,8 +253,8 @@
 
       switch (monster.size) {
         case 'tiny':
-          abilities.power.max -= 1;
-          abilities.cunning.max += 1;
+          // abilities.power.max -= 1;
+          // abilities.cunning.max += 1;
           hp = 3;
           break;
         case 'small':
@@ -248,35 +264,35 @@
           hp = 5;
           break;
         case 'large':
-          abilities.power.min += 1;
+          // abilities.power.min += 1;
           abilities.strong = 0;
           abilities.hp = 0;
           hp = 6;
           break;
         case 'huge':
-          abilities.power.min += 2;
-          abilities.power.max += 1;
-          abilities.cunning.max -= 1;
+          // abilities.power.min += 2;
+          // abilities.power.max += 1;
+          // abilities.cunning.max -= 1;
           abilities.strong = 2;
           abilities.hp = 1;
           hp = 7;
           break;
         case 'gargantuan':
-          abilities.power.min += 3;
-          abilities.power.max += 2;
-          abilities.cunning.max -= 2;
+          // abilities.power.min += 3;
+          // abilities.power.max += 2;
+          // abilities.cunning.max -= 2;
           abilities.strong = 2;
           abilities.hp = 2;
           hp = 10;
           break;
       }
 
-      if (monster.power > abilities.power.max) {
-        monster.power = abilities.power.max;
-      }
-      if (monster.power < abilities.power.min) {
-        monster.power = abilities.power.min;
-      }
+      // if (monster.power > abilities.power.max) {
+      //   monster.power = abilities.power.max;
+      // }
+      // if (monster.power < abilities.power.min) {
+      //   monster.power = abilities.power.min;
+      // }
 
       size = monster.size;
     }
@@ -418,6 +434,10 @@
       handler = await getFileHandle(`public/${img}`);
       file = await handler.getFile();
       image = await fileToImage(file);
+    } else {
+      handler = null;
+      file = null;
+      image = null;
     }
 
     monster = structuredClone(baseMonster);

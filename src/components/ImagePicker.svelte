@@ -13,9 +13,9 @@
     editable = $bindable(true),
   }: {
     type: string;
-    image: string;
-    file: File;
-    handler: FileSystemFileHandle;
+    image: string | null;
+    file: File | null;
+    handler: FileSystemFileHandle | null;
     editable: boolean;
   } = $props();
 
@@ -137,6 +137,8 @@ Draw an image of the following:\n`;
     e.preventDefault();
     image = preview;
     preview = '';
+    handler = null;
+    file = null;
     popover.hidePopover();
   }
 
