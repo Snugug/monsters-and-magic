@@ -428,12 +428,7 @@ export function calculatePoints(
     }
 
     // Set CR at the end
-    // if (p.points <= 5) {
-    //   p.cr = 0;
-    // } else if (p.points < 15) {
-    //   p.cr = 1;
-    // } else {
-    p.cr = Math.floor(p.points / 10);
+    p.cr = Math.ceil((p.points - 7) / 10);
 
     if (p.cr < 0) p.cr = 0;
     // }
