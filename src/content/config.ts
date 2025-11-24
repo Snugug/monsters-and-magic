@@ -7,6 +7,8 @@ import {
   vision as stdVision,
   speeds as stdSpeeds,
   monsterTypes as stdMonsterTypes,
+  tags as stdMonsterTags,
+  type allTags,
 } from '$lib/shared';
 
 const monsterTypes = z.enum(stdMonsterTypes);
@@ -15,6 +17,9 @@ const elements = z.enum(stdElements);
 const dieSizes = z.enum(stdDieSizes);
 const vision = z.enum(stdVision);
 const speeds = z.enum(stdSpeeds);
+const monsterTags = Object.fromEntries(
+  Object.keys(stdMonsterTags).map((t) => [t, z.boolean()]),
+) as Record<allTags, z.ZodBoolean>;
 
 const standalone = defineCollection({
   type: 'content',
@@ -309,6 +314,8 @@ const monsters = defineCollection({
     energetic: z.number(),
     conditioned: z.number(),
     spicy: elements.or(z.literal('')),
+    radiates: elements.or(z.literal('')),
+    absorbent: z.array(elements),
     naturalWeapons: z
       .array(
         z.object({
@@ -347,27 +354,10 @@ const monsters = defineCollection({
     armored: z.number(),
     resistance: z.array(elements),
     immunity: z.array(elements),
+    conditions: z.array(reference('conditions')),
     vulnerable: z.array(elements),
 
-    ancient: z.boolean(),
-    unrelenting: z.boolean(),
-    undying: z.boolean(),
-    legendary: z.boolean(),
-    lair: z.boolean(),
-    bloodthirsty: z.boolean(),
-    draining: z.boolean(),
-    amphibious: z.boolean(),
-    flyby: z.boolean(),
-    aquatic: z.boolean(),
-    pack: z.boolean(),
-    illumination: z.boolean(),
-    escape: z.boolean(),
-    swarm: z.boolean(),
-    jumper: z.boolean(),
-    compression: z.boolean(),
-    burden: z.boolean(),
-    aggressive: z.boolean(),
-    grappler: z.boolean(),
+    ...monsterTags,
   }),
 });
 

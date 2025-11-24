@@ -2,12 +2,12 @@
 title: Elk
 size: large
 type: beast
-image: ""
+image: ''
 focus: 0
 power: 3
 cunning: 0
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -27,7 +27,9 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ""
+spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Horns
     damage: 1d6
@@ -40,10 +42,11 @@ attacks:
     condition: Prone
     ap: 2
     fatigue: 2
-    trigger: ""
-    recharge: ""
+    trigger: ''
+    recharge: ''
     thread: false
-    description: Move, then strike a creature with the elk's horns. If the elk moved
+    description:
+      Move, then strike a creature with the elk's horns. If the elk moved
       20+ feet in a straight line immediately before hitting the target and the
       target is the size of the elk or smaller, it takes an extra 1d6
       bludgeoning damage and is knocked prone.
@@ -56,25 +59,41 @@ armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+conditions: []
 ancient: false
+reach: false
 unrelenting: false
 undying: false
 legendary: false
 lair: false
 bloodthirsty: false
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: false
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: false
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: false
 grappler: false
 ac: 0
 ---
-

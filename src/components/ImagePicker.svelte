@@ -11,19 +11,20 @@
     file = $bindable(),
     handler = $bindable(),
     editable = $bindable(true),
+    prompt = $bindable(''),
   }: {
     type: string;
     image: string | null;
     file: File | null;
     handler: FileSystemFileHandle | null;
     editable: boolean;
+    prompt: string;
   } = $props();
 
   let preview = $state('');
   let apiKey = $state('') as string | null;
   let ai: GoogleGenAI;
   let keyInput = $state('');
-  let prompt = $state('');
   const model = 'gemini-2.5-flash-image';
   let loading = $state(false);
   let select = $state(!image);

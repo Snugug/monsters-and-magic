@@ -7,7 +7,7 @@ focus: 0
 power: 5
 cunning: 0
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats:
   - rage
@@ -29,7 +29,9 @@ strong: 2
 energetic: 0
 conditioned: 0
 grappler: false
-spicy: ""
+spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Fist
     damage: 2d8
@@ -47,26 +49,43 @@ resistance:
 immunity: []
 vulnerable:
   - fire
+conditions: []
 ancient: false
+reach: false
 unrelenting: true
 undying: false
 legendary: true
 lair: false
 bloodthirsty: true
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: false
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: false
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: false
 vicious: 0
-elemental: ""
+elemental: ''
 ---
 
 A Ranger's companion that takes the form of a medium sea creature

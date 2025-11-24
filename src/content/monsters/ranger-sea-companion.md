@@ -7,7 +7,7 @@ focus: -1
 power: 2
 cunning: 2
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -29,7 +29,9 @@ strong: 0
 energetic: 0
 conditioned: 0
 grappler: true
-spicy: ""
+spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Tentacle
     damage: 1d6
@@ -46,26 +48,43 @@ armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+conditions: []
 ancient: false
+reach: false
 unrelenting: false
 undying: false
 legendary: false
 lair: false
 bloodthirsty: false
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: true
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: false
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: false
 vicious: 0
-elemental: ""
+elemental: ''
 ---
 
 A Ranger's companion that takes the form of a medium sea creature

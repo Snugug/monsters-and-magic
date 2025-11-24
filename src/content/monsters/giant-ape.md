@@ -28,6 +28,8 @@ strong: 0
 energetic: 0
 conditioned: 0
 spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Fist
     damage: 3d10
@@ -58,25 +60,41 @@ armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+conditions: []
 ancient: false
+reach: false
 unrelenting: false
 undying: false
 legendary: false
 lair: false
 bloodthirsty: false
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: false
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: false
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: true
 grappler: false
 ac: 0
 ---
-

@@ -2,12 +2,12 @@
 title: Badger
 size: tiny
 type: beast
-image: ""
+image: ''
 focus: 1
 power: 3
 cunning: 0
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -28,10 +28,12 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ""
+spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Bite
-    damage: "1"
+    damage: '1'
     element: physical
 attacks: []
 techniques: []
@@ -44,25 +46,41 @@ resistance:
   - poison
 immunity: []
 vulnerable: []
+conditions: []
 ancient: false
+reach: false
 unrelenting: false
 undying: false
 legendary: false
 lair: false
 bloodthirsty: false
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: false
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: false
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: false
 grappler: false
 ac: 1
 ---
-

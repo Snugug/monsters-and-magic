@@ -7,7 +7,7 @@ focus: -2
 power: 4
 cunning: -1
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -26,7 +26,9 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ""
+spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Bite
     damage: 1d6
@@ -39,8 +41,8 @@ attacks:
     condition: Prone
     ap: 2
     fatigue: 1
-    trigger: ""
-    recharge: ""
+    trigger: ''
+    recharge: ''
     thread: false
     description: If the target is the size of the Ankylosaurus or smaller, it is
       knocked prone on a hit.
@@ -53,24 +55,40 @@ armored: 6
 resistance: []
 immunity: []
 vulnerable: []
+conditions: []
 ancient: false
+reach: false
 unrelenting: false
 undying: false
 legendary: false
 lair: false
 bloodthirsty: false
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: false
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: false
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: true
 grappler: false
 ---
-

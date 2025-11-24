@@ -2,12 +2,12 @@
 title: Swarm of Ravens
 size: medium
 type: beast
-image: ""
+image: ''
 focus: 1
 power: 1
 cunning: 2
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -27,7 +27,9 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ""
+spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Beaks
     damage: 1d6
@@ -35,15 +37,16 @@ naturalWeapons:
 attacks:
   - name: Cacophony
     type: focus
-    damage: ""
-    element: ""
-    condition: ""
+    damage: ''
+    element: ''
+    condition: ''
     ap: 2
     fatigue: 0
-    trigger: ""
+    trigger: ''
     recharge: 1d6
     thread: false
-    description: Choose one creature in the swarm’s space. They make a focus saving
+    description:
+      Choose one creature in the swarm’s space. They make a focus saving
       throw. On a miss, The target has the Deafened condition until the start of
       the swarm’s next turn. While Deafened, the target also has Disadvantage on
       ability checks and attack rolls. On a weak hit, The target is not
@@ -57,25 +60,41 @@ armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+conditions: []
 ancient: false
+reach: false
 unrelenting: false
 undying: false
 legendary: false
 lair: false
 bloodthirsty: false
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: false
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: true
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: false
 grappler: false
 ac: 0
 ---
-

@@ -1,11 +1,11 @@
 <script module>
-  export type RepeaterActions = {
+  export interface RepeaterActions {
     up: (i: number) => Snippet;
     down: (i: number) => Snippet;
     remove: (i: number) => Snippet;
     add: (i: number) => Snippet;
     all: (i: number) => Snippet;
-  };
+  }
 </script>
 
 <script lang="ts">

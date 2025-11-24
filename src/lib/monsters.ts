@@ -5,7 +5,7 @@ interface APIBase {
   collection: string;
 }
 
-import { dieSizes, speeds, monsterCalc, type Monster } from '$lib/shared';
+import { dieSizes, speeds, monsterCalc, tags, type Monster } from '$lib/shared';
 
 export type CalculatedMonster = typeof monsterCalc;
 
@@ -22,10 +22,13 @@ export function calculatePoints(
     let baseSpeed = 30;
     let baseHP = 5;
     let baseDamage = '1d6';
+
+    const startingSize = monster.swarm || monster.size;
+
     // Set starting based on size
-    switch (monster.size) {
+    switch (startingSize) {
       case 'tiny':
-        baseSpeed = 15;
+        baseSpeed = 20;
         baseHP = 3;
         p.points -= 1;
         baseDamage = '1d4';
@@ -35,7 +38,7 @@ export function calculatePoints(
         break;
       case 'large':
         p.reach += 5;
-        baseSpeed = 35;
+        baseSpeed = 40;
         baseHP = 6;
         p.points += 1;
         baseDamage = '1d8';
@@ -55,7 +58,13 @@ export function calculatePoints(
         baseDamage = '1d12';
         break;
     }
+
     p.hp = baseHP + baseHP * monster.power;
+
+    if (monster.swarm) {
+      p.points -= 2;
+      p.tags.push('Swarm');
+    }
 
     // Abilities
     p.points += points(
@@ -167,8 +176,13 @@ export function calculatePoints(
     }
 
     if (monster.spicy) {
-      p.points += 4;
+      p.points += 3;
       p.tags.push('spicy');
+    }
+
+    if (monster.radiates) {
+      p.points += 4;
+      p.tags.push('radiates');
     }
 
     // Damage
@@ -332,9 +346,6 @@ export function calculatePoints(
         p.points += 3;
         p.points += points(monster.resistance.length - 1, 2);
         p.tags.push('thick-skinned');
-        if (monster.resistance.length > 1) {
-          p.tags.push('resistant');
-        }
       } else {
         p.points += points(monster.resistance.length, 2);
         p.tags.push('resistant');
@@ -342,89 +353,35 @@ export function calculatePoints(
     }
     if (monster.immunity.length) {
       p.points += points(monster.immunity.length, 5);
-      p.tags.push('immune');
+      if (!monster.incorporeal) {
+        p.tags.push('immune');
+      }
     }
+
+    if (monster.conditions.length) {
+      p.points += points(monster.conditions.length, 3);
+      p.tags.push('resilient');
+    }
+
     if (monster.vulnerable.length) {
       p.points -= points(monster.vulnerable.length);
       p.tags.push('vulnerable');
     }
+    if (monster.absorbent.length) {
+      p.points += points(monster.absorbent.length, 6);
+      p.tags.push('absorbent');
+    }
 
-    // Special
+    // Traits
+    for (const [key, val] of Object.entries(tags)) {
+      if (monster[key]) {
+        p.points += val.points;
+        p.tags.push(val.tag || key);
+      }
+    }
+
     if (monster.ancient) {
       p.ap += 1;
-      p.points += 4;
-      p.tags.push('ancient');
-    }
-    if (monster.undying) {
-      p.points += 3;
-      p.tags.push('undying');
-    }
-    if (monster.unrelenting) {
-      p.points += 3;
-      p.tags.push('unrelenting');
-    }
-    if (monster.draining) {
-      p.points += 3;
-      p.tags.push('draining');
-    }
-    if (monster.bloodthirsty) {
-      p.points += 3;
-      p.tags.push('bloodthirsty');
-    }
-    if (monster.legendary) {
-      p.points += 10;
-      p.tags.push('legendary');
-    }
-    if (monster.lair) {
-      p.points += 5;
-      p.tags.push('lair');
-    }
-    if (monster.amphibious) {
-      p.points += 1;
-      p.tags.push('amphibious');
-    }
-    if (monster.flyby) {
-      p.points += 3;
-      p.tags.push('flyby');
-    }
-    if (monster.aquatic) {
-      p.points -= 1;
-      p.tags.push('aquatic');
-    }
-    if (monster.pack) {
-      p.points += 2;
-      p.tags.push('pack tactics');
-    }
-    if (monster.illumination) {
-      p.tags.push('illuminated');
-    }
-    if (monster.escape) {
-      p.points += 2;
-      p.tags.push('escape artist');
-    }
-    if (monster.swarm) {
-      p.points += 2;
-      p.tags.push('swarm');
-    }
-    if (monster.jumper) {
-      p.points += 1;
-      p.tags.push('jumper');
-    }
-    if (monster.compression) {
-      p.points += 1;
-      p.tags.push('squishy');
-    }
-    if (monster.burden) {
-      p.points += 1;
-      p.tags.push('beast of burden');
-    }
-    if (monster.aggressive) {
-      p.points += 2;
-      p.tags.push('aggressive');
-    }
-    if (monster.grappler) {
-      p.points += 3;
-      p.tags.push('grappler');
     }
 
     // Set CR at the end

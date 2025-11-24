@@ -7,7 +7,7 @@ focus: 1
 power: 4
 cunning: 1
 luck: 0
-lineage: ""
+lineage: ''
 traits: []
 feats: []
 weapons: []
@@ -26,7 +26,9 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ""
+spicy: ''
+radiates: ''
+absorbent: []
 naturalWeapons:
   - name: Bite
     damage: 2d10
@@ -37,15 +39,16 @@ naturalWeapons:
 attacks:
   - name: Rush
     type: attack
-    damage: ""
-    element: ""
+    damage: ''
+    element: ''
     condition: Prone
     ap: 2
     fatigue: 1
-    trigger: ""
+    trigger: ''
     recharge: 1d8
     thread: false
-    description: Move, then strike with allosaurus' claws. If you moved more than
+    description:
+      Move, then strike with allosaurus' claws. If you moved more than
       30' in a straight line immediately before the attack and the creature
       attacked is of the allosaurus' size or smaller, on a strong hit, knock the
       target prone.
@@ -58,24 +61,40 @@ armored: 2
 resistance: []
 immunity: []
 vulnerable: []
+conditions: []
 ancient: false
+reach: false
 unrelenting: false
 undying: false
 legendary: false
 lair: false
 bloodthirsty: false
 draining: false
+bursting: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+regeneration: false
+matana: false
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
 amphibious: false
 flyby: false
 aquatic: false
 pack: false
-illumination: false
+illuminated: false
 escape: false
 swarm: false
 jumper: false
-compression: false
+amorphous: false
 burden: false
 aggressive: false
 grappler: false
 ---
-

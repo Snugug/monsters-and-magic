@@ -98,41 +98,203 @@ export const newAttackBase = {
 };
 
 export const tags = {
-  aggressive: 'Using Strike multiple times per turn costs 1 fewer AP',
-  amphibious: 'Can breathe air and water',
-  ancient: 'Increases AP by 1',
-  aquatic: 'Can only breathe underwater',
-  bloodthirsty:
-    'When at ½ HP or less, gain bonus to ability checks and damage rolls equal to CR',
-  burden: 'Carrying capacity is doubled',
-  compression:
-    'Can move through a space as narrow as 1 inch without expending extra movement',
-  draining:
-    'Once per turn when dealing damage with a melee attack, recover ½ damage or fatigue dealt',
-  escape: 'The AP cost for Disengage and Hide is reduced by 1',
-  flyby: `Doesn't provoke reactions when leaving an enemy's reach`,
-  grappler: 'Halves the fatigue needed to keep a foe restrained',
-  illumination: `Naturally emits bright light in a 10' radius, and dim light an additional 10'`,
-  jumper: 'Long jump and high jump distances are doubled',
-  lair: 'Has control over its surroundings, letting it take Lair Actions at the start of a round',
+  aggressive: {
+    points: 2,
+    full: 'Using Strike multiple times per turn costs 1 fewer AP',
+    short: 'Using Strike multiple times per turn costs 1 fewer AP',
+  },
+  amorphous: {
+    points: 1,
+    full: 'Can move through a space as narrow as 1 inch without expending extra movement',
+    short: 'Can easily squeeze through narrow spaces',
+  },
+  ancient: {
+    points: 4,
+    full: 'Can use an additional AP each turn thanks to uncountable years of experience',
+    short: 'Can use an additional AP each turn',
+  },
+  amphibious: {
+    points: 1,
+    full: 'Can breathe air and water',
+  },
+  aquatic: {
+    points: -1,
+    full: 'Can only breathe underwater',
+  },
+  bloodthirsty: {
+    points: 3,
+    full: 'When bloodied, gain bonus to ability checks and damage rolls equal to CR',
+    short: 'Gain a bonus to ability checks and damage when bloodied',
+  },
+  burden: {
+    points: 1,
+    full: 'Carrying capacity is doubled',
+    tag: 'Beast of Burden',
+  },
+  draining: {
+    points: 3,
+    full: 'Once per turn when dealing damage with a melee attack, recover ½ damage or fatigue dealt',
+    short: 'Once per turn heal after dealing melee damage',
+  },
+  escape: {
+    points: 2,
+    full: 'The AP cost for Disengage and Hide is reduced by 1',
+    tag: 'Escape Artist',
+  },
+  flyby: {
+    points: 3,
+    full: `Doesn't provoke reactions when leaving an enemy's reach`,
+    short: `Doesn't provoke reactions when leaving reach`,
+  },
+  grappler: {
+    points: 3,
+    full: 'Halves the fatigue needed to keep a foe restrained (minimum 1)',
+    short: 'Halves the fatigue needed to keep a foe restrained',
+  },
+  illuminated: {
+    points: 0,
+    full: `Naturally emits bright light in a radius equal to twice is reach and dim light twice its reach again.`,
+    short: 'Naturally emits light',
+  },
+  reach: {
+    points: 2,
+    full: 'Has double the normal reach',
+  },
+  jumper: {
+    points: 1,
+    full: 'Can long jump and high jump twice the normal distance',
+  },
+  lair: {
+    points: 5,
+    full: `Has control over its surroundings, letting it take one of the following **Lair Actions** at the start of a round:
 
-  legendary: 'Can use Legendary Actions, Reactions, and Resistances',
-  pack: `When an ally is within 5' of a creature, attack rolls against that creature gain +2 ongoing. The ally can't be unconscious.`,
-  swarm: `Can occupy another creature's space and move through tiny openings, but cannot regain HP or gain temporary HP. Resistant to physical damage, deals 1/2 damage when bloodied. Immune to Restrained, Prone, Stunned, Frightened conditions.`,
+Impede
+: Spend **1 thread** to make a 30'×30' are of the lair difficult terrain to creatures of its choice.
 
-  undying:
-    'When fully exhausted, at the start of its next turn can spend 1 thread to recover all fatigue and 1 exhaustion.',
-  unrelenting:
-    'When damage would drop it to 0 HP but not outright kill it, can spend 1 thread to drop to 1 HP instead',
-};
+Rearrange
+: Spend **1 thread** to rearrange the physical features of a 30'×30' area (adding or removing walls, lowering or raising the floor, moving creatures along a contiguous surface, etc…) as long as it does not directly cause harm to a creature.`,
+    short: 'Can control its surroundings using Lair Actions',
+  },
+  legendary: {
+    points: 10,
+    full: `Can use Legendary Actions, Reactions, and Resistances:
+
+Legendary Action
+: Can spend **2 threads** to take an additional, but cannot go twice in a row
+
+Legendary Reaction
+: Can spend **1 thread** to use an additional reaction
+
+Legendary Resistance
+: Can spend **1 thread** to ignore the damage and effects of a single attack or saving throw`,
+    short: 'Can use Legendary Actions, Reactions, and Resistances',
+  },
+  pack: {
+    points: 2,
+    full: `When an ally is within 5' of a creature, attack rolls against that creature gain +2 ongoing. The ally can't be unconscious.`,
+    short: 'Gains a bonus to attack rolls when allies nearby',
+    tag: 'Pack Tactics',
+  },
+  unrelenting: {
+    points: 3,
+    full: 'When fully exhausted, at the start of its next turn, can spend **1 thread** to recover all fatigue and 1 exhaustion.',
+    short: 'Can spend a thread to recover from total exhaustion',
+  },
+  undying: {
+    points: 3,
+    full: 'When damage would drop it to 0 HP but not outright kill it, can spend **1 thread** to drop to 1 HP instead',
+    short: 'Can spend a thread to prevent death',
+  },
+  bursting: {
+    points: 2,
+    full: 'Explodes when it dies. All creatures within twice its reach must make a cunning saving throw, taking damage equal to twice the base damage for a creature its size on a miss, half on a hit. If the creature is spicy, the damage is of that type, otherwise its physical.',
+    short: 'Explodes when it dies',
+  },
+  regeneration: {
+    points: 5,
+    full: "Regains hit points at the start of its turn equal to the base hit number of HP for a creature its size. This can be blocked for a turn by forcing it to mark fatigue or dealing damage to it of a type it's vulnerable to. It can also be blocked if its a Beast, Humanoid, or Monstrosity and fire or acid damage is dealt to it.",
+    short: 'Regains hit points at the start of its turn',
+  },
+  extraplanar: {
+    points: 1,
+    full: 'If it dies outside of its home plane, its body dissolves. It gains a new body in 1d4 days, reviving with all of its Hit Points somewhere in its home plane. Celestials and Fiends gain a new body instantaneously.',
+    short: 'Returns to its home plane when it dies',
+  },
+  occupier: {
+    points: 2,
+    full: `Can enter another creature's space and stop there. If the creature is spicy, once per turn it can deal damage to a creature whose space its moved through or stopped in.`,
+    short: "Can enter another creature's space and stop there",
+  },
+  freediver: {
+    points: 1,
+    full: 'Can hold its breath for up to an hour',
+  },
+  icewalker: {
+    points: 1,
+    full: 'Can move across and climb icy surfaces without needing to make an ability check, and ignores icy and snowy difficult terrain',
+    short: 'Can move across icy and snowy surfaces easily',
+    tag: 'Ice Walker',
+  },
+  immutable: {
+    points: 2,
+    full: 'Cannot be shape-shifted',
+  },
+  incorporeal: {
+    points: 1,
+    full: 'Can move through other creatures and objects as if they were Difficult Terrain. Takes 1d10 force damage if it ends its turn inside a creature. Requires physical resistance.',
+    short: 'Can move through creatures and objects',
+  },
+  matana: {
+    points: 4,
+    full: 'Has +2 ongoing to saving throws against spells and other magical effects',
+    short: 'Magic is not as effective against it',
+    tag: 'Magic Resistance',
+  },
+  webwalker: {
+    points: 1,
+    full: 'Ignores movement restrictions caused by webs, and knows the location of any creature in contact with a web its touching',
+    short: "Webs don't restrict is movement",
+    tag: 'Web Walker',
+  },
+  climber: {
+    points: 1,
+    full: 'Can climb difficult surfaces, including along ceilings, without needing to make an ability check',
+    short: 'Can climb difficult surfaces with ease',
+  },
+  tunneler: {
+    points: 0,
+    full: 'When it burrows through solid material, it leaves a tunnel of its size. Must have a burrowing speed',
+    short: 'Leaves a hole when it burrows',
+  },
+  photophobic: {
+    points: -2,
+    full: 'While in sunlight, has -2 ongoing to all ability checks',
+  },
+  siege: {
+    points: 1,
+    full: 'Deals double damage to objects and structures',
+  },
+  abduct: {
+    points: 1,
+    full: `Doesn't need to spend extra movement to move a grappled creature`,
+    short: 'Can move a grappled creature at normal speed',
+  },
+} as const;
+
+export type allTags = keyof typeof tags;
 
 export type elem = (typeof elements)[number];
+
+// const tagObject = Object.fromEntries(Object.keys(tags).map((t) => [t, false])) as {
+//   [k of typeof Object.keys(tags)[number]]: boolean
+// };
 
 export const baseMonster = {
   title: '',
   size: 'medium' as (typeof sizes)[number],
+  swarm: '' as (typeof sizes)[number],
   // type: monsterTypes[0],
-  type: 'beast' as (typeof types)[number],
+  type: 'beast' as (typeof monsterTypes)[number],
   image: '',
   focus: 0,
   power: 1,
@@ -171,6 +333,7 @@ export const baseMonster = {
 
   // elemental: '' as elem,
   spicy: '' as elem,
+  radiates: '' as elem,
   naturalWeapons: [newWeaponBase] as Array<typeof newWeaponBase>,
   attacks: [] as Array<typeof newAttackBase>,
 
@@ -186,27 +349,14 @@ export const baseMonster = {
   resistance: [] as Array<elem>,
   immunity: [] as Array<elem>,
   vulnerable: [] as Array<elem>,
+  absorbent: [] as Array<elem>,
+  conditions: [] as Array<string>,
 
   // Special
-  ancient: false,
-  unrelenting: false,
-  undying: false,
-  legendary: false,
-  lair: false,
-  bloodthirsty: false,
-  draining: false,
-  amphibious: false,
-  flyby: false,
-  aquatic: false,
-  pack: false,
-  illumination: false,
-  escape: false,
-  swarm: false,
-  jumper: false,
-  compression: false,
-  burden: false,
-  aggressive: false,
-  grappler: false,
+  ...(Object.fromEntries(Object.keys(tags).map((t) => [t, false])) as Record<
+    allTags,
+    boolean
+  >),
 };
 
 export type Monster = typeof baseMonster;

@@ -11,6 +11,7 @@
     newWeaponBase,
     newAttackBase,
     tags,
+    type allTags,
   } from '$lib/shared';
   import { calculatePoints, types as monsterTypes } from '$js/monsters';
   import { md } from '$js/md';
@@ -27,7 +28,7 @@
   import Repeater from '$components/Repeater.svelte';
   import type { RepeaterActions } from '$components/Repeater.svelte';
   import { tick } from 'svelte';
-  import { getMany, setMany } from 'idb-keyval';
+  import { delMany, getMany, setMany } from 'idb-keyval';
 
   const lineages = await db.lineage.toArray();
   const armor = await db.armor.toArray();
@@ -46,9 +47,13 @@
   let image = $state('');
   let file = $state() as File;
   let handler = $state() as FileSystemFileHandle;
+  let prompt = $state('');
+
   let lineage = $state('') as string | undefined;
   let type = $state('') as (typeof monsterTypes)[number];
   let size = $state('') as (typeof sizes)[number];
+  let swarm = $state('') as (typeof sizes)[number];
+
   let body = $state('');
   let hp = $state(5);
   let loaded = $state(false);
@@ -89,13 +94,26 @@
 
   let monster = $state(structuredClone(baseMonster));
 
-  let baseSpeed = $derived.by(() => calculateBaseSpeed(monster.size));
+  let baseSpeed = $derived.by(() =>
+    calculateBaseSpeed(monster.size, monster.swarm),
+  );
 
-  function calculateBaseSpeed(size: typeof monster.size) {
-    if (size === 'tiny') return 15;
-    if (size === 'large') return 35;
-    if (size === 'huge') return 40;
-    if (size === 'gargantuan') return 40;
+  function calculateBaseSpeed(
+    size: typeof monster.size,
+    swarm: typeof monster.size,
+  ) {
+    if (swarm) {
+      if (swarm === 'tiny') return 20;
+      if (swarm === 'large') return 40;
+      if (swarm === 'huge') return 40;
+      if (swarm === 'gargantuan') return 40;
+    } else {
+      if (size === 'tiny') return 20;
+      if (size === 'large') return 40;
+      if (size === 'huge') return 40;
+      if (size === 'gargantuan') return 40;
+    }
+
     return 30;
   }
 
@@ -107,43 +125,41 @@
     }
   });
 
-  const elemList = elements
-    .map((e) => ({
-      id: e,
-      title: capitalize(e),
-    }))
-    .filter((e) => {
-      if (monster.swarm && e.id === 'physical') return false;
-      return true;
-    });
+  const elemList = elements.map((e) => ({
+    id: e,
+    title: capitalize(e),
+  }));
   const resistList = $derived(
-    elemList
-      .filter(
-        (a) =>
-          !monster.immunity.includes(a.id) &&
-          !monster.vulnerable.includes(a.id),
-      )
-      .filter((e) => {
-        if (monster.swarm && e.id === 'physical') return false;
-        return true;
-      }),
+    elemList.filter(
+      (a) =>
+        !monster.immunity.includes(a.id) &&
+        !monster.vulnerable.includes(a.id) &&
+        !monster.absorbent.includes(a.id),
+    ),
   );
   const immuneList = $derived(
-    elemList
-      .filter(
-        (a) =>
-          !monster.resistance.includes(a.id) &&
-          !monster.vulnerable.includes(a.id),
-      )
-      .filter((e) => {
-        if (monster.swarm && e.id === 'physical') return false;
-        return true;
-      }),
+    elemList.filter(
+      (a) =>
+        !monster.resistance.includes(a.id) &&
+        !monster.vulnerable.includes(a.id) &&
+        !monster.absorbent.includes(a.id),
+    ),
   );
   const vulnList = $derived(
     elemList.filter(
       (a) =>
-        !monster.resistance.includes(a.id) && !monster.immunity.includes(a.id),
+        !monster.resistance.includes(a.id) &&
+        !monster.immunity.includes(a.id) &&
+        !monster.absorbent.includes(a.id),
+    ),
+  );
+
+  const absList = $derived(
+    elemList.filter(
+      (a) =>
+        !monster.resistance.includes(a.id) &&
+        !monster.immunity.includes(a.id) &&
+        !monster.vulnerable.includes(a.id),
     ),
   );
   const visionList = vision.map((v) => ({
@@ -170,6 +186,8 @@
   $effect(() => {
     const t = type !== monster.type;
     const s = size !== monster.size;
+    const sw = swarm !== monster.swarm;
+
     if (t) {
       abilities.focus.max = 5;
       abilities.focus.min = -5;
@@ -179,37 +197,6 @@
       abilities.cunning.min = -5;
       abilities.luck.max = 5;
       abilities.luck.min = -2;
-
-      // switch (monster.type) {
-      //   case 'beast':
-      //     // abilities.focus.max = 0;
-      //     break;
-      //   case 'humanoid':
-      //   case 'dragon':
-      //     // abilities.focus.min = -2;
-      //     // abilities.power.min = -2;
-      //     // abilities.cunning.min = -2;
-      //     break;
-      //   case 'celestial':
-      //     // abilities.focus.min = 0;
-      //     // abilities.power.min = -2;
-      //     break;
-      //   case 'fiend':
-      //     // abilities.cunning.min = 0;
-      //     // abilities.power.min = -2;
-      //     break;
-      //   case 'aberration':
-      //     // abilities.cunning.min = 0;
-      //     // abilities.focus.min = 0;
-      //     break;
-      //   case 'fey':
-      //     // abilities.cunning.min = -2;
-      //     break;
-      //   case 'ooze':
-      //     // abilities.focus.max = 0;
-      //     // abilities.cunning.max = 0;
-      //     break;
-      // }
 
       let nwSwitch = false;
       let n = monster.naturalWeapons[0].name;
@@ -238,10 +225,10 @@
       type = monster.type;
     }
 
-    if (s || t) {
+    if (s || t || sw) {
       // Reset Speed
-      if (s) {
-        const oldSpeed = calculateBaseSpeed(size);
+      if (s || sw) {
+        const oldSpeed = calculateBaseSpeed(size, swarm);
         for (const spd of monster.speeds) {
           if (monster[spd] === oldSpeed) monster[spd] = baseSpeed;
         }
@@ -295,6 +282,7 @@
       // }
 
       size = monster.size;
+      swarm = monster.swarm;
     }
   });
   // Reset lineage, traits, and feats if humanoid
@@ -313,33 +301,88 @@
     }
   });
 
+  // Swarm and Incorporeal
+  $effect(() => {
+    // if (monster.swarm) {
+    //   if (!monster.resistance.includes('physical')) {
+    //     monster.resistance.push('physical');
+    //   }
+    //   if (!monster.occupier) {
+    //     monster.occupier = true;
+    //   }
+    //   // if (!monster.amorphous) {
+    //   //   monster.amorphous = true;
+    //   // }
+    // }
+
+    if (monster.incorporeal && !monster.immunity.includes('physical')) {
+      monster.immunity.push('physical');
+    }
+  });
+
+  // Tunnler
+  $effect(() => {
+    if (monster.tunnler && !monster.speeds.includes('burrowing')) {
+      monster.speeds.push('burrowing');
+    }
+  });
+
+  function space(size: (typeof sizes)[number]) {
+    switch (size) {
+      case 'tiny':
+        return 2.5;
+      case 'large':
+        return 10;
+      case 'huge':
+        return 15;
+      case 'gargantuan':
+        return 20;
+      default:
+        return 5;
+    }
+  }
+
+  function pluralMonsterType(type: typeof monster.type) {
+    switch (type) {
+      case 'fey':
+      case 'undead':
+        return type;
+      case 'monstrosity':
+        return 'monstrosities';
+      default:
+        return type + 's';
+    }
+  }
+
+  // Prompt
+  $effect(() => {
+    if (!image) {
+      let size = space(monster.size);
+      let swarm = space(monster.swarm);
+      let plural = pluralMonsterType(monster.type);
+
+      prompt = `A ${monster.title}.\n\nA ${monster.size} (fits inside a ${size} foot by ${size} foot square)${monster.swarm ? ` swarm of ${monster.swarm} (fits inside a ${swarm} foot by ${swarm} foot square) ` : ' '}${monster.swarm ? plural : monster.type}.\n\n${body}`;
+    }
+  });
+
   // State
   $effect(async () => {
     if (loaded === false) {
-      const [m, b] = await getMany([
-        'monster',
-        'body',
-        // 'handler',
-        // 'image',
-        // 'file',
-      ]);
+      const [m, b, p] = await getMany(['monster', 'body', 'monster-prompt']);
 
       if (m) monster = m;
       if (b) body = b;
-      // if (h) handler = h;
-      // if (i) image = i;
-      // if (f) file = f;
+      if (p) prompt = p;
 
       loaded = true;
     } else {
       const m = $state.snapshot(monster);
       const b = $state.snapshot(body);
+      const p = $state.snapshot(prompt);
       await setMany([
         ['monster', m],
         ['body', b],
-        // ['handler', handler],
-        // ['image', image],
-        // ['file', file],
+        ['monster-prompt', p],
       ]);
     }
   });
@@ -392,7 +435,7 @@
         type: 'success',
         message: `${monster.title} saved to ${output.join('/')}`,
       });
-      resetMonster(e);
+      await resetMonster(e);
     } catch (e) {
       message.push({
         type: 'error',
@@ -449,14 +492,18 @@
     monster = combined;
   }
 
-  function resetMonster(e: Event) {
+  async function resetMonster(e: Event) {
     e.preventDefault();
     monster = structuredClone(baseMonster);
     body = '';
     handler = null;
     file = null;
     image = null;
+    prompt = '';
+    await delMany(['monster', 'body', 'handler', 'image', 'file']);
   }
+
+  let swarmBase = $derived(sizes.slice(0, sizes.indexOf(monster.size)));
 </script>
 
 <!-- {#if !folder}
@@ -482,21 +529,46 @@
     </div>
 
     <div class="group">
-      <label for="type">Type</label>
-      <select name="type" bind:value={monster.type} required>
-        {#each monsterTypes as type}
-          <option value={type}>{capitalize(type)}</option>
+      <label for="size">Swarm Of</label>
+      <select
+        name="size"
+        bind:value={monster.swarm}
+        required
+        disabled={monster.size === 'tiny' ? true : null}
+      >
+        <option value="">-</option>
+        {#each swarmBase as s}
+          <option value={s}>{capitalize(s)}</option>
         {/each}
       </select>
     </div>
 
     <div class="group top">
+      <label for="type">Type</label>
+      <select name="type" bind:value={monster.type} required>
+        {#each monsterTypes as type}
+          <option value={type}
+            >{capitalize(
+              monster.swarm ? pluralMonsterType(type) : type,
+            )}</option
+          >
+        {/each}
+      </select>
+    </div>
+
+    <div class="group full">
       <label for="body">Description</label>
       <textarea name="body" bind:value={body}></textarea>
     </div>
 
     <div class="image">
-      <ImagePicker bind:image bind:file bind:handler type="monster" />
+      <ImagePicker
+        bind:image
+        bind:file
+        bind:handler
+        bind:prompt
+        type="monster"
+      />
     </div>
 
     <fieldset class="abilities">
@@ -709,7 +781,24 @@
             <option value={e}>{capitalize(e)}</option>
           {/each}
         </select>
-        <p>Touching this creature deals ½ natural weapon damage of this type</p>
+        <p>
+          The first time a creature touches this monster in a turn, it takes {nwBase.damage}
+          damage of this type.
+        </p>
+      </div>
+      <div class="group">
+        <label for="type">Radiates</label>
+        <select name="type" bind:value={monster.radiates}>
+          <option value="">-</option>
+          {#each elements as e}
+            <option value={e}>{capitalize(e)}</option>
+          {/each}
+        </select>
+        <p>
+          The first time a creature comes within {preview.cr * 5 + 5}' of this
+          monster in a turn, it takes
+          {nwBase.damage} damage of this type.
+        </p>
       </div>
     </fieldset>
 
@@ -856,16 +945,29 @@
         button="Add Resistance"
       />
       <Multiselect
-        bind:list={monster.immunity}
-        items={immuneList}
-        legend="Immunities"
-        button="Add Immunity"
-      />
-      <Multiselect
         bind:list={monster.vulnerable}
         items={vulnList}
         legend="Vulnerabilities"
         button="Add Vulnerability"
+      />
+      <Multiselect
+        bind:list={monster.immunity}
+        items={immuneList}
+        legend="Elemental Immunities"
+        button="Add Immunity"
+      />
+      <Multiselect
+        bind:list={monster.conditions}
+        items={conditions}
+        legend="Condition Immunities"
+        button="Add Immunity"
+        filter={(c) => c.status === false}
+      />
+      <Multiselect
+        bind:list={monster.absorbent}
+        items={absList}
+        legend="Absorbs"
+        button="Add Absorption"
       />
     </fieldset>
 
@@ -1032,14 +1134,14 @@
     </fieldset>
 
     <fieldset>
-      <legend>Special</legend>
-      {#each Object.entries(tags) as [t, d]}
+      <legend>Traits</legend>
+      {#each Object.entries(tags).sort( (a, b) => a[0].localeCompare(b[0]), ) as [t, d]}
         <div class="group">
           <label for={t} class="switch">
-            <span>{capitalize(t)}</span>
+            <span>{d.tag || capitalize(t)}</span>
             <input id={t} type="checkbox" bind:checked={monster[t]} />
           </label>
-          <p>{d}</p>
+          <p>{d.short || d.full}</p>
         </div>
       {/each}
     </fieldset>
@@ -1092,7 +1194,13 @@
     align-items: center;
     // justify-content: center;
     gap: 0.5rem;
+
     // max-width: min-content;
+
+    span {
+      line-height: 1;
+      padding-block: 0.25rem;
+    }
 
     input {
       --timing: 0.2s;
@@ -1185,6 +1293,8 @@
 
     textarea {
       resize: none;
+      field-sizing: content;
+      min-height: 5rem;
     }
   }
 
