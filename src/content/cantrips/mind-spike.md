@@ -8,4 +8,4 @@ save: focus
 upcast: 2 fatigue
 ---
 
-Reach into the mind of a target within 60 feet and sap their vitality, dealing 1-fatigue.
+Reach into the mind of a target within 60 feet and sap their vitality, dealing 1-fatigue and marking the target impaired on a strong hit.
