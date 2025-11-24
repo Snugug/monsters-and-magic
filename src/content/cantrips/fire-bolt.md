@@ -9,4 +9,4 @@ save: cunning
 upcast: 1 damage die
 ---
 
-Hurl a bolt of fire at a target within 60 feet, dealing 1d6 fire damage and on a strong hit inflict doomed.
+Hurl a bolt of fire at a target within 60 feet, dealing 1d6 fire damage and on a strong hit inflicting doomed.

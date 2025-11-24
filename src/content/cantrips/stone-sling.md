@@ -6,4 +6,5 @@ type: physical
 save: power
 upcast: 1 damage die
 ---
-Launch a stone at a target within 30 feet, dealing 1d10 physical damage.
+
+Launch a stone at a target within 40 feet, dealing 1d10 physical damage.
