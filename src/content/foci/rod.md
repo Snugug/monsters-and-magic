@@ -1,7 +1,7 @@
 ---
 title: Rod
 properties:
-  - empower
+  - span
 cost: 20
 weight: 0.1
 crafting:
@@ -13,4 +13,3 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
-

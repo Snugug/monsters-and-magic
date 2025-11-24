@@ -2,7 +2,7 @@
 title: Gauntlets
 properties:
   - extend
-  - empower
+  - span
   - two-handed
 cost: 60
 weight: 1
@@ -15,4 +15,3 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
-

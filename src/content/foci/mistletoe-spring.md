@@ -1,7 +1,7 @@
 ---
 title: Mistletoe Spring
 properties:
-  - empower
+  - span
 cost: 20
 weight: 0
 crafting:

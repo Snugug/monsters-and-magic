@@ -1,7 +1,7 @@
 ---
 title: Amulet
 properties:
-  - empower
+  - span
 cost: 18
 weight: 0.1
 crafting:
@@ -13,4 +13,3 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
-

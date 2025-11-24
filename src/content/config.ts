@@ -219,7 +219,7 @@ const foci = defineCollection({
   schema: z.object({
     title: z.string(),
     properties: z.array(
-      z.enum(['assail', 'extend', 'empower', 'two-handed', 'versatile']),
+      z.enum(['assail', 'extend', 'span', 'two-handed', 'versatile']),
     ),
     cost: z.number(),
     weight: z.number(),
