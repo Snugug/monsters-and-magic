@@ -48,6 +48,7 @@
   let file = $state() as File;
   let handler = $state() as FileSystemFileHandle;
   let prompt = $state('');
+  let imagePicker: ImagePicker;
 
   let lineage = $state('') as string | undefined;
   let type = $state('') as (typeof monsterTypes)[number];
@@ -500,6 +501,7 @@
     file = null;
     image = null;
     prompt = '';
+    imagePicker.reset();
     await delMany(['monster', 'body', 'handler', 'image', 'file']);
   }
 
@@ -567,6 +569,7 @@
         bind:file
         bind:handler
         bind:prompt
+        bind:this={imagePicker}
         type="monster"
       />
     </div>
