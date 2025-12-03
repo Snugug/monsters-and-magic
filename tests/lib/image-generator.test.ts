@@ -1,5 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { ImageGenerator } from '$js/image-generator';
+import { ImageGenerator } from '$lib/image-generator';
 
 // Mock the @google/genai library
 const mockGenerateContent = vi.fn();

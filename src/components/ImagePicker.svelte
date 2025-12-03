@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ImageGenerator } from '$js/image-generator';
+  import { ImageGenerator } from '$lib/image-generator';
   import { CREATURE_PROMPT } from '$lib/prompts';
   import { fileToImage, stringToImage } from '$js/images';
   import { getDir } from '$js/fs.svelte';
