@@ -2,7 +2,6 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { MarkdownHeading } from 'astro';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import slugify from 'slugify';
 import { sortFeats } from '$lib/helpers';
 
 export interface Chapter {

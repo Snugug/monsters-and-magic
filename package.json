@@ -10,8 +10,9 @@
     "lint": "prettier -c .",
     "fix": "prettier --write .",
     "tsx": "tsx",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "run-p test:unit",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",
@@ -38,6 +39,7 @@
     "@types/sharedworker": "^0.0.188",
     "@types/wicg-file-system-access": "^2023.10.7",
     "hastscript": "^9.0.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-svelte": "^3.4.0",
