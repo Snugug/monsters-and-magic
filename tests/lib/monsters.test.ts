@@ -7,35 +7,7 @@ import {
 } from '$lib/monsters';
 import type { Monster } from '$lib/shared';
 
-// Mock data from $lib/shared
-vi.mock('$lib/shared', () => ({
-  monsterCalc: {
-    points: 0,
-    cr: 0,
-    hp: 0,
-    ac: 10,
-    ap: 2,
-    reach: 5,
-    piercing: 0,
-    bonus: 0,
-    fatigue: 6,
-    exhaustion: 2,
-    speed: {
-      walking: 30,
-      flying: 0,
-      climbing: 0,
-      swimming: 0,
-      burrowing: 0,
-    },
-    tags: [],
-  },
-  dieSizes: ['1', '1d4', '1d6', '1d8', '1d10', '1d12', '2d8', '2d10', '2d12'],
-  speeds: ['flying', 'climbing', 'swimming', 'burrowing'],
-  tags: {
-    amphibious: { points: 1 },
-    incorporeal: { points: 10, tag: 'incorporeal' },
-  },
-}));
+
 
 // Mock data for collections
 const mockTraits = [{ id: 'trait1', points: 2, rare: false }];
@@ -176,8 +148,9 @@ describe('monsters.ts', () => {
         cunning: 2,
       };
       const result = calculate(armoredMonster);
-      // base ac 10 + armor ac 3 + cunning 2 = 15
-      expect(result.ac).toBe(15);
+      // base ac 0 + armor ac 3 + cunning 2 = 5
+      expect(result.ac).toBe(5);
+      // points: 6 (armor)
       expect(result.points).toBe(6);
     });
 
@@ -222,10 +195,9 @@ describe('monsters.ts', () => {
     });
 
     it('damageStep should return correct index', () => {
-      // based on mocked dieSizes: ['1', '1d4', '1d6', '1d8', '1d10', '1d12', '2d8', '2d10', '2d12']
-      // unique totals: [1, 4, 6, 8, 10, 12, 16, 20, 24]
-      expect(damageStep('1d6')).toBe(2);
-      expect(damageStep('2d8')).toBe(6);
+      // based on actual dieSizes
+      expect(damageStep('1d6')).toBe(3);
+      expect(damageStep('2d8')).toBe(7);
     });
   });
 });
