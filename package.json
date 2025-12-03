@@ -9,7 +9,9 @@
     "astro": "astro",
     "lint": "prettier -c .",
     "fix": "prettier --write .",
-    "tsx": "tsx"
+    "tsx": "tsx",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",
@@ -45,7 +47,8 @@
     "sass": "^1.92.1",
     "sirv": "^3.0.2",
     "tsx": "^4.20.6",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "vitest": "^4.0.15"
   },
   "packageManager": "pnpm@10.18.3+sha512.bbd16e6d7286fd7e01f6b3c0b3c932cda2965c06a908328f74663f10a9aea51f1129eea615134bf992831b009eabe167ecb7008b597f40ff9bc75946aadfb08d",
   "volta": {
