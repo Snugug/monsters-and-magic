@@ -90,7 +90,10 @@
 
     loading = true;
     try {
+      const start = performance.now();
       const result = await generator.generate(prompt);
+      const end = performance.now();
+      console.log(`Image generation took ${end - start}ms`);
       if (result) {
         preview = result;
       }
