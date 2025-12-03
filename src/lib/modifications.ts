@@ -1,4 +1,6 @@
-export function modificationCost(item) {
+import type { CollectionEntry } from 'astro:content';
+
+export function modificationCost(item: CollectionEntry<'modifications'>) {
   let c = 0;
 
   c += item.data.crafting.elementalis * 150;
