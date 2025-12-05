@@ -2,6 +2,7 @@
   import { ImageGenerator, type InputImage } from '$lib/image-generator';
   import { CREATURE_PROMPT } from '$lib/prompts';
   import { stringToImage } from '$js/images';
+  import ImageDialog from '$components/ImageDialog.svelte';
 
   interface UploadedImage {
     input: InputImage;
@@ -27,7 +28,6 @@
   let dialogOpen = $state(false);
   let dialogIndex = $state(0);
   let dialogMode = $state<'uploaded' | 'generated'>('uploaded');
-  let dialogElement: HTMLDialogElement;
 
   const MAX_IMAGES = 4;
 
@@ -203,12 +203,6 @@
     dialogIndex = index;
     dialogMode = mode;
     dialogOpen = true;
-    dialogElement?.showModal();
-  }
-
-  function closeDialog() {
-    dialogOpen = false;
-    dialogElement?.close();
   }
 
   function getDialogImages(): string[] {
@@ -216,40 +210,6 @@
       return uploadedImages.map((img) => img.preview);
     }
     return generatedImages;
-  }
-
-  function navigateDialog(direction: 'prev' | 'next') {
-    const images = getDialogImages();
-    if (direction === 'prev') {
-      dialogIndex = dialogIndex > 0 ? dialogIndex - 1 : images.length - 1;
-    } else {
-      dialogIndex = dialogIndex < images.length - 1 ? dialogIndex + 1 : 0;
-    }
-  }
-
-  function handleDialogKeydown(e: KeyboardEvent) {
-    if (e.key === 'ArrowLeft') {
-      navigateDialog('prev');
-    } else if (e.key === 'ArrowRight') {
-      navigateDialog('next');
-    } else if (e.key === 'Escape') {
-      closeDialog();
-    }
-  }
-
-  function handleDialogClick(e: MouseEvent) {
-    // Close when clicking on the backdrop (the dialog element itself)
-    if (e.target === dialogElement) {
-      closeDialog();
-    }
-  }
-
-  function openImageInNewTab() {
-    const images = getDialogImages();
-    const imageUrl = images[dialogIndex];
-    if (imageUrl) {
-      window.open(imageUrl, '_blank');
-    }
   }
 </script>
 
@@ -409,59 +369,11 @@
 </div>
 
 <!-- Image Preview Dialog -->
-<dialog
-  bind:this={dialogElement}
-  class="image-dialog"
-  onkeydown={handleDialogKeydown}
-  onclick={handleDialogClick}
->
-  {#if dialogOpen}
-    {@const images = getDialogImages()}
-    {#if images.length > 0}
-      <div class="dialog-content">
-        <button
-          type="button"
-          class="dialog-image-btn"
-          onclick={openImageInNewTab}
-          aria-label="Open image in new tab"
-        >
-          <img src={images[dialogIndex]} alt="Full size preview" />
-        </button>
-      </div>
-
-      {#if images.length > 1}
-        <button
-          type="button"
-          class="nav-btn prev"
-          onclick={() => navigateDialog('prev')}
-          aria-label="Previous image"
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          class="nav-btn next"
-          onclick={() => navigateDialog('next')}
-          aria-label="Next image"
-        >
-          ›
-        </button>
-        <div class="dialog-counter">
-          {dialogIndex + 1} / {images.length}
-        </div>
-      {/if}
-
-      <button
-        type="button"
-        class="close-btn"
-        onclick={closeDialog}
-        aria-label="Close dialog"
-      >
-        ×
-      </button>
-    {/if}
-  {/if}
-</dialog>
+<ImageDialog
+  images={getDialogImages()}
+  bind:open={dialogOpen}
+  startIndex={dialogIndex}
+/>
 
 <style lang="scss">
   .container {
@@ -589,25 +501,6 @@
     }
   }
 
-  .dialog-image-btn {
-    display: block;
-    padding: 0;
-    border: none;
-    background: none;
-    cursor: pointer;
-
-    &:hover {
-      cursor: zoom-in;
-    }
-
-    img {
-      max-width: 100%;
-      max-height: calc(80vh - 2rem);
-      object-fit: contain;
-      border-radius: 8px;
-    }
-  }
-
   .hint {
     font-size: 0.75rem;
     color: var(--dark-grey, #666);
@@ -710,107 +603,6 @@
     align-self: flex-start;
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
-  }
-
-  // Dialog styles
-  .image-dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 0;
-    border: none;
-    border-radius: 0;
-    background: transparent;
-    width: 80vw;
-    height: 80vh;
-    max-width: none;
-    max-height: none;
-    overflow: hidden;
-
-    &::backdrop {
-      background: rgba(0, 0, 0, 0.8);
-    }
-
-    &[open] {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
-  .dialog-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    border-radius: 8px;
-    padding: 1rem;
-    max-width: calc(80vw - 120px);
-    max-height: 80vh;
-    overflow: hidden;
-  }
-
-  .nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 2rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    &.prev {
-      left: 10px;
-    }
-
-    &.next {
-      right: 10px;
-    }
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 1.5rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-  }
-
-  .dialog-counter {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 0.875rem;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 4px 12px;
-    border-radius: 12px;
   }
 
   .error {
