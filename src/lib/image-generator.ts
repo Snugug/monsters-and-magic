@@ -1,4 +1,9 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, type Part } from '@google/genai';
+
+export interface InputImage {
+  base64: string;
+  mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
+}
 
 export class ImageGenerator {
   private ai: GoogleGenAI;
@@ -10,11 +15,32 @@ export class ImageGenerator {
     this.systemPrompt = systemPrompt;
   }
 
-  async generate(userPrompt: string): Promise<string | null> {
+  async generate(
+    userPrompt: string,
+    images?: InputImage[],
+  ): Promise<string | null> {
     try {
+      // Build content parts
+      const parts: Part[] = [];
+
+      // Add the text prompt
+      parts.push({ text: this.systemPrompt + userPrompt });
+
+      // Add all images if provided
+      if (images && images.length > 0) {
+        for (const image of images) {
+          parts.push({
+            inlineData: {
+              data: image.base64,
+              mimeType: image.mimeType,
+            },
+          });
+        }
+      }
+
       const response = await this.ai.models.generateContent({
         model: this.model,
-        contents: this.systemPrompt + userPrompt,
+        contents: parts,
         config: {
           responseModalities: ['IMAGE'],
           imageConfig: {

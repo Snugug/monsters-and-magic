@@ -1,0 +1,8 @@
+---
+import Layout from '$layouts/Layout.astro';
+import ImageGeneratorPage from '$components/ImageGeneratorPage.svelte';
+---
+
+<Layout title="AI Image Generator">
+  <ImageGeneratorPage client:only="svelte" />
+</Layout>
