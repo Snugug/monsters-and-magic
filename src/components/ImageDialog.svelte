@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Icon from '$components/Icon.svelte';
+
   interface Props {
     images: string[];
     open?: boolean;
@@ -89,7 +91,7 @@
         onclick={() => navigateDialog('prev')}
         aria-label="Previous image"
       >
-        ‹
+        <Icon icon="forward" />
       </button>
       <button
         type="button"
@@ -97,7 +99,7 @@
         onclick={() => navigateDialog('next')}
         aria-label="Next image"
       >
-        ›
+        <Icon icon="forward" />
       </button>
       <div class="dialog-counter">
         {currentIndex + 1} / {images.length}
@@ -110,7 +112,7 @@
       onclick={closeDialog}
       aria-label="Close dialog"
     >
-      ×
+      <Icon icon="close" />
     </button>
   {/if}
 </dialog>
@@ -147,7 +149,7 @@
     align-items: center;
     justify-content: center;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     padding: 1rem;
     max-width: calc(80vw - 120px);
     max-height: 80vh;
@@ -169,7 +171,7 @@
       max-width: 100%;
       max-height: calc(80vh - 2rem);
       object-fit: contain;
-      border-radius: 8px;
+      border-radius: 0.5rem;
     }
   }
 
@@ -178,7 +180,7 @@
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
@@ -194,8 +196,8 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     padding: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
@@ -210,21 +212,30 @@
       background: rgba(255, 255, 255, 0.3);
     }
 
+    :global(.icon) {
+      height: 3rem;
+      width: 3rem;
+      fill: currentColor;
+    }
+
     &.prev {
-      left: 10px;
+      left: 0.25rem;
+      :global(.icon) {
+        transform: rotate(180deg);
+      }
     }
 
     &.next {
-      right: 10px;
+      right: 0.25rem;
     }
   }
 
   .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
     padding: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
@@ -235,6 +246,12 @@
     align-items: center;
     justify-content: center;
 
+    :global(.icon) {
+      fill: currentColor;
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+
     &:hover {
       background: rgba(255, 255, 255, 0.3);
     }
@@ -242,13 +259,13 @@
 
   .dialog-counter {
     position: absolute;
-    bottom: 10px;
+    bottom: 0.5rem;
     left: 50%;
     transform: translateX(-50%);
     color: white;
     font-size: 0.875rem;
     background: rgba(0, 0, 0, 0.6);
-    padding: 4px 12px;
-    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
   }
 </style>

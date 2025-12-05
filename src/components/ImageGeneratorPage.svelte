@@ -3,6 +3,7 @@
   import { CREATURE_PROMPT } from '$lib/prompts';
   import { stringToImage } from '$js/images';
   import ImageDialog from '$components/ImageDialog.svelte';
+  import Icon from '$components/Icon.svelte';
 
   interface UploadedImage {
     input: InputImage;
@@ -302,7 +303,7 @@
                     onclick={() => removeImage(index)}
                     aria-label="Remove image"
                   >
-                    ×
+                    <Icon icon="close" />
                   </button>
                   <span class="order-badge">{index + 1}</span>
                 </div>
@@ -433,7 +434,7 @@
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
@@ -489,8 +490,8 @@
       img {
         width: 100%;
         height: auto;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
         display: block;
         transition: transform 0.2s;
       }
@@ -524,7 +525,7 @@
     position: relative;
     width: 300px;
     height: 300px;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     overflow: visible;
     cursor: grab;
     transition:
@@ -539,6 +540,10 @@
     &:hover .remove-btn {
       opacity: 1;
     }
+
+    &:hover .thumbnail-btn {
+      border-color: var(--light-purple, #6a0dad);
+    }
   }
 
   .thumbnail-btn {
@@ -546,14 +551,10 @@
     height: 100%;
     padding: 0;
     border: 2px solid transparent;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     overflow: hidden;
     cursor: pointer;
     background: none;
-
-    &:hover {
-      border-color: var(--light-purple, #6a0dad);
-    }
 
     img {
       width: 100%;
@@ -564,10 +565,10 @@
 
   .remove-btn {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 24px;
-    height: 24px;
+    top: -0.5rem;
+    right: -0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
     padding: 0;
     border-radius: 50%;
     background: var(--dark-red, #c00);
@@ -581,6 +582,12 @@
     transition: opacity 0.2s;
     z-index: 1;
 
+    :global(.icon) {
+      height: 1.25rem;
+      width: 1.25rem;
+      fill: currentColor;
+    }
+
     &:hover {
       background: #a00;
     }
@@ -588,15 +595,20 @@
 
   .order-badge {
     position: absolute;
-    bottom: -6px;
+    bottom: -0.75em;
     left: 50%;
     transform: translateX(-50%);
     background: var(--black, #000);
     color: var(--white, #fff);
     font-size: 0.75rem;
     font-weight: bold;
-    padding: 2px 8px;
-    border-radius: 10px;
+    border-radius: 50%;
+    line-height: 1;
+    height: 2em;
+    width: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .add-images-btn {
@@ -610,7 +622,7 @@
     padding: 1rem;
     background: #fee;
     color: #c00;
-    border-radius: 4px;
+    border-radius: 0.25rem;
   }
 
   .loader-container {
@@ -624,8 +636,8 @@
 
   /* HTML: <div class="loader"></div> */
   .loader {
-    width: 60px;
-    height: 60px;
+    width: 4rem;
+    height: 4rem;
     aspect-ratio: 1 / 1;
     display: grid;
     color: transparent;
@@ -653,67 +665,67 @@
   @keyframes l10-1 {
     0% {
       background-size:
-        0 4px,
-        4px 0,
-        0 4px,
-        4px 0;
+        0 0.25rem,
+        0.25rem 0,
+        0 0.25rem,
+        0.25rem 0;
     }
     12.5% {
       background-size:
-        100% 4px,
-        4px 0,
-        0 4px,
-        4px 0;
+        100% 0.25rem,
+        0.25rem 0,
+        0 0.25rem,
+        0.25rem 0;
     }
     25% {
       background-size:
-        100% 4px,
-        4px 100%,
-        0 4px,
-        4px 0;
+        100% 0.25rem,
+        0.25rem 100%,
+        0 0.25rem,
+        0.25rem 0;
     }
     37.5% {
       background-size:
-        100% 4px,
-        4px 100%,
-        100% 4px,
-        4px 0;
+        100% 0.25rem,
+        0.25rem 100%,
+        100% 0.25rem,
+        0.25rem 0;
     }
     45%,
     55% {
       background-size:
-        100% 4px,
-        4px 100%,
-        100% 4px,
-        4px 100%;
+        100% 0.25rem,
+        0.25rem 100%,
+        100% 0.25rem,
+        0.25rem 100%;
     }
     62.5% {
       background-size:
-        0 4px,
-        4px 100%,
-        100% 4px,
-        4px 100%;
+        0 0.25rem,
+        0.25rem 100%,
+        100% 0.25rem,
+        0.25rem 100%;
     }
     75% {
       background-size:
-        0 4px,
-        4px 0,
-        100% 4px,
-        4px 100%;
+        0 0.25rem,
+        0.25rem 0,
+        100% 0.25rem,
+        0.25rem 100%;
     }
     87.5% {
       background-size:
-        0 4px,
-        4px 0,
-        0 4px,
-        4px 100%;
+        0 0.25rem,
+        0.25rem 0,
+        0 0.25rem,
+        0.25rem 100%;
     }
     100% {
       background-size:
-        0 4px,
-        4px 0,
-        0 4px,
-        4px 0;
+        0 0.25rem,
+        0.25rem 0,
+        0 0.25rem,
+        0.25rem 0;
     }
   }
 
