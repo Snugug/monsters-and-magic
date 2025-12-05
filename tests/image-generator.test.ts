@@ -50,7 +50,7 @@ describe('ImageGenerator', () => {
     expect(result).toBe('data:image/png;base64, base64-encoded-image-data');
     expect(mockGenerateContent).toHaveBeenCalledWith({
       model: 'nano-banana-pro-preview',
-      contents: systemPrompt + userPrompt,
+      contents: [{ text: systemPrompt + userPrompt }],
       config: {
         responseModalities: ['IMAGE'],
         imageConfig: {

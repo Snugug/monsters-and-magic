@@ -65,14 +65,14 @@ describe('modifications.ts', () => {
     });
 
     it('should handle items with no crafting materials', () => {
-        const item = {
-          data: {
-            crafting: { elementalis: 0, mithril: 0, fadeite: 0 },
-            type: 'rune',
-            rare: false,
-          },
-        } as CollectionEntry<'modifications'>;
-        expect(modificationCost(item)).toBe(0);
-      });
+      const item = {
+        data: {
+          crafting: { elementalis: 0, mithril: 0, fadeite: 0 },
+          type: 'rune',
+          rare: false,
+        },
+      } as CollectionEntry<'modifications'>;
+      expect(modificationCost(item)).toBe(0);
+    });
   });
 });

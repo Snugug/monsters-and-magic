@@ -49,7 +49,9 @@ describe('helpers.ts', () => {
     });
 
     it('should handle special characters', () => {
-      expect(slugify('My Test String!@#$%^&*()')).toBe('my-test-stringdollarpercentand');
+      expect(slugify('My Test String!@#$%^&*()')).toBe(
+        'my-test-stringdollarpercentand',
+      );
     });
   });
 });

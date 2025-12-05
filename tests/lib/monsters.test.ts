@@ -7,8 +7,6 @@ import {
 } from '$lib/monsters';
 import type { Monster } from '$lib/shared';
 
-
-
 // Mock data for collections
 const mockTraits = [{ id: 'trait1', points: 2, rare: false }];
 const mockFeats = [{ id: 'feat1', points: 1, rare: true }];
