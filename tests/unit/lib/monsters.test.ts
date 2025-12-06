@@ -176,26 +176,235 @@ describe('monsters.ts', () => {
   });
 
   describe('helper functions', () => {
-    it('usedSpeed should return speed if present', () => {
-      const monster = { ...getBaseMonster(), speeds: ['flying'], flying: 60 };
-      expect(usedSpeed(monster, 'flying')).toBe(60);
+    describe('usedSpeed', () => {
+      it('should return speed if present', () => {
+        const monster = { ...getBaseMonster(), speeds: ['flying'], flying: 60 };
+        expect(usedSpeed(monster, 'flying')).toBe(60);
+      });
+
+      it('should return 0 if not present', () => {
+        const monster = getBaseMonster();
+        expect(usedSpeed(monster, 'flying')).toBe(0);
+      });
+
+      it('should return climbing speed when climbing is in speeds', () => {
+        const monster = {
+          ...getBaseMonster(),
+          speeds: ['climbing'],
+          climbing: 40,
+        };
+        expect(usedSpeed(monster, 'climbing')).toBe(40);
+      });
+
+      it('should return swimming speed when swimming is in speeds', () => {
+        const monster = {
+          ...getBaseMonster(),
+          speeds: ['swimming'],
+          swimming: 50,
+        };
+        expect(usedSpeed(monster, 'swimming')).toBe(50);
+      });
+
+      it('should return burrowing speed when burrowing is in speeds', () => {
+        const monster = {
+          ...getBaseMonster(),
+          speeds: ['burrowing'],
+          burrowing: 20,
+        };
+        expect(usedSpeed(monster, 'burrowing')).toBe(20);
+      });
+
+      it('should return 0 for speed not in monster.speeds array', () => {
+        const monster = {
+          ...getBaseMonster(),
+          speeds: ['flying'],
+          flying: 60,
+          climbing: 30,
+        };
+        expect(usedSpeed(monster, 'climbing')).toBe(0);
+      });
     });
 
-    it('usedSpeed should return 0 if not present', () => {
-      const monster = getBaseMonster();
-      expect(usedSpeed(monster, 'flying')).toBe(0);
+    describe('dieTotal', () => {
+      it('should calculate total for standard dice', () => {
+        expect(dieTotal('2d8')).toBe(16);
+        expect(dieTotal('1d6')).toBe(6);
+        expect(dieTotal('10')).toBe(10);
+      });
+
+      it('should handle 1d4', () => {
+        expect(dieTotal('1d4')).toBe(4);
+      });
+
+      it('should handle 1d10', () => {
+        expect(dieTotal('1d10')).toBe(10);
+      });
+
+      it('should handle 1d12', () => {
+        expect(dieTotal('1d12')).toBe(12);
+      });
+
+      it('should handle 2d6', () => {
+        expect(dieTotal('2d6')).toBe(12);
+      });
+
+      it('should handle 3d6', () => {
+        expect(dieTotal('3d6')).toBe(18);
+      });
+
+      it('should handle 4d6', () => {
+        expect(dieTotal('4d6')).toBe(24);
+      });
+
+      it('should handle flat numbers', () => {
+        expect(dieTotal('5')).toBe(5);
+        expect(dieTotal('20')).toBe(20);
+      });
     });
 
-    it('dieTotal should calculate total', () => {
-      expect(dieTotal('2d8')).toBe(16);
-      expect(dieTotal('1d6')).toBe(6);
-      expect(dieTotal('10')).toBe(10);
+    describe('damageStep', () => {
+      it('should return correct index for standard dice', () => {
+        expect(damageStep('1d6')).toBe(3);
+        expect(damageStep('2d8')).toBe(7);
+      });
+
+      it('should return index for 1d4', () => {
+        expect(damageStep('1d4')).toBe(2);
+      });
+
+      it('should return index for 1d8', () => {
+        expect(damageStep('1d8')).toBe(4);
+      });
+
+      it('should return index for 1d10', () => {
+        expect(damageStep('1d10')).toBe(5);
+      });
+
+      it('should return index for 1d12', () => {
+        expect(damageStep('1d12')).toBe(6);
+      });
+
+      it('should return -1 for non-existent die size', () => {
+        expect(damageStep('1d100')).toBe(-1);
+      });
+    });
+  });
+
+  describe('calculatePoints edge cases', () => {
+    const calculate = calculatePoints(
+      mockTraits as any,
+      mockFeats as any,
+      mockWeapons as any,
+      mockArmor as any,
+      mockTechniques as any,
+      mockCharms as any,
+    );
+
+    it('should handle monster with all vision types', () => {
+      const visionMonster = {
+        ...getBaseMonster(),
+        vision: [
+          'darkvision',
+          'low-light vision',
+          'blindsight',
+          'tremmorsense',
+          'truesight',
+        ],
+        blindsight: 30,
+        tremmorsense: 60,
+        truesight: 120,
+      };
+      const result = calculate(visionMonster);
+      // Should have significant vision points
+      expect(result.points).toBeGreaterThan(0);
     });
 
-    it('damageStep should return correct index', () => {
-      // based on actual dieSizes
-      expect(damageStep('1d6')).toBe(3);
-      expect(damageStep('2d8')).toBe(7);
+    it('should handle monster with all speed types', () => {
+      const speedMonster = {
+        ...getBaseMonster(),
+        speeds: ['flying', 'climbing', 'swimming', 'burrowing'],
+        walking: 30,
+        flying: 60,
+        climbing: 30,
+        swimming: 40,
+        burrowing: 20,
+      };
+      const result = calculate(speedMonster);
+      expect(result.tags).toContain('flying');
+      expect(result.tags).toContain('climbing');
+      expect(result.tags).toContain('swimming');
+      expect(result.tags).toContain('burrowing');
+    });
+
+    it('should handle monster with natural weapons', () => {
+      const clawMonster = {
+        ...getBaseMonster(),
+        naturalWeapons: [
+          { name: 'Claws', damage: '2d6', element: 'physical' },
+          { name: 'Bite', damage: '1d10', element: 'physical' },
+        ],
+      };
+      const result = calculate(clawMonster);
+      expect(result.tags).toContain('vicious');
+    });
+
+    it('should handle monster with HP adjustment', () => {
+      const toughMonster = { ...getBaseMonster(), hp: 3 };
+      const result = calculate(toughMonster);
+      expect(result.tags).toContain('stout');
+      expect(result.hp).toBeGreaterThan(5);
+    });
+
+    it('should handle monster with negative HP adjustment', () => {
+      const frailMonster = { ...getBaseMonster(), hp: -2 };
+      const result = calculate(frailMonster);
+      expect(result.tags).toContain('frail');
+      expect(result.hp).toBeLessThan(5);
+    });
+
+    it('should handle monster with conditions immunity', () => {
+      const resilientMonster = {
+        ...getBaseMonster(),
+        conditions: ['frightened', 'charmed', 'paralyzed'],
+      };
+      const result = calculate(resilientMonster);
+      expect(result.tags).toContain('resilient');
+    });
+
+    it('should handle monster with vulnerabilities', () => {
+      const vulnerableMonster = {
+        ...getBaseMonster(),
+        vulnerable: ['fire', 'cold'],
+      };
+      const result = calculate(vulnerableMonster);
+      expect(result.tags).toContain('vulnerable');
+      // Points should be reduced
+      expect(result.points).toBeLessThan(0);
+    });
+
+    it('should handle gargantuan size', () => {
+      const hugeMonster = {
+        ...getBaseMonster(),
+        size: 'gargantuan' as const,
+      };
+      const result = calculate(hugeMonster);
+      expect(result.reach).toBe(10);
+      expect(result.hp).toBeGreaterThan(5);
+    });
+
+    it('should handle ancient trait', () => {
+      const ancientMonster = { ...getBaseMonster(), ancient: true };
+      const result = calculate(ancientMonster);
+      expect(result.ap).toBe(4); // base 3 + 1 for ancient
+    });
+
+    it('should handle monster with absorbent elements', () => {
+      const absorbentMonster = {
+        ...getBaseMonster(),
+        absorbent: ['fire', 'lightning'],
+      };
+      const result = calculate(absorbentMonster);
+      expect(result.tags).toContain('absorbent');
     });
   });
 });
