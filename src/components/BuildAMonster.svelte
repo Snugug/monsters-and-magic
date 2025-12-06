@@ -357,12 +357,13 @@
 
   // Prompt
   $effect(() => {
-    if (!image) {
+    if (!image && monster.title) {
       let size = space(monster.size);
       let swarm = space(monster.swarm);
       let plural = pluralMonsterType(monster.type);
+      const canSwarm = monster.swarm && monster.size !== 'tiny';
 
-      prompt = `A ${monster.title}.\n\nA ${monster.size} (fits inside a ${size} foot by ${size} foot square)${monster.swarm ? ` swarm of ${monster.swarm} (fits inside a ${swarm} foot by ${swarm} foot square) ` : ' '}${monster.swarm ? plural : monster.type}.\n\n${body}`;
+      prompt = `A ${monster.title}.\n\nA ${monster.size} (fits inside a ${size} foot by ${size} foot square)${canSwarm ? ` swarm of ${monster.swarm} (fits inside a ${swarm} foot by ${swarm} foot square) ` : ' '}${canSwarm ? plural : monster.type}.\n\n${body}`;
     }
   });
 
