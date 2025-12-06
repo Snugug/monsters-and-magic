@@ -201,7 +201,7 @@
             popover.togglePopover();
           }}
         >
-          <Icon label="Generate an Imag" icon="imagegen" />
+          <Icon label="Generate an Image" icon="imagegen" />
         </button>
       </div>
     {/if}
