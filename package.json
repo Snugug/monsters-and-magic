@@ -10,9 +10,13 @@
     "lint": "prettier -c .",
     "fix": "prettier --write .",
     "tsx": "tsx",
-    "test": "run-p test:unit",
-    "test:unit": "vitest run",
-    "test:unit:watch": "vitest"
+    "test": "run-p *:test",
+    "unit:test": "vitest run --project unit",
+    "unit:watch": "vitest --project unit",
+    "integration:test": "vitest run --project integration",
+    "integration:watch": "vitest --project integration",
+    "e2e:test": "playwright test",
+    "e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",
@@ -36,8 +40,12 @@
   },
   "devDependencies": {
     "@astrojs/markdown-remark": "^6.3.7",
+    "@playwright/test": "^1.57.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/svelte": "^5.2.9",
     "@types/sharedworker": "^0.0.188",
     "@types/wicg-file-system-access": "^2023.10.7",
+    "happy-dom": "^20.0.11",
     "hastscript": "^9.0.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.6.2",
