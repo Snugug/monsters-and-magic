@@ -147,7 +147,6 @@
   }
 
   .inner {
-    // background-color: white;
     padding: 1rem;
 
     display: flex;
@@ -166,6 +165,7 @@
     cursor: zoom-in;
     border: 1px solid black;
     box-shadow: 0px 0px 5px 2.5px rgba(0, 0, 0, 0.5);
+    background-color: white;
 
     img {
       max-width: 100%;

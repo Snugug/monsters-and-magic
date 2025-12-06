@@ -2,6 +2,7 @@
   import { ImageGenerator, type InputImage } from '$lib/image-generator';
   import { CREATURE_PROMPT } from '$lib/prompts';
   import { stringToImage } from '$js/images';
+  import { getMany, setMany, delMany } from 'idb-keyval';
   import ImageDialog from '$components/ImageDialog.svelte';
   import Icon from '$components/Icon.svelte';
 
@@ -29,6 +30,7 @@
   let dialogOpen = $state(false);
   let dialogIndex = $state(0);
   let dialogMode = $state<'uploaded' | 'generated'>('uploaded');
+  let loaded = $state(false);
 
   const MAX_IMAGES = 4;
 
@@ -40,6 +42,37 @@
   // Load API Key from LocalStorage
   $effect(() => {
     apiKey = window.localStorage.getItem('apikey');
+  });
+
+  // Persistence
+  $effect(() => {
+    (async () => {
+      if (loaded === false) {
+        const [p, k, c, u, g] = await getMany([
+          'gen-userPrompt',
+          'gen-selectedPromptKey',
+          'gen-imageCount',
+          'gen-uploadedImages',
+          'gen-generatedImages',
+        ]);
+
+        if (p) userPrompt = p;
+        if (k) selectedPromptKey = k;
+        if (c) imageCount = c;
+        if (u) uploadedImages = u;
+        if (g) generatedImages = g;
+
+        loaded = true;
+      } else {
+        await setMany([
+          ['gen-userPrompt', $state.snapshot(userPrompt)],
+          ['gen-selectedPromptKey', $state.snapshot(selectedPromptKey)],
+          ['gen-imageCount', $state.snapshot(imageCount)],
+          ['gen-uploadedImages', $state.snapshot(uploadedImages)],
+          ['gen-generatedImages', $state.snapshot(generatedImages)],
+        ]);
+      }
+    })();
   });
 
   // Initialize ImageGenerator when apiKey or selectedPromptKey changes
@@ -82,12 +115,8 @@
       const validResults = results.filter((r): r is string => r !== null);
 
       if (validResults.length > 0) {
-        // Convert base64 strings to Object URLs
-        const urlPromises = validResults.map(async (base64) => {
-          const blob = await stringToImage(base64);
-          return URL.createObjectURL(blob);
-        });
-        generatedImages = await Promise.all(urlPromises);
+        // Results are already Data URIs
+        generatedImages = validResults;
       } else {
         error = 'No images generated.';
       }
@@ -103,6 +132,24 @@
     window.localStorage.removeItem('apikey');
     apiKey = null;
     keyInput = '';
+  }
+
+  async function reset(e: Event) {
+    e.preventDefault();
+    userPrompt = '';
+    selectedPromptKey = 'creature';
+    imageCount = 1;
+    uploadedImages = [];
+    generatedImages = [];
+    error = '';
+
+    await delMany([
+      'gen-userPrompt',
+      'gen-selectedPromptKey',
+      'gen-imageCount',
+      'gen-uploadedImages',
+      'gen-generatedImages',
+    ]);
   }
 
   // File System Access API for picking images
@@ -326,13 +373,18 @@
         </div>
       </div>
 
-      <button type="submit" disabled={loading || !userPrompt}>
-        {#if loading}
-          Generating...
-        {:else}
-          Generate
+      <div class="form-actions">
+        {#if generatedImages.length}
+          <button class="secondary" onclick={reset}>Reset Prompt</button>
         {/if}
-      </button>
+        <button type="submit" disabled={loading || !userPrompt}>
+          {#if loading}
+            Generating...
+          {:else}
+            Generate
+          {/if}
+        </button>
+      </div>
     </form>
 
     {#if loading}
@@ -430,7 +482,7 @@
   }
 
   button {
-    background: var(--light-purple, #6a0dad);
+    background: var(--dark-red);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -438,7 +490,7 @@
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
-    transition: opacity 0.2s;
+    // transition: opacity 0.2s;
 
     &:disabled {
       opacity: 0.7;
@@ -447,6 +499,7 @@
 
     &.secondary {
       background: var(--light-grey, #ccc);
+      border: 1px solid black;
       color: black;
     }
 
@@ -540,10 +593,6 @@
     &:hover .remove-btn {
       opacity: 1;
     }
-
-    &:hover .thumbnail-btn {
-      border-color: var(--light-purple, #6a0dad);
-    }
   }
 
   .thumbnail-btn {
@@ -553,13 +602,14 @@
     border: 2px solid transparent;
     border-radius: 0.5rem;
     overflow: hidden;
-    cursor: pointer;
+    cursor: zoom-in;
     background: none;
+    border-color: var(--grey);
 
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 
@@ -579,7 +629,7 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.2s;
+    // transition: opacity 0.2s;
     z-index: 1;
 
     :global(.icon) {
@@ -746,5 +796,11 @@
         0 100%,
         0 0;
     }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
   }
 </style>
