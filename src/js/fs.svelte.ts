@@ -10,6 +10,7 @@ export async function chooseFolder() {
 export async function getDir(path: string) {
   const split = path.split('/');
   let handler: FileSystemDirectoryHandle | null = null;
+  if (!folder) return undefined;
   for (const pth of split) {
     if (handler) {
       handler = await handler.getDirectoryHandle(pth, {
