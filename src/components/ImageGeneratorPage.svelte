@@ -374,7 +374,7 @@
       </div>
 
       <div class="form-actions">
-        {#if generatedImages.length}
+        {#if generatedImages.length || userPrompt || uploadedImages.length}
           <button class="secondary" onclick={reset}>Reset Prompt</button>
         {/if}
         <button type="submit" disabled={loading || !userPrompt}>
@@ -490,6 +490,7 @@
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
+    border: 1px solid var(--dark-red);
     // transition: opacity 0.2s;
 
     &:disabled {
