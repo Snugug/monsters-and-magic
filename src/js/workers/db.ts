@@ -67,17 +67,12 @@ async function init() {
 
   for (const data of collections) {
     const meta = await db.meta.get(data.id);
-    if (!meta) {
-      await db.meta.put(data);
-    } else {
-      const hashes = meta.hash === data.hash;
-      if (!hashes) {
-        const d = await (await fetch(data.path)).json();
-        if (db[data.id]) {
-          await db[data.id].clear();
-          await db[data.id].bulkPut(d);
-          await db.meta.put(data);
-        }
+    if (!meta || meta.hash !== data.hash) {
+      const d = await (await fetch(data.path)).json();
+      if (db[data.id]) {
+        await db[data.id].clear();
+        await db[data.id].bulkPut(d);
+        await db.meta.put(data);
       }
     }
   }
