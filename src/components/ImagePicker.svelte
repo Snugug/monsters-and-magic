@@ -4,6 +4,7 @@
   import { fileToImage, stringToImage } from '$js/images';
   import { getDir } from '$js/fs.svelte';
   import { getMany, setMany } from 'idb-keyval';
+  import ImageDialog from '$components/ImageDialog.svelte';
   import Icon from '$components/Icon.svelte';
 
   let {
@@ -29,8 +30,8 @@
   let loading = $state(false);
   let select = $state(!image);
   let popover: HTMLFormElement;
-  let imagepreview: HTMLElement;
   let loaded = $state(false);
+  let dialogOpen = $state(false);
 
   $effect(() => {
     if (image) {
@@ -223,7 +224,7 @@
           class="big-preview"
           onclick={(e) => {
             e.preventDefault();
-            imagepreview.togglePopover();
+            dialogOpen = true;
           }}
         >
           <img src={preview} alt="" class="img" />
@@ -234,7 +235,7 @@
           class="big-preview"
           onclick={(e) => {
             e.preventDefault();
-            imagepreview.togglePopover();
+            dialogOpen = true;
           }}
         >
           <img src={image} alt="" class="img" />
@@ -249,22 +250,10 @@
   {/if}
 </div>
 
-<div class="image-preview" id="image-preview" popover bind:this={imagepreview}>
-  <div class="inner">
-    {#if image}
-      <img src={image} alt="" />
-    {:else if preview}
-      <img src={preview} alt="" />
-    {/if}
-    <button
-      class="close"
-      onclick={(e) => {
-        e.preventDefault();
-        imagepreview.togglePopover();
-      }}><Icon label="close" icon="close" /></button
-    >
-  </div>
-</div>
+<ImageDialog
+  images={preview ? [preview] : image ? [image] : []}
+  bind:open={dialogOpen}
+/>
 
 <form
   class="generate"
@@ -316,55 +305,10 @@
     object-fit: cover;
   }
 
-  .close {
-    position: absolute;
-    background: none;
-    border: none;
-    padding: 0.25rem;
-    border-radius: 100%;
-    top: 0.25rem;
-    right: 0.25rem;
-    height: 1.5rem;
-    width: 1.5rem;
-    background: var(--light-grey);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid black;
-
-    :global(.icon) {
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-  }
-
   .img {
     object-fit: cover;
     height: 100%;
     width: 100%;
-  }
-
-  .image-preview:popover-open {
-    max-height: 80vh;
-    max-width: 80vw;
-    margin-inline: auto;
-    margin-block: auto;
-    position: relative;
-    border: none;
-    background: transparent;
-    padding: 1rem;
-
-    .inner {
-      background-color: white;
-      padding: 1rem;
-      border: 1px solid black;
-      box-shadow: 0px 0px 5px 2.5px rgba(0, 0, 0, 0.5);
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-    }
   }
 
   .generate {

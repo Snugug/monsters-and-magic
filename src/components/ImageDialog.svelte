@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '$components/Icon.svelte';
+  import { stringToImage } from '$js/images';
 
   interface Props {
     images: string[];
@@ -17,6 +18,7 @@
 
   let dialogElement: HTMLDialogElement;
   let currentIndex = $state(0);
+  let downloadUrl = $state('');
 
   // Sync currentIndex with startIndex when dialog opens
   $effect(() => {
@@ -26,6 +28,28 @@
     } else {
       dialogElement?.close();
     }
+  });
+
+  // Create Object URL for base64 images to ensure they open in new tab
+  $effect(() => {
+    const src = images[currentIndex];
+    if (!src) return;
+
+    if (src.startsWith('data:')) {
+      (async () => {
+        const blob = await stringToImage(src);
+        const url = URL.createObjectURL(blob);
+        downloadUrl = url;
+      })();
+    } else {
+      downloadUrl = src;
+    }
+
+    return () => {
+      if (downloadUrl && downloadUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(downloadUrl);
+      }
+    };
   });
 
   function closeDialog() {
@@ -57,13 +81,6 @@
       closeDialog();
     }
   }
-
-  // function openImageInNewTab() {
-  //   const imageUrl = images[currentIndex];
-  //   if (imageUrl) {
-  //     window.open(imageUrl, '_blank');
-  //   }
-  // }
 </script>
 
 <dialog
@@ -74,7 +91,7 @@
 >
   {#if open && images.length > 0}
     <div class="inner">
-      <a class="dialog-image-btn" target="_blank" href={images[currentIndex]}>
+      <a class="dialog-image-btn" target="_blank" href={downloadUrl}>
         <img src={images[currentIndex]} alt="Full size preview" />
       </a>
 
