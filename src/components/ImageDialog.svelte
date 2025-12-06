@@ -58,12 +58,12 @@
     }
   }
 
-  function openImageInNewTab() {
-    const imageUrl = images[currentIndex];
-    if (imageUrl) {
-      window.open(imageUrl, '_blank');
-    }
-  }
+  // function openImageInNewTab() {
+  //   const imageUrl = images[currentIndex];
+  //   if (imageUrl) {
+  //     window.open(imageUrl, '_blank');
+  //   }
+  // }
 </script>
 
 <dialog
@@ -73,87 +73,72 @@
   onclick={handleClick}
 >
   {#if open && images.length > 0}
-    <div class="dialog-content">
-      <button
-        type="button"
-        class="dialog-image-btn"
-        onclick={openImageInNewTab}
-        aria-label="Open image in new tab"
-      >
+    <div class="inner">
+      <a class="dialog-image-btn" target="_blank" href={images[currentIndex]}>
         <img src={images[currentIndex]} alt="Full size preview" />
+      </a>
+
+      <button
+        type="button"
+        class="close-btn"
+        onclick={closeDialog}
+        aria-label="Close dialog"
+      >
+        <Icon icon="close" />
       </button>
+
+      {#if images.length > 1}
+        <button
+          type="button"
+          class="nav-btn prev"
+          onclick={() => navigateDialog('prev')}
+          aria-label="Previous image"
+        >
+          <Icon icon="forward" />
+        </button>
+        <button
+          type="button"
+          class="nav-btn next"
+          onclick={() => navigateDialog('next')}
+          aria-label="Next image"
+        >
+          <Icon icon="forward" />
+        </button>
+        <div class="dialog-counter">
+          {currentIndex + 1} / {images.length}
+        </div>
+      {/if}
     </div>
-
-    {#if images.length > 1}
-      <button
-        type="button"
-        class="nav-btn prev"
-        onclick={() => navigateDialog('prev')}
-        aria-label="Previous image"
-      >
-        <Icon icon="forward" />
-      </button>
-      <button
-        type="button"
-        class="nav-btn next"
-        onclick={() => navigateDialog('next')}
-        aria-label="Next image"
-      >
-        <Icon icon="forward" />
-      </button>
-      <div class="dialog-counter">
-        {currentIndex + 1} / {images.length}
-      </div>
-    {/if}
-
-    <button
-      type="button"
-      class="close-btn"
-      onclick={closeDialog}
-      aria-label="Close dialog"
-    >
-      <Icon icon="close" />
-    </button>
   {/if}
 </dialog>
 
 <style lang="scss">
   .image-dialog {
+    max-height: 80vh;
+    max-width: 80vw;
+    margin-inline: auto;
+    margin-block: auto;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 0;
     border: none;
-    border-radius: 0;
     background: transparent;
-    width: 80vw;
-    height: 80vh;
-    max-width: none;
-    max-height: none;
-    overflow: hidden;
+    padding: 1rem;
+    overflow: visible;
 
     &::backdrop {
       background: rgba(0, 0, 0, 0.8);
     }
-
-    &[open] {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
 
-  .dialog-content {
+  .inner {
+    // background-color: white;
+    padding: 1rem;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    max-width: calc(80vw - 120px);
-    max-height: 80vh;
-    overflow: hidden;
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .dialog-image-btn {
@@ -161,111 +146,70 @@
     padding: 0;
     border: none;
     background: none;
-    cursor: pointer;
-
-    &:hover {
-      cursor: zoom-in;
-    }
+    cursor: zoom-in;
+    border: 1px solid black;
+    box-shadow: 0px 0px 5px 2.5px rgba(0, 0, 0, 0.5);
 
     img {
       max-width: 100%;
-      max-height: calc(80vh - 2rem);
+      height: auto;
+      max-height: calc(80vh - 4rem);
       object-fit: contain;
-      border-radius: 0.5rem;
     }
   }
 
-  button {
-    background: var(--light-purple, #6a0dad);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+  .close-btn,
+  .nav-btn {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.25rem;
+    border-radius: 100%;
+    background: var(--light-grey);
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: opacity 0.2s;
+    z-index: 10;
 
-    &:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+    :global(.icon) {
+      height: 1.5rem;
+      width: 1.5rem;
+      fill: currentColor;
     }
   }
 
   .nav-btn {
-    position: absolute;
     top: 50%;
-    transform: translateY(-50%);
-    width: 3rem;
-    height: 3rem;
-    padding: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 2rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    :global(.icon) {
-      height: 3rem;
-      width: 3rem;
-      fill: currentColor;
-    }
+    height: 2rem;
+    width: 2rem;
 
     &.prev {
-      left: 0.25rem;
+      left: 0;
+      left: -0.25rem;
       :global(.icon) {
         transform: rotate(180deg);
       }
     }
 
     &.next {
-      right: 0.25rem;
-    }
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    width: 2rem;
-    height: 2rem;
-    padding: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 1.5rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    :global(.icon) {
-      fill: currentColor;
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
+      right: -0.25rem;
     }
   }
 
   .dialog-counter {
     position: absolute;
-    bottom: 0.5rem;
+    bottom: -0.25rem;
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    font-size: 0.875rem;
-    background: rgba(0, 0, 0, 0.6);
+    font-size: 0.75rem;
+    background: rgba(0, 0, 0);
     padding: 0.5rem 0.75rem;
     border-radius: 0.75rem;
+    font-variant: tabular-nums;
   }
 </style>
