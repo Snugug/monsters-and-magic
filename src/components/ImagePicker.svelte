@@ -107,8 +107,17 @@
 
   async function saveImage(e: SubmitEvent) {
     e.preventDefault();
+
+    let startIn;
+    try {
+      startIn = await getDir('public/images/monsters');
+    } catch (e) {
+      console.log('No starting directory, ignoring startIn');
+      // console.error(e);
+    }
+
     handler = await window.showSaveFilePicker({
-      startIn: await getDir('public/images/monsters'),
+      startIn,
       types: [
         {
           description: 'PNG File',
@@ -130,6 +139,8 @@
 
   function useImage(e: Event) {
     e.preventDefault();
+    if (!preview) return;
+
     image = preview;
     preview = '';
     handler = null;
@@ -141,7 +152,7 @@
     if (popover) {
       popover.addEventListener('beforetoggle', (e) => {
         if (e.newState === 'closed') {
-          useImage(e);
+          // useImage(e);
         }
       });
     }
