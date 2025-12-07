@@ -1,11 +1,15 @@
 /**
  * Tests for src/js/images.ts
- * These tests require browser APIs (FileReader, Blob, fetch)
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { blobToBase64, fileToImage, stringToImage } from '$js/images';
 
 describe('images.ts', () => {
+  
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('blobToBase64', () => {
     it('should convert a text blob to base64 data URL', async () => {
       const blob = new Blob(['hello world'], { type: 'text/plain' });
@@ -36,70 +40,67 @@ describe('images.ts', () => {
 
       expect(result).toBe('data:text/plain;base64,');
     });
+
+    it('should reject if FileReader result is not a string', async () => {
+        // Mock FileReader to force non-string result
+        const originalFileReader = global.FileReader;
+        global.FileReader = class MockFileReader {
+            result: any = null;
+            onloadend: any = null;
+            readAsDataURL() {
+                this.result = new ArrayBuffer(8); // Not a string
+                // Simulate async behavior to allow onloadend assignment
+                setTimeout(() => {
+                    if (this.onloadend) this.onloadend();
+                }, 0);
+            }
+        } as any;
+
+        const blob = new Blob(['test']);
+        await expect(blobToBase64(blob)).rejects.toEqual('Unable to resolve as string');
+
+        global.FileReader = originalFileReader;
+    });
   });
 
   describe('stringToImage', () => {
     it('should convert a data URL string to blob', async () => {
-      const dataUrl =
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      
+      const blob = new Blob(['test'], { type: 'image/png' });
+      const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
+          blob: () => Promise.resolve(blob)
+      } as Response);
+
       const result = await stringToImage(dataUrl);
 
+      expect(fetchSpy).toHaveBeenCalledWith(dataUrl);
       expect(result).toBeInstanceOf(Blob);
-    });
-
-    it('should return blob with correct type', async () => {
-      const dataUrl =
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-      const result = await stringToImage(dataUrl);
-
       expect(result.type).toBe('image/png');
     });
   });
 
-  // Note: fileToImage uses URL.createObjectURL + fetch(blob:)
-  // This is not supported in happy-dom, only works in real browsers
-  // These tests are skipped when blob: URLs are not supported
-  describe.skipIf(
-    !(
-      'fetch' in globalThis &&
-      'URL' in globalThis &&
-      typeof URL.createObjectURL === 'function'
-    ),
-  )('fileToImage (requires real browser)', () => {
+  describe('fileToImage', () => {
     it('should convert a file to base64 data URL', async () => {
       const file = new File(['test content'], 'test.txt', {
         type: 'text/plain',
       });
 
-      // In a real browser, this would work
-      // In happy-dom, fetch doesn't support blob: URLs
-      try {
-        const result = await fileToImage(file);
-        expect(result).toContain('data:');
-        expect(result).toContain('base64,');
-      } catch (e) {
-        // Skip if blob URLs not supported
-        expect(true).toBe(true);
-      }
-    });
+      // Mock URL.createObjectURL
+      const createObjectURL = vi.fn().mockReturnValue('blob:test');
+      vi.stubGlobal('URL', { createObjectURL });
 
-    it('should handle image files', async () => {
-      const base64Png =
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-      const binaryString = atob(base64Png);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const file = new File([bytes], 'image.png', { type: 'image/png' });
+      // Mock fetch
+      const blob = new Blob(['test content'], { type: 'text/plain' });
+      const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
+          blob: () => Promise.resolve(blob)
+      } as Response);
 
-      try {
-        const result = await fileToImage(file);
-        expect(result).toContain('base64,');
-      } catch (e) {
-        // Skip if blob URLs not supported
-        expect(true).toBe(true);
-      }
+      const result = await fileToImage(file);
+      
+      expect(createObjectURL).toHaveBeenCalledWith(file);
+      expect(fetchSpy).toHaveBeenCalledWith('blob:test');
+      expect(result).toContain('data:text/plain;base64,');
     });
   });
 });
