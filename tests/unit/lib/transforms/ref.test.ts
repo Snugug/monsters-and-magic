@@ -257,6 +257,69 @@ describe('transforms/ref.ts', () => {
       expect(transformedNode.content).toEqual(['No matches here at all.']);
     });
 
+    it('should match shortLookup pattern (e.g. +power)', async () => {
+      let transformedNode: any = null;
+      const tree = {
+        walk: (fn: (node: any) => any) => {
+          const node = {
+            tag: 'p',
+            content: ['Gain +power.'],
+          };
+          transformedNode = fn(node);
+          return tree;
+        },
+      };
+
+      await postHTMLRefBuilder(tree);
+      const refTag = transformedNode.content.find(
+        (c: any) => typeof c === 'object' && c.tag === 'ref-',
+      );
+      expect(refTag).toBeDefined();
+      expect(refTag.attrs.src).toBe('glossary/power');
+    });
+
+    it('should match sized pattern (e.g. power 3)', async () => {
+      let transformedNode: any = null;
+      const tree = {
+        walk: (fn: (node: any) => any) => {
+          const node = {
+            tag: 'p',
+            content: ['Use power 3.'],
+          };
+          transformedNode = fn(node);
+          return tree;
+        },
+      };
+
+      await postHTMLRefBuilder(tree);
+      const refTag = transformedNode.content.find(
+        (c: any) => typeof c === 'object' && c.tag === 'ref-',
+      );
+      expect(refTag).toBeDefined();
+      expect(refTag.attrs.src).toBe('glossary/power');
+    });
+
+    it('should match typed pattern (e.g. hold 1-round)', async () => {
+      let transformedNode: any = null;
+      const tree = {
+        walk: (fn: (node: any) => any) => {
+          const node = {
+            tag: 'p',
+            content: ['Spend hold 1-round.'],
+          };
+          transformedNode = fn(node);
+          return tree;
+        },
+      };
+
+      await postHTMLRefBuilder(tree);
+      const refTag = transformedNode.content.find(
+        (c: any) => typeof c === 'object' && c.tag === 'ref-',
+      );
+      expect(refTag).toBeDefined();
+      expect(refTag.attrs.src).toBe('glossary/hold');
+    });
+
     it('should return the tree', async () => {
       const tree = {
         walk: (fn: (node: any) => any) => tree,

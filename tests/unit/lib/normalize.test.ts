@@ -5,7 +5,16 @@ import { getCollection } from 'astro:content';
 
 vi.mock('astro:content', () => ({
   getCollection: vi.fn(async (collection: string) => {
-    // Return empty arrays for all collections to avoid errors during import
+    if (collection === 'traits') {
+      return [
+        {
+          slug: 'test-trait',
+          collection: 'traits',
+          data: { name: 'Test Trait' },
+        },
+      ];
+    }
+    // Return empty arrays for all other collections to avoid errors during import
     return [];
   }),
 }));

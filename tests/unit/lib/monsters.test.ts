@@ -340,8 +340,8 @@ describe('monsters.ts', () => {
       const clawMonster = {
         ...getBaseMonster(),
         naturalWeapons: [
-          { name: 'Claws', damage: '2d6', element: 'physical' },
           { name: 'Bite', damage: '1d10', element: 'physical' },
+          { name: 'Claws', damage: '2d6', element: 'physical' },
         ],
       };
       const result = calculate(clawMonster);

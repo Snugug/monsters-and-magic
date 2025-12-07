@@ -1,17 +1,34 @@
 import { describe, it, expect, vi } from 'vitest';
-import { buildChapter } from '$lib/chapters';
+import { buildChapter, chapters } from '$lib/chapters';
 import { getCollection } from 'astro:content';
 
 vi.mock('astro:content', () => ({
   getCollection: vi.fn(async (collection: string) => {
     if (collection === 'chapters') {
-      return [];
+      return [
+        {
+          slug: 'c2',
+          data: { title: 'C2', chapter: 2 },
+          render: async () => ({ headings: [], Content: {} }),
+        },
+        {
+          slug: 'c1',
+          data: { title: 'C1', chapter: 1 },
+          render: async () => ({ headings: [], Content: {} }),
+        },
+      ];
     }
     return [];
   }),
 }));
 
 describe('chapters.ts', () => {
+  it('should export sorted chapters', () => {
+    expect(chapters).toHaveLength(2);
+    expect(chapters[0].slug).toBe('c1');
+    expect(chapters[1].slug).toBe('c2');
+  });
+
   it('should build a simple chapter', async () => {
     const mockChapterEntry = {
       slug: 'test-chapter',
@@ -56,16 +73,30 @@ describe('chapters.ts', () => {
         if (collection === 'traits') {
           return [
             {
+              slug: 'trait-2',
+              data: { title: 'Trait 2', lineage: { id: 'lineage-1' } },
+            },
+            {
               slug: 'trait-1',
-              data: { title: 'Trait 1', lineage: { id: 'lineage-1' } },
+              data: { title: 'Trait 1', lineage: { id: 'lineage-2' } },
+            },
+            {
+              slug: 'trait-3',
+              data: { title: 'Trait 3', lineage: { id: 'lineage-1' } },
             },
           ];
         }
         if (collection === 'lineage') {
-          return [{ slug: 'lineage-1', data: { title: 'Lineage 1' } }];
+          return [
+            { slug: 'lineage-1', data: { title: 'Lineage 1' } },
+            { slug: 'lineage-2', data: { title: 'Lineage 2' } },
+          ];
         }
         if (collection === 'heritage') {
-          return [{ slug: 'heritage-1', data: { title: 'Heritage 1' } }];
+          return [
+            { slug: 'heritage-2', data: { title: 'Heritage 2' } },
+            { slug: 'heritage-1', data: { title: 'Heritage 1' } },
+          ];
         }
         return [];
       },
@@ -74,8 +105,12 @@ describe('chapters.ts', () => {
     const chapter = await buildChapter(mockChapterEntry as any);
 
     expect(chapter.headings.some((h) => h.text === 'Lineage 1')).toBe(true);
+    expect(chapter.headings.some((h) => h.text === 'Lineage 2')).toBe(true);
     expect(chapter.headings.some((h) => h.text === 'Trait 1')).toBe(true);
+    expect(chapter.headings.some((h) => h.text === 'Trait 2')).toBe(true);
+    expect(chapter.headings.some((h) => h.text === 'Trait 3')).toBe(true);
     expect(chapter.headings.some((h) => h.text === 'Heritage 1')).toBe(true);
+    expect(chapter.headings.some((h) => h.text === 'Heritage 2')).toBe(true);
   });
 
   it('should build the character-classes chapter with extra headings', async () => {
@@ -94,13 +129,20 @@ describe('chapters.ts', () => {
     (getCollection as vi.Mock).mockImplementation(
       async (collection: string) => {
         if (collection === 'classes') {
-          return [{ slug: 'class-1', data: { title: 'Class 1' } }];
+          return [
+            { slug: 'class-1', data: { title: 'Class 1' } },
+            { slug: 'class-2', data: { title: 'Class 2' } },
+          ];
         }
         if (collection === 'feats') {
           return [
             {
+              slug: 'feat-2',
+              data: { title: 'Feat 2', class: { id: 'class-1' } },
+            },
+            {
               slug: 'feat-1',
-              data: { title: 'Feat 1', class: { id: 'class-1' } },
+              data: { title: 'Feat 1', class: { id: 'class-2' } },
             },
           ];
         }
@@ -111,7 +153,9 @@ describe('chapters.ts', () => {
     const chapter = await buildChapter(mockChapterEntry as any);
 
     expect(chapter.headings.some((h) => h.text === 'Class 1')).toBe(true);
+    expect(chapter.headings.some((h) => h.text === 'Class 2')).toBe(true);
     expect(chapter.headings.some((h) => h.text === 'Feat 1')).toBe(true);
+    expect(chapter.headings.some((h) => h.text === 'Feat 2')).toBe(true);
   });
 
   it('should build the techniques chapter with extra headings', async () => {
@@ -178,7 +222,10 @@ describe('chapters.ts', () => {
     (getCollection as vi.Mock).mockImplementation(
       async (collection: string) => {
         if (collection === 'cantrips') {
-          return [{ slug: 'cantrip-1', data: { title: 'Cantrip 1' } }];
+          return [
+            { slug: 'cantrip-2', data: { title: 'Cantrip 2' } },
+            { slug: 'cantrip-1', data: { title: 'Cantrip 1' } },
+          ];
         }
         if (collection === 'charms') {
           return [
