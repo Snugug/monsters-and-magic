@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('ImagePicker Bug Fixes', () => {
   // Setup: Ensure we are on the page with a clean slate

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // Use same setup as other tests - apiKey in localStorage
 test.describe('Image Generator Persistence', () => {

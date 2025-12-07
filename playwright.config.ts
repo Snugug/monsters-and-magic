@@ -56,5 +56,8 @@ export default defineConfig({
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    env: {
+      VITE_COVERAGE: 'true',
+    },
   },
 });

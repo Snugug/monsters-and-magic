@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('Bug Reproduction: Image Prompt Pre-fill', () => {
   test.beforeEach(async ({ page }) => {
