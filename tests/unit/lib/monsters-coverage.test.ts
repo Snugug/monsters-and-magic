@@ -75,6 +75,18 @@ const getBaseMonster = (): Monster => ({
 });
 
 describe('monsters coverage', () => {
+  it('should apply "exposed" tag if p.ac is less than cunning', () => {
+    const m = getBaseMonster();
+    m.cunning = 1;
+    m.armored = -1;
+    // Initial p.ac = 0.
+    // No armor, so p.ac becomes monster.cunning = 1.
+    // Then p.ac += monster.armored -> 1 + (-1) = 0.
+    // Condition: p.ac (0) < monster.cunning (1) is true.
+    const res = calculate(m);
+    expect(res.tags).toContain('exposed');
+  });
+
   it('should handle Spicy tag', () => {
     const m = getBaseMonster();
     m.spicy = true;
