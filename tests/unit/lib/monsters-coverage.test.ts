@@ -75,6 +75,134 @@ const getBaseMonster = (): Monster => ({
 });
 
 describe('monsters coverage', () => {
+  it('should handle Humanoid with lineage but no traits', () => {
+    const m = getBaseMonster();
+    m.type = 'humanoid';
+    m.lineage = { id: 'human', name: 'Human' };
+    m.traits = []; // Empty traits
+    const res = calculate(m);
+    expect(res.points).toBe(-4);
+  });
+
+  it('should handle Charms but no Cantrips', () => {
+    const m = getBaseMonster();
+    m.cantrips = [];
+    m.charms = ['charm1'];
+    const res = calculate(m);
+    // Should NOT have 'caster' or 'advanced caster'
+    expect(res.tags).not.toContain('caster');
+    expect(res.tags).not.toContain('advanced caster');
+  });
+
+  it('should handle Undefined Armor', () => {
+    const m = getBaseMonster();
+    m.armor = undefined as any;
+    const res = calculate(m);
+    // Should handle gracefully
+    expect(res.ac).toBe(0); // cunning is 0
+  });
+
+  it('should handle No Weapons (natural or otherwise)', () => {
+    const m = getBaseMonster();
+    m.weapons = [];
+    m.naturalWeapons = [];
+    const res = calculate(m);
+    // vmax should be null, so no vicious/timid calculation
+    expect(res.tags).not.toContain('vicious');
+    expect(res.tags).not.toContain('timid');
+  });
+
+  it('should handle Multiple Weapons with varying damage', () => {
+    const m = getBaseMonster();
+    m.weapons = ['sword', 'dagger']; // sword (1d8, idx 4), dagger (1d4, idx 2)
+    // First iter: sword. vmax = 4.
+    // Second iter: dagger. di = 2. vmax (4) !== null. di (2) > vmax (4) is false.
+    // This covers the else branch of the vmax check.
+    const res = calculate(m);
+    expect(res.tags).toContain('armed');
+  });
+
+  it('should handle Undefined arrays (robustness)', () => {
+    const m = getBaseMonster();
+    m.techniques = undefined as any;
+    m.cantrips = undefined as any;
+    m.charms = undefined as any;
+    m.naturalWeapons = undefined as any;
+    m.attacks = undefined as any;
+    const res = calculate(m);
+    // Should run without error
+    expect(res.points).toBe(-4);
+  });
+
+  it('should handle Invalid Recharge value', () => {
+    const m = getBaseMonster();
+    m.attacks = [
+      { name: 'InvalidRecharge', recharge: '1d20' as any, ap: 10, fatigue: 0 }
+    ];
+    const res = calculate(m);
+    // ap starts at 1. damage (undefined) -> 0.
+    // ap > 2? 10 > 2. ap -= points(8) = 8. ap = 1-8=-7.
+    // fatigue 0. p.fatigue 2. 0 <= 1. else ap += floor(1-0) = 1. ap = -6.
+    // recharge invalid. no change.
+    // points += -6.
+    // -4 + -6 = -10.
+    expect(res.points).toBe(-10);
+  });
+
+  it('should handle Invalid Damage Die', () => {
+    const m = getBaseMonster();
+    m.attacks = [
+      { name: 'BadDamage', damage: '1d3' as any, ap: 10, fatigue: 0 }
+    ];
+    // damageStep('1d3') -> -1 (3 is not in reducedDieSizes).
+    // base damage '1d6' -> step 3.
+    // diff = -1 - 3 = -4.
+    // ap += points(-4) = -4.
+    // ap starts 1. 1 - 4 = -3.
+    // ap > 2 check: 10 > 2. ap -= points(8) = 8. ap = -3 - 8 = -11.
+    // fatigue 0. p.fatigue 2. 0 <= 1. else ap += floor(1-0) = 1. ap = -10.
+    // points += -10. (res.points -14)
+    // Vicious: vmax = -1. diff = -4. points(-4) = -4.
+    // points += -4. (res.points -18)
+    const res = calculate(m);
+    expect(res.points).toBe(-18);
+  });
+
+  it('should handle Weapon not found in collection', () => {
+    const m = getBaseMonster();
+    m.weapons = ['unknown-weapon'];
+    const res = calculate(m);
+    // Should not throw, ignores unknown weapon
+    expect(res.tags).toContain('armed'); // Still gets 'armed' tag because weapons array has length
+  });
+
+  it('should handle Feat not found in collection', () => {
+    const m = getBaseMonster();
+    m.feats = ['unknown-feat'];
+    const res = calculate(m);
+    // spend returns 0 (undefined rare -> 1? No, find returns undefined. i?.rare is undefined. if(undefined) false. returns 1.)
+    // Wait, let's check spend function logic:
+    // list.map(f => { const i = items.find(...); if (i?.rare) return 2; return 1; })
+    // if i is undefined, i?.rare is undefined. returns 1.
+    // So unknown feat costs 1 point.
+    // points(1, 3) returns 3 (start value).
+    expect(res.points).toBe(-1); // -4 + 3 = -1.
+  });
+
+  it('should cover line 236: ap -= points(w.fatigue - p.fatigue / 2)', () => {
+    const m = getBaseMonster();
+    // Default p.fatigue is 2, so p.fatigue / 2 is 1.
+    // Set attack fatigue to 2, so w.fatigue (2) > p.fatigue / 2 (1).
+    m.attacks = [
+      { name: 'Fatigue Attack', fatigue: 2, ap: 2 }
+    ];
+    const res = calculate(m);
+    // We expect points to decrease due to the fatigue cost exceeding the threshold.
+    // Initial points for base monster is -4.
+    // For this attack: ap=1 (default), fatigue > p.fatigue/2 (2 > 1) -> ap -= points(2-1) = points(1) = 1. So ap becomes 0. points unchanged.
+    expect(res.points).toBe(-4);
+  });
+
   it('should apply "exposed" tag if p.ac is less than cunning', () => {
     const m = getBaseMonster();
     m.cunning = 1;

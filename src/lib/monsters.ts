@@ -203,7 +203,7 @@ export function calculatePoints(
     }
 
     // Natural Weapons
-    if (monster.naturalWeapons.length) {
+    if (monster.naturalWeapons?.length) {
       // Damage Size
       for (const w of monster.naturalWeapons) {
         // console.log(damageStep(w.damage));
@@ -217,7 +217,7 @@ export function calculatePoints(
     const damageOffset = damageStep(baseDamage);
     // const damageOffset = dieSizes.findIndex((e) => e === baseDamage);
 
-    if (monster.attacks.length) {
+    if (monster.attacks?.length) {
       for (const w of monster.attacks) {
         let ap = 1;
         if (w.damage) {
@@ -274,23 +274,23 @@ export function calculatePoints(
     }
 
     // Training
-    if (monster.techniques.length) {
+    if (monster.techniques?.length) {
       const s = spend(monster.techniques, techniques);
       p.points += points(s);
       p.tags.push('skilled');
     }
 
-    if (monster.cantrips.length) {
+    if (monster.cantrips?.length) {
       p.points += points(monster.cantrips.length);
     }
 
-    if (monster.charms.length) {
+    if (monster.charms?.length) {
       p.points += points(spend(monster.charms, charms), 2);
     }
 
-    if (monster.cantrips.length && !monster.charms.length) {
+    if (monster.cantrips?.length && !monster.charms?.length) {
       p.tags.push('caster');
-    } else if (monster.cantrips.length && monster.charms.length) {
+    } else if (monster.cantrips?.length && monster.charms?.length) {
       p.tags.push('advanced caster');
     }
 
@@ -320,7 +320,7 @@ export function calculatePoints(
       }
     }
 
-    if (monster.armor.length > 0 || monster.armored > 0) {
+    if (monster.armor?.length > 0 || monster.armored > 0) {
       p.tags.push('armored');
     } else if (p.ac < monster.cunning) {
       p.tags.push('exposed');

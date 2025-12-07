@@ -16,6 +16,11 @@ vi.mock('astro:content', () => ({
           data: { title: 'C1', chapter: 1 },
           render: async () => ({ headings: [], Content: {} }),
         },
+        {
+          slug: 'c1-duplicate',
+          data: { title: 'C1 Copy', chapter: 1 },
+          render: async () => ({ headings: [], Content: {} }),
+        },
       ];
     }
     return [];
@@ -24,9 +29,10 @@ vi.mock('astro:content', () => ({
 
 describe('chapters.ts', () => {
   it('should export sorted chapters', () => {
-    expect(chapters).toHaveLength(2);
+    expect(chapters).toHaveLength(3);
     expect(chapters[0].slug).toBe('c1');
-    expect(chapters[1].slug).toBe('c2');
+    expect(chapters[1].slug).toBe('c1-duplicate');
+    expect(chapters[2].slug).toBe('c2');
   });
 
   it('should build a simple chapter', async () => {
