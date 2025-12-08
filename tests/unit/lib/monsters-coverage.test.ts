@@ -137,7 +137,7 @@ describe('monsters coverage', () => {
   it('should handle Invalid Recharge value', () => {
     const m = getBaseMonster();
     m.attacks = [
-      { name: 'InvalidRecharge', recharge: '1d20' as any, ap: 10, fatigue: 0 }
+      { name: 'InvalidRecharge', recharge: '1d20' as any, ap: 10, fatigue: 0 },
     ];
     const res = calculate(m);
     // ap starts at 1. damage (undefined) -> 0.
@@ -152,7 +152,7 @@ describe('monsters coverage', () => {
   it('should handle Invalid Damage Die', () => {
     const m = getBaseMonster();
     m.attacks = [
-      { name: 'BadDamage', damage: '1d3' as any, ap: 10, fatigue: 0 }
+      { name: 'BadDamage', damage: '1d3' as any, ap: 10, fatigue: 0 },
     ];
     // damageStep('1d3') -> -1 (3 is not in reducedDieSizes).
     // base damage '1d6' -> step 3.
@@ -193,9 +193,7 @@ describe('monsters coverage', () => {
     const m = getBaseMonster();
     // Default p.fatigue is 2, so p.fatigue / 2 is 1.
     // Set attack fatigue to 2, so w.fatigue (2) > p.fatigue / 2 (1).
-    m.attacks = [
-      { name: 'Fatigue Attack', fatigue: 2, ap: 2 }
-    ];
+    m.attacks = [{ name: 'Fatigue Attack', fatigue: 2, ap: 2 }];
     const res = calculate(m);
     // We expect points to decrease due to the fatigue cost exceeding the threshold.
     // Initial points for base monster is -4.

@@ -5,7 +5,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { blobToBase64, fileToImage, stringToImage } from '$js/images';
 
 describe('images.ts', () => {
-  
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -42,34 +41,37 @@ describe('images.ts', () => {
     });
 
     it('should reject if FileReader result is not a string', async () => {
-        // Mock FileReader to force non-string result
-        const originalFileReader = global.FileReader;
-        global.FileReader = class MockFileReader {
-            result: any = null;
-            onloadend: any = null;
-            readAsDataURL() {
-                this.result = new ArrayBuffer(8); // Not a string
-                // Simulate async behavior to allow onloadend assignment
-                setTimeout(() => {
-                    if (this.onloadend) this.onloadend();
-                }, 0);
-            }
-        } as any;
+      // Mock FileReader to force non-string result
+      const originalFileReader = global.FileReader;
+      global.FileReader = class MockFileReader {
+        result: any = null;
+        onloadend: any = null;
+        readAsDataURL() {
+          this.result = new ArrayBuffer(8); // Not a string
+          // Simulate async behavior to allow onloadend assignment
+          setTimeout(() => {
+            if (this.onloadend) this.onloadend();
+          }, 0);
+        }
+      } as any;
 
-        const blob = new Blob(['test']);
-        await expect(blobToBase64(blob)).rejects.toEqual('Unable to resolve as string');
+      const blob = new Blob(['test']);
+      await expect(blobToBase64(blob)).rejects.toEqual(
+        'Unable to resolve as string',
+      );
 
-        global.FileReader = originalFileReader;
+      global.FileReader = originalFileReader;
     });
   });
 
   describe('stringToImage', () => {
     it('should convert a data URL string to blob', async () => {
-      const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-      
+      const dataUrl =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
       const blob = new Blob(['test'], { type: 'image/png' });
       const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
-          blob: () => Promise.resolve(blob)
+        blob: () => Promise.resolve(blob),
       } as Response);
 
       const result = await stringToImage(dataUrl);
@@ -93,11 +95,11 @@ describe('images.ts', () => {
       // Mock fetch
       const blob = new Blob(['test content'], { type: 'text/plain' });
       const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
-          blob: () => Promise.resolve(blob)
+        blob: () => Promise.resolve(blob),
       } as Response);
 
       const result = await fileToImage(file);
-      
+
       expect(createObjectURL).toHaveBeenCalledWith(file);
       expect(fetchSpy).toHaveBeenCalledWith('blob:test');
       expect(result).toContain('data:text/plain;base64,');

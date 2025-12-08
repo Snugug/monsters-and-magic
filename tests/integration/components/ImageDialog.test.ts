@@ -13,7 +13,9 @@ vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
 
 // Mock stringToImage
 vi.mock('$js/images', () => ({
-  stringToImage: vi.fn().mockResolvedValue(new Blob(['test'], { type: 'image/png' })),
+  stringToImage: vi
+    .fn()
+    .mockResolvedValue(new Blob(['test'], { type: 'image/png' })),
 }));
 
 // Mock dialog methods that may not be fully supported
@@ -39,7 +41,7 @@ describe('ImageDialog', () => {
   const testImages = [
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAAASUVORK5CYII=',
-    'https://example.com/image.png'
+    'https://example.com/image.png',
   ];
 
   it('should render a dialog element', () => {
@@ -115,7 +117,7 @@ describe('ImageDialog', () => {
         images: testImages,
         open: true,
         startIndex: 0,
-        onClose
+        onClose,
       },
     });
 
@@ -123,12 +125,12 @@ describe('ImageDialog', () => {
       const closeBtn = container.querySelector('.close-btn');
       expect(closeBtn).toBeTruthy();
     });
-    
+
     const closeBtn = container.querySelector('.close-btn') as HTMLButtonElement;
     await fireEvent.click(closeBtn);
-    
+
     expect(onClose).toHaveBeenCalled();
-    // Since 'open' is bindable, we check component prop update if possible, 
+    // Since 'open' is bindable, we check component prop update if possible,
     // or just rely on onClose being called.
   });
 
@@ -158,16 +160,20 @@ describe('ImageDialog', () => {
     });
 
     await vi.waitFor(() => {
-      const nextBtn = container.querySelector('.nav-btn.next') as HTMLButtonElement;
+      const nextBtn = container.querySelector(
+        '.nav-btn.next',
+      ) as HTMLButtonElement;
       expect(nextBtn).toBeTruthy();
     });
 
-    const nextBtn = container.querySelector('.nav-btn.next') as HTMLButtonElement;
+    const nextBtn = container.querySelector(
+      '.nav-btn.next',
+    ) as HTMLButtonElement;
     await fireEvent.click(nextBtn);
 
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('2 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('2 / 3');
     });
   });
 
@@ -181,21 +187,25 @@ describe('ImageDialog', () => {
     });
 
     await vi.waitFor(() => {
-      const prevBtn = container.querySelector('.nav-btn.prev') as HTMLButtonElement;
+      const prevBtn = container.querySelector(
+        '.nav-btn.prev',
+      ) as HTMLButtonElement;
       expect(prevBtn).toBeTruthy();
     });
 
-    const prevBtn = container.querySelector('.nav-btn.prev') as HTMLButtonElement;
+    const prevBtn = container.querySelector(
+      '.nav-btn.prev',
+    ) as HTMLButtonElement;
     await fireEvent.click(prevBtn);
 
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('1 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('1 / 3');
     });
   });
 
   it('should loop navigation (next on last goes to first)', async () => {
-     const { container } = render(ImageDialog, {
+    const { container } = render(ImageDialog, {
       props: {
         images: testImages,
         open: true,
@@ -204,21 +214,23 @@ describe('ImageDialog', () => {
     });
 
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('3 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('3 / 3');
     });
 
-    const nextBtn = container.querySelector('.nav-btn.next') as HTMLButtonElement;
+    const nextBtn = container.querySelector(
+      '.nav-btn.next',
+    ) as HTMLButtonElement;
     await fireEvent.click(nextBtn);
 
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('1 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('1 / 3');
     });
   });
 
   it('should loop navigation (prev on first goes to last)', async () => {
-     const { container } = render(ImageDialog, {
+    const { container } = render(ImageDialog, {
       props: {
         images: testImages,
         open: true,
@@ -227,16 +239,18 @@ describe('ImageDialog', () => {
     });
 
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('1 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('1 / 3');
     });
 
-    const prevBtn = container.querySelector('.nav-btn.prev') as HTMLButtonElement;
+    const prevBtn = container.querySelector(
+      '.nav-btn.prev',
+    ) as HTMLButtonElement;
     await fireEvent.click(prevBtn);
 
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('3 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('3 / 3');
     });
   });
 
@@ -254,15 +268,15 @@ describe('ImageDialog', () => {
     // Right Arrow -> Next
     await fireEvent.keyDown(dialog, { key: 'ArrowRight' });
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('3 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('3 / 3');
     });
 
     // Left Arrow -> Prev
     await fireEvent.keyDown(dialog, { key: 'ArrowLeft' });
     await vi.waitFor(() => {
-       const counter = container.querySelector('.dialog-counter');
-       expect(counter?.textContent).toContain('2 / 3');
+      const counter = container.querySelector('.dialog-counter');
+      expect(counter?.textContent).toContain('2 / 3');
     });
   });
 
@@ -273,13 +287,13 @@ describe('ImageDialog', () => {
         images: testImages,
         open: true,
         startIndex: 0,
-        onClose
+        onClose,
       },
     });
 
     const dialog = container.querySelector('dialog') as HTMLDialogElement;
     await fireEvent.keyDown(dialog, { key: 'Escape' });
-    
+
     expect(onClose).toHaveBeenCalled();
   });
 
@@ -290,7 +304,7 @@ describe('ImageDialog', () => {
         images: testImages,
         open: true,
         startIndex: 0,
-        onClose
+        onClose,
       },
     });
 
@@ -298,7 +312,7 @@ describe('ImageDialog', () => {
     // Click directly on dialog (backdrop in CSS acts as part of dialog element for click events usually if targeted correctly or emulated)
     // The implementation checks if e.target === dialogElement
     await fireEvent.click(dialog);
-    
+
     expect(onClose).toHaveBeenCalled();
   });
 
@@ -309,7 +323,7 @@ describe('ImageDialog', () => {
         images: testImages,
         open: true,
         startIndex: 0,
-        onClose
+        onClose,
       },
     });
 
@@ -320,7 +334,7 @@ describe('ImageDialog', () => {
 
     const inner = container.querySelector('.inner') as HTMLElement;
     await fireEvent.click(inner);
-    
+
     expect(onClose).not.toHaveBeenCalled();
   });
 
@@ -334,10 +348,10 @@ describe('ImageDialog', () => {
     });
 
     await vi.waitFor(() => {
-        // Should not call stringToImage for non-data URLs
-        // And downloadUrl should be the string itself
-        const link = container.querySelector('a.dialog-image-btn');
-        expect(link?.getAttribute('href')).toBe('https://example.com/foo.png');
+      // Should not call stringToImage for non-data URLs
+      // And downloadUrl should be the string itself
+      const link = container.querySelector('a.dialog-image-btn');
+      expect(link?.getAttribute('href')).toBe('https://example.com/foo.png');
     });
   });
 
@@ -351,9 +365,9 @@ describe('ImageDialog', () => {
     });
 
     await vi.waitFor(() => {
-        // Should call stringToImage
-        const link = container.querySelector('a.dialog-image-btn');
-        expect(link?.getAttribute('href')).toBe('blob:test');
+      // Should call stringToImage
+      const link = container.querySelector('a.dialog-image-btn');
+      expect(link?.getAttribute('href')).toBe('blob:test');
     });
   });
 });

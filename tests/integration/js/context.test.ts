@@ -56,7 +56,9 @@ describe('context.svelte.ts', () => {
     });
 
     it('should handle load error gracefully', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
       (db.character.get as any).mockRejectedValue(new Error('DB Error'));
 
       await characterStore.load('123');
@@ -79,7 +81,7 @@ describe('context.svelte.ts', () => {
     it('should set a property and update db', async () => {
       // Mock update to prevent actual DB call logic if any, though it's mocked
       // The update method calls db.character.update
-      
+
       await characterStore.set('name', 'New Name');
 
       expect(characterStore.sheet.name).toBe('New Name');
@@ -88,7 +90,7 @@ describe('context.svelte.ts', () => {
 
     it('should override the sheet and update db', async () => {
       const newSheet = { ...defaultChar, name: 'Overridden' };
-      
+
       await characterStore.override(newSheet);
 
       expect(characterStore.sheet).toEqual(newSheet);
@@ -98,15 +100,17 @@ describe('context.svelte.ts', () => {
     it('should update db with snapshot', async () => {
       // Setup state
       characterStore.sheet.name = 'Snapshot Test';
-      
+
       await characterStore.update();
 
-      // Since we can't easily spy on $state.snapshot in this context without 
-      // mocking svelte exports, we verify db.character.update is called 
+      // Since we can't easily spy on $state.snapshot in this context without
+      // mocking svelte exports, we verify db.character.update is called
       // with an object that looks like the sheet.
-      expect(db.character.update).toHaveBeenCalledWith(expect.objectContaining({
-        name: 'Snapshot Test'
-      }));
+      expect(db.character.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Snapshot Test',
+        }),
+      );
     });
   });
 });

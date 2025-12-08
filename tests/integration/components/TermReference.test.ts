@@ -6,13 +6,17 @@ vi.stubGlobal('fetch', vi.fn());
 
 // Mock Popover API if not present
 if (!HTMLElement.prototype.showPopover) {
-  HTMLElement.prototype.showPopover = vi.fn(function(this: HTMLElement) {
+  HTMLElement.prototype.showPopover = vi.fn(function (this: HTMLElement) {
     this.setAttribute('popover-open', '');
-    this.dispatchEvent(new Event('toggle', { bubbles: false, cancelable: false }));
+    this.dispatchEvent(
+      new Event('toggle', { bubbles: false, cancelable: false }),
+    );
   });
-  HTMLElement.prototype.hidePopover = vi.fn(function(this: HTMLElement) {
+  HTMLElement.prototype.hidePopover = vi.fn(function (this: HTMLElement) {
     this.removeAttribute('popover-open');
-    this.dispatchEvent(new Event('toggle', { bubbles: false, cancelable: false }));
+    this.dispatchEvent(
+      new Event('toggle', { bubbles: false, cancelable: false }),
+    );
   });
 }
 
@@ -22,13 +26,13 @@ describe('TermReference.ts', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     document.body.innerHTML = '';
-    
+
     // We need to import the module to trigger custom element registration
     // If it was already imported, we might need to rely on that or reset modules
     // Since customElements.define throws if called twice with same name, we should check registry
-    
+
     if (!customElements.get('ref-')) {
-       await import('$components/TermReference');
+      await import('$components/TermReference');
     }
   });
 
@@ -41,7 +45,10 @@ describe('TermReference.ts', () => {
     // Setup fetch mock to return content
     (global.fetch as any).mockResolvedValue({
       status: 200,
-      text: () => Promise.resolve('<div id="title">Term Title</div><div id="content"><p>Term description.</p></div>'),
+      text: () =>
+        Promise.resolve(
+          '<div id="title">Term Title</div><div id="content"><p>Term description.</p></div>',
+        ),
     });
 
     const el = document.createElement('ref-');
@@ -50,8 +57,8 @@ describe('TermReference.ts', () => {
     document.body.appendChild(el);
 
     // Wait for async operations in connectedCallback
-    await new Promise(resolve => setTimeout(resolve, 0));
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Should have replaced content with button
     const button = el.querySelector('button.term-ref');
@@ -62,7 +69,10 @@ describe('TermReference.ts', () => {
   it('should create popover on click', async () => {
     (global.fetch as any).mockResolvedValue({
       status: 200,
-      text: () => Promise.resolve('<div id="title">Term Title</div><div id="content"><p>Term description.</p></div>'),
+      text: () =>
+        Promise.resolve(
+          '<div id="title">Term Title</div><div id="content"><p>Term description.</p></div>',
+        ),
     });
 
     const el = document.createElement('ref-');
@@ -70,8 +80,8 @@ describe('TermReference.ts', () => {
     el.innerHTML = 'Term 2';
     document.body.appendChild(el);
 
-    await new Promise(resolve => setTimeout(resolve, 0));
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     const button = el.querySelector('button.term-ref') as HTMLButtonElement;
     expect(button).toBeTruthy();
