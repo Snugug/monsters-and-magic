@@ -18,7 +18,7 @@
   let selectedPromptKey = $state('creature');
   let userPrompt = $state('');
   let generatedImages = $state<string[]>([]);
-  let imageCount = $state(1);
+  let imageCount = $state(4);
   let loading = $state(false);
   let error = $state('');
 
@@ -138,7 +138,7 @@
     e.preventDefault();
     userPrompt = '';
     selectedPromptKey = 'creature';
-    imageCount = 1;
+    imageCount = 4;
     uploadedImages = [];
     generatedImages = [];
     error = '';
@@ -374,13 +374,16 @@
       </div>
 
       <div class="form-actions">
-        {#if generatedImages.length || userPrompt || uploadedImages.length}
-          <button class="secondary" onclick={reset}>Reset Prompt</button>
-        {/if}
-        <button type="submit" disabled={loading || !userPrompt}>
+        <button class="secondary reset" onclick={reset}>Reset</button>
+        <button
+          type="submit"
+          class="ai-generate-btn"
+          disabled={loading || !userPrompt}
+        >
           {#if loading}
             Generating...
           {:else}
+            <Icon icon="sparkle" />
             Generate
           {/if}
         </button>
@@ -491,23 +494,33 @@
     font-size: 1rem;
     font-weight: bold;
     border: 1px solid var(--dark-red);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
     // transition: opacity 0.2s;
+
+    :global(.icon) {
+      width: 1.25em;
+      height: 1.25em;
+      fill: currentColor;
+    }
 
     &:disabled {
       opacity: 0.7;
       cursor: not-allowed;
     }
+  }
 
-    &.secondary {
-      background: var(--light-grey, #ccc);
-      border: 1px solid black;
-      color: black;
-    }
+  .secondary {
+    background: var(--light-grey, #ccc);
+    border: 1px solid black;
+    color: black;
+  }
 
-    &.small {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
-    }
+  .small {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
   }
 
   .controls {
@@ -801,7 +814,17 @@
 
   .form-actions {
     display: flex;
-    gap: 1rem;
+    gap: 3rem;
     justify-content: flex-end;
+  }
+
+  .reset {
+    border: 0px;
+    background: none;
+    padding: 0;
+
+    &:disabled {
+      opacity: 0.5;
+    }
   }
 </style>

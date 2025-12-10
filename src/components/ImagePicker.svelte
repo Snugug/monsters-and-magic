@@ -276,7 +276,14 @@
         <textarea disabled={loading} name="prompt" bind:value={prompt}
         ></textarea>
       </div>
-      <input disabled={loading} type="submit" value="Generate image" />
+      <button disabled={loading} type="submit" class="ai-generate-btn">
+        {#if loading}
+          Generating...
+        {:else}
+          <Icon icon="sparkle" />
+          Generate
+        {/if}
+      </button>
 
       {#if preview}
         <button disabled={loading} onclick={useImage}>Use</button>
@@ -375,13 +382,40 @@
       margin-block-start: -0.5rem;
     }
 
-    button,
-    [type='submit'] {
+    button {
       font-size: 0.75rem;
       background: var(--light-purple);
       padding: 0.25rem 0.5rem;
       border: none;
       text-align: center;
+    }
+
+    .ai-generate-btn {
+      background: var(--dark-red);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      border: 1px solid var(--dark-red);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      grid-column: 1 / -1;
+
+      :global(.icon) {
+        width: 1.25em;
+        height: 1.25em;
+        fill: currentColor;
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -540,5 +574,9 @@
         0 100%,
         0 0;
     }
+  }
+
+  .ai-generate-btn {
+    padding: 0.25rem 0.5rem !important;
   }
 </style>
