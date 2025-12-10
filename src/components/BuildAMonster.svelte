@@ -1374,7 +1374,7 @@
     background: var(--dark-red);
     color: white;
     border: 1px solid var(--dark-red);
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;

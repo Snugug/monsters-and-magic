@@ -381,12 +381,8 @@
           class="ai-generate-btn"
           disabled={loading || !userPrompt}
         >
-          {#if loading}
-            Generating...
-          {:else}
-            <Icon icon="sparkle" />
-            Generate
-          {/if}
+          <Icon icon="sparkle" />
+          Generate
         </button>
       </div>
     </form>
