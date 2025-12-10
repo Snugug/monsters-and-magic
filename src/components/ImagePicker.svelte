@@ -6,6 +6,7 @@
   import { getMany, setMany } from 'idb-keyval';
   import ImageDialog from '$components/ImageDialog.svelte';
   import Icon from '$components/Icon.svelte';
+  import Loader from '$components/Loader.svelte';
 
   let {
     type,
@@ -199,7 +200,9 @@
 
 <div class="image" style={`anchor-name: --${instance}`}>
   {#if loading}
-    <div class="loader"></div>
+    <div class="loader-container">
+      <Loader size="50%" />
+    </div>
   {:else}
     {#if select}
       <div class="switch">
@@ -286,8 +289,14 @@
       </button>
 
       {#if preview}
-        <button disabled={loading} onclick={useImage}>Use</button>
-        <button disabled={loading} onclick={saveImage}>Save</button>
+        <div class="action-buttons">
+          <button disabled={loading} onclick={useImage} class="action-btn">
+            <Icon icon="add" /> Use
+          </button>
+          <button disabled={loading} onclick={saveImage} class="action-btn">
+            <Icon icon="download" /> Save
+          </button>
+        </div>
       {/if}
     {/if}
   </div>
@@ -334,7 +343,7 @@
       padding: 1rem;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 0.5rem;
       border-radius: 5px;
       width: 25ch;
       margin-inline-start: 10px;
@@ -379,43 +388,71 @@
 
     [type='submit'] {
       grid-column: 1 / -1;
-      margin-block-start: -0.5rem;
+      // margin-block-start: -0.5rem;
     }
 
     button {
       font-size: 0.75rem;
-      background: var(--light-purple);
+      // background: var(--light-purple);
       padding: 0.25rem 0.5rem;
       border: none;
       text-align: center;
+      font-weight: normal;
+    }
+  }
+
+  .ai-generate-btn {
+    // background: var(--dark-red);
+    // color: white;
+    // border: none;
+    // padding: 0.25rem 0.5rem;
+    // border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 1rem !important;
+    // font-weight: bold;
+    border: 1px solid var(--dark-red);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    grid-column: 1 / -1;
+
+    :global(.icon) {
+      width: 1.25em;
+      height: 1.25em;
+      fill: currentColor;
     }
 
-    .ai-generate-btn {
-      background: var(--dark-red);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.25rem;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
-      border: 1px solid var(--dark-red);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      justify-content: center;
-      grid-column: 1 / -1;
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
 
-      :global(.icon) {
-        width: 1.25em;
-        height: 1.25em;
-        fill: currentColor;
-      }
+  .action-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 0.5rem;
 
-      &:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
+    button {
+      flex: 1;
+    }
+  }
+
+  .action-btn {
+    background: var(--dark-red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    font-weight: bold;
+    border-radius: 5px;
+
+    :global(.icon) {
+      width: 1em;
+      height: 1em;
+      fill: currentColor;
     }
   }
 
@@ -460,123 +497,11 @@
     }
   }
 
-  /* HTML: <div class="loader"></div> */
-  .loader {
-    width: 50%;
-    height: 50%;
-    aspect-ratio: 1 / 1;
-    display: grid;
-    align-self: center;
-    margin-inline: auto;
-    color: transparent;
-    font-size: 1px;
-    overflow: hidden;
-  }
-  .loader::before,
-  .loader::after {
-    content: '';
-    grid-area: 1/1;
-    --c: no-repeat linear-gradient(var(--dark-yellow) 0 0);
-    background:
-      var(--c) 0 0,
-      var(--c) 100% 0,
-      var(--c) 100% 100%,
-      var(--c) 0 100%;
-    animation:
-      l10-1 2s infinite linear,
-      l10-2 2s infinite linear;
-  }
-  .loader::after {
-    margin: 25%;
-    transform: scale(-1);
-  }
-  @keyframes l10-1 {
-    0% {
-      background-size:
-        0 4px,
-        4px 0,
-        0 4px,
-        4px 0;
-    }
-    12.5% {
-      background-size:
-        100% 4px,
-        4px 0,
-        0 4px,
-        4px 0;
-    }
-    25% {
-      background-size:
-        100% 4px,
-        4px 100%,
-        0 4px,
-        4px 0;
-    }
-    37.5% {
-      background-size:
-        100% 4px,
-        4px 100%,
-        100% 4px,
-        4px 0;
-    }
-    45%,
-    55% {
-      background-size:
-        100% 4px,
-        4px 100%,
-        100% 4px,
-        4px 100%;
-    }
-    62.5% {
-      background-size:
-        0 4px,
-        4px 100%,
-        100% 4px,
-        4px 100%;
-    }
-    75% {
-      background-size:
-        0 4px,
-        4px 0,
-        100% 4px,
-        4px 100%;
-    }
-    87.5% {
-      background-size:
-        0 4px,
-        4px 0,
-        0 4px,
-        4px 100%;
-    }
-    100% {
-      background-size:
-        0 4px,
-        4px 0,
-        0 4px,
-        4px 0;
-    }
-  }
-
-  @keyframes l10-2 {
-    0%,
-    49.9% {
-      background-position:
-        0 0,
-        100% 0,
-        100% 100%,
-        0 100%;
-    }
-    50%,
-    100% {
-      background-position:
-        100% 0,
-        100% 100%,
-        0 100%,
-        0 0;
-    }
-  }
-
-  .ai-generate-btn {
-    padding: 0.25rem 0.5rem !important;
+  .loader-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

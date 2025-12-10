@@ -27,6 +27,7 @@
   import Multiselect from '$components/Multiselect.svelte';
   import Repeater from '$components/Repeater.svelte';
   import type { RepeaterActions } from '$components/Repeater.svelte';
+  import Icon from '$components/Icon.svelte';
   import { tick } from 'svelte';
   import { delMany, getMany, setMany } from 'idb-keyval';
 
@@ -1163,9 +1164,13 @@
         {/if}
       {/each}
       <div class="buttons">
-        <input type="submit" value="Save Monster" />
-        <button onclick={loadMonster}>Load Monster</button>
-        <button onclick={resetMonster}>Reset</button>
+        <button type="submit" class="action-btn">
+          <Icon icon="download" /> Save Monster
+        </button>
+        <button onclick={loadMonster} class="action-btn">
+          <Icon icon="upload" /> Load Monster
+        </button>
+        <button onclick={resetMonster} class="reset-btn">Reset</button>
       </div>
     </div>
   </div>
@@ -1363,5 +1368,36 @@
   textarea[name^='nwa-desc'] {
     field-sizing: content;
     min-height: 5rem;
+  }
+
+  .action-btn {
+    background: var(--dark-red);
+    color: white;
+    border: 1px solid var(--dark-red);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: normal;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 5px;
+
+    :global(.icon) {
+      width: 1.25em;
+      height: 1.25em;
+      fill: currentColor;
+    }
+  }
+
+  .reset-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--black);
+    text-decoration: underline;
+    cursor: pointer;
+    justify-self: center;
   }
 </style>

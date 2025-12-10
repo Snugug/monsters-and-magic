@@ -5,6 +5,7 @@
   import { getMany, setMany, delMany } from 'idb-keyval';
   import ImageDialog from '$components/ImageDialog.svelte';
   import Icon from '$components/Icon.svelte';
+  import Loader from '$components/Loader.svelte';
 
   interface UploadedImage {
     input: InputImage;
@@ -262,7 +263,7 @@
 </script>
 
 <div class="container">
-  <h1>AI Image Generator</h1>
+  <h1>Image Generator</h1>
 
   {#if !apiKey}
     <form class="api-key-form" onsubmit={saveAPIKey}>
@@ -392,7 +393,7 @@
 
     {#if loading}
       <div class="loader-container">
-        <div class="loader"></div>
+        <Loader />
         <p>Generating your images...</p>
       </div>
     {/if}
@@ -492,7 +493,7 @@
     border-radius: 0.25rem;
     cursor: pointer;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: normal;
     border: 1px solid var(--dark-red);
     display: inline-flex;
     align-items: center;
@@ -698,120 +699,6 @@
     gap: 1rem;
   }
 
-  /* HTML: <div class="loader"></div> */
-  .loader {
-    width: 4rem;
-    height: 4rem;
-    aspect-ratio: 1 / 1;
-    display: grid;
-    color: transparent;
-    font-size: 1px;
-    overflow: hidden;
-  }
-  .loader::before,
-  .loader::after {
-    content: '';
-    grid-area: 1/1;
-    --c: no-repeat linear-gradient(var(--dark-yellow, #ffd700) 0 0);
-    background:
-      var(--c) 0 0,
-      var(--c) 100% 0,
-      var(--c) 100% 100%,
-      var(--c) 0 100%;
-    animation:
-      l10-1 2s infinite linear,
-      l10-2 2s infinite linear;
-  }
-  .loader::after {
-    margin: 25%;
-    transform: scale(-1);
-  }
-  @keyframes l10-1 {
-    0% {
-      background-size:
-        0 0.25rem,
-        0.25rem 0,
-        0 0.25rem,
-        0.25rem 0;
-    }
-    12.5% {
-      background-size:
-        100% 0.25rem,
-        0.25rem 0,
-        0 0.25rem,
-        0.25rem 0;
-    }
-    25% {
-      background-size:
-        100% 0.25rem,
-        0.25rem 100%,
-        0 0.25rem,
-        0.25rem 0;
-    }
-    37.5% {
-      background-size:
-        100% 0.25rem,
-        0.25rem 100%,
-        100% 0.25rem,
-        0.25rem 0;
-    }
-    45%,
-    55% {
-      background-size:
-        100% 0.25rem,
-        0.25rem 100%,
-        100% 0.25rem,
-        0.25rem 100%;
-    }
-    62.5% {
-      background-size:
-        0 0.25rem,
-        0.25rem 100%,
-        100% 0.25rem,
-        0.25rem 100%;
-    }
-    75% {
-      background-size:
-        0 0.25rem,
-        0.25rem 0,
-        100% 0.25rem,
-        0.25rem 100%;
-    }
-    87.5% {
-      background-size:
-        0 0.25rem,
-        0.25rem 0,
-        0 0.25rem,
-        0.25rem 100%;
-    }
-    100% {
-      background-size:
-        0 0.25rem,
-        0.25rem 0,
-        0 0.25rem,
-        0.25rem 0;
-    }
-  }
-
-  @keyframes l10-2 {
-    0%,
-    49.9% {
-      background-position:
-        0 0,
-        100% 0,
-        100% 100%,
-        0 100%;
-    }
-    50%,
-    100% {
-      background-position:
-        100% 0,
-        100% 100%,
-        0 100%,
-        0 0;
-    }
-  }
-
   .form-actions {
     display: flex;
     gap: 3rem;
@@ -822,6 +709,7 @@
     border: 0px;
     background: none;
     padding: 0;
+    text-decoration: underline;
 
     &:disabled {
       opacity: 0.5;
