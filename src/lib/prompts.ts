@@ -33,7 +33,7 @@ export const CREATURE_PROMPT = `
       <path id="default_vignette">
         <condition>Tags \`[scene]...[/scene]\` are NOT DETECTED.</condition>
         <instruction>
-          You must generate a "Spot Illustration" (Die-cut/Sticker style).
+          You must generate a "Spot Illustration" (Character Concept style).
 
           **Mandatory Composition Rules:**
           1. **Isolation:** The subject must be strictly isolated on a **PURE WHITE HEX #FFFFFF** background.
@@ -46,7 +46,7 @@ export const CREATURE_PROMPT = `
           * **Flyers:** No ground features. Pure white surrounding the creature.
         </instruction>
         <negative_constraints>
-          border, frame, paper texture, book binding, table, 3d render, sketch pad, margin, text, beige background, canvas grain on background.
+          sticker, white outline, die-cut border, border, frame, paper texture, book binding, table, 3d render, sketch pad, margin, text, beige background, canvas grain on background.
         </negative_constraints>
       </path>
     </branching_paths>
@@ -79,7 +79,7 @@ export const CREATURE_PROMPT = `
     </step_1>
     <step_2>
       Construct the internal image prompt.
-      * IF Vignette: Append keywords: "isolated on white background, die-cut, sticker art, no background, studio lighting."
+      * IF Vignette: Append keywords: "isolated on white background, character concept art, no background, studio lighting."
       * IF Vignette: Enforce Negative Prompt: "paper, stationery, border, frame, book, messy background."
     </step_2>
     <step_3>

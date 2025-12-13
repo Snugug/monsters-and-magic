@@ -279,13 +279,13 @@
         <textarea disabled={loading} name="prompt" bind:value={prompt}
         ></textarea>
       </div>
-      <button disabled={loading} type="submit" class="ai-generate-btn">
-        {#if loading}
-          Generating...
-        {:else}
-          <Icon icon="sparkle" />
-          Generate
-        {/if}
+      <button
+        disabled={loading || prompt === ''}
+        type="submit"
+        class="ai-generate-btn"
+      >
+        <Icon icon="sparkle" />
+        Generate
       </button>
 
       {#if preview}
