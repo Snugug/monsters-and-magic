@@ -1,11 +1,6 @@
 <script>
   import { getCollection } from 'astro:content';
   import Icon from '$components/Icon.svelte';
-  import { createMarkdownProcessor } from '@astrojs/markdown-remark';
-  import { markdown } from '$$lib/markdown';
-  import slugify from 'slugify';
-
-  const md = await createMarkdownProcessor(markdown);
 
   const traits = Object.groupBy(
     (await getCollection('traits')).sort((a, b) =>

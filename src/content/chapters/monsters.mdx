@@ -9,7 +9,7 @@ A monster's relative difficulty is based on their Challenge Rating, or CR, which
 
 Once you've added up all the points for a monster, subtract seven (challenge rating rounds up at 7, not 5, which is why we're subtracting 7 here), divide by ten, and round up—that's the monster's challenge rating. So, for instance, if you had a monster that had 27 total points, it's CR would be 2, but if you had a monster whose total points were 18, that would also be a CR 2 (18 - 7 is 11, divided by 10 is 1.1, rounded up is 2).
 
-The point based system makes scaling monsters fairly straight forward. Want a scarier swarm of rats for your new adventuring party? Take an existing monster and increase its damage or AC just enough to bump it up! Want to make a creature resistant to fire damage? See how that'll affect the overall challenge rating!
+The point based system makes scaling monsters fairly straightforward. Want a scarier swarm of rats for your new adventuring party? Take an existing monster and increase its damage or AC just enough to bump it up! Want to make a creature resistant to fire damage? See how that'll affect the overall challenge rating!
 
 Challenge Rating affects what monsters you put your players up against. A general rule of thumb is one CR1 monster per player for a challenging but not deadly encounter at Heroic Tier. For a party of 4, this could be 4 CR1 monsters, two CR2 monsters, one CR4 monster or, if you want a real battle, 8 CR0 monsters. At Epic and Legendary tiers, add an additional CR1 monster into your calculations, representing the expanding skill set of your players.
 
@@ -26,7 +26,7 @@ Monsters come in many sizes, ranging from tiny all the way up to gargantuan. Eac
 |    Huge    |  1d10  |  7  |  40'  | 15'×15' |  10'  |   2    |
 | Gargantuan |  1d12  | 10  |  40'  | 20'×20' |  15'  |   3    |
 
-You can also choose to make a _swarm_ of monsters. When making a swarm of monsters, first you choose how large the swarm is, then you choose the size of the creatures in the swarm, which must be at least one size category smaller. The size of the swarm determines its space, the size of the creatures determines the rest. Swarms differ from normal creatures in that they cannot gain temporary HP, cannot regain HP, and deal ½ damage when bloodied. Making a creature a swarm subtracts 2 points from the monster's point total.
+You can also choose to make a **swarm** of monsters. When making a swarm, first choose how large the swarm is, then choose the size of the creatures in the swarm, which must be at least one size category smaller. The size of the swarm determines its space, the size of the creatures determines the rest. Swarms differ from normal creatures in that they cannot gain temporary HP, cannot regain HP, and deal ½ damage when bloodied. Making a creature a swarm subtracts 2 points from the monster's point total.
 
 ## Abilities
 
@@ -54,5 +54,6 @@ Traits make monsters stand out. There are a number of traits available
 
 Swarms cannot regain HP or gain temporary HP and deal ½ damage when bloodied.
 
-Create a table of all of the traits that all monsters have. If traits have different names, like "Agile" or "Flyby", but have very similar or identical wording, combine them into a single trait. If a monster has multiattack as an action, include that as a trait. Return a table of all of the traits, their descriptions, and a list of monsters that include that trait.
-Using the same prompt as before, rebuild the table, but this time if a trait can be described by a combination of other traits (like fire form, air form, and compression), combine those portions into a single trait instead of having different traits, with a new unique name, if needed, to describe the relevant portions
+import Tags from '$components/mdx/Tags.svelte';
+
+<Tags />

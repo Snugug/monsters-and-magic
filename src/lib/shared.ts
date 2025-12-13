@@ -180,7 +180,7 @@ Rearrange
     full: `Can use Legendary Actions, Reactions, and Resistances:
 
 Legendary Action
-: Can spend **2 threads** to take an additional, but cannot go twice in a row
+: Can spend **2 threads** to take an additional turn, but cannot go twice in a row
 
 Legendary Reaction
 : Can spend **1 thread** to use an additional reaction
