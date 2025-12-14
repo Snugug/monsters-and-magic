@@ -13,6 +13,7 @@
     "pretest": "rm -rf .nyc_output && mkdir .nyc_output",
     "test": "run-s *:omni",
     "posttest": "nyc report",
+    "vitest": "vitest",
     "vitest:omni": "vitest run --coverage.enabled --coverage.reporter=json",
     "unit:test": "vitest run --project unit --coverage",
     "unit:watch": "vitest --project unit",

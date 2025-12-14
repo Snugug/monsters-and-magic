@@ -2,10 +2,22 @@
   import { ImageGenerator } from '$lib/image-generator';
   import { CREATURE_PROMPT } from '$lib/prompts';
   import { stringToImage } from '$js/images';
+  import { slugify } from '$lib/helpers';
+  import { untrack } from 'svelte';
   import { getMany, setMany, delMany } from 'idb-keyval';
   import ImageDialog from '$components/ImageDialog.svelte';
   import Icon from '$components/Icon.svelte';
   import Loader from '$components/Loader.svelte';
+
+  interface BatchJob {
+    id: string; // The API resource name (jobs/...)
+    apiName: string; // displayName sent to API (optional)
+    userDisplayName: string; // Formatting name for UI
+    status: string; // JOB_STATE_...
+    resultFile?: string; // Resource name of output file
+    images?: string[]; // Cached image data if downloaded
+    createdAt: number;
+  }
 
   let apiKey = $state('') as string | null;
   let keyInput = $state('');
@@ -13,13 +25,18 @@
 
   let selectedPromptKey = $state('creature');
   let promptsInput = $state('');
-  let generatedImages = $state<string[]>([]);
-  let loading = $state(false);
+
+  // Persistent list of jobs
+  let batchJobs = $state<BatchJob[]>([]);
+
+  let loading = $state(false); // Global loading for actions (enqueue, delete, etc)
   let error = $state('');
 
   // Dialog state
   let dialogOpen = $state(false);
   let dialogIndex = $state(0);
+  let activeDialogImages = $state<string[]>([]);
+
   let loaded = $state(false);
 
   const prompts = {
@@ -27,31 +44,45 @@
     none: { label: 'None', prompt: '' },
   };
 
+  const STATUS_ICONS: Record<string, string> = {
+    JOB_STATE_SUCCEEDED: 'check',
+    JOB_STATE_FAILED: 'close',
+    JOB_STATE_CANCELLED: 'close',
+    JOB_STATE_EXPIRED: 'close',
+    JOB_STATE_PENDING: 'time', // Assuming 'time' or 'clock' icon exists? using 'sparkle' or 'refresh' if not. Assuming 'time' doesn't exist based on Icon.svelte usually having minimal set. I'll check Icon.svelte later or stick to generic. I'll use 'sparkle' for active for now or just text.
+    // If status is unknown/active, show loader or generic.
+  };
+
   // Load API Key from LocalStorage
   $effect(() => {
     apiKey = window.localStorage.getItem('apikey');
   });
 
-  // Persistence
+  // Persistence and Initialization
   $effect(() => {
     (async () => {
       if (loaded === false) {
-        const [p, k, g] = await getMany([
+        const [p, k, jobs] = await getMany([
           'batch-promptsInput',
           'batch-selectedPromptKey',
-          'batch-generatedImages',
+          'batch-jobs',
         ]);
 
         if (p) promptsInput = p;
         if (k) selectedPromptKey = k;
-        if (g) generatedImages = g;
+        if (jobs) batchJobs = jobs;
 
         loaded = true;
+
+        // Check status of active jobs on load
+        if (generator && batchJobs.length > 0) {
+          updateJobStatuses();
+        }
       } else {
         await setMany([
           ['batch-promptsInput', $state.snapshot(promptsInput)],
           ['batch-selectedPromptKey', $state.snapshot(selectedPromptKey)],
-          ['batch-generatedImages', $state.snapshot(generatedImages)],
+          ['batch-jobs', $state.snapshot(batchJobs)],
         ]);
       }
     })();
@@ -63,10 +94,44 @@
       const systemPrompt =
         prompts[selectedPromptKey as keyof typeof prompts].prompt;
       generator = new ImageGenerator(apiKey, systemPrompt);
+      // Trigger update if we just got the generator and have jobs
+      untrack(() => {
+        if (loaded && batchJobs.length > 0) {
+          updateJobStatuses();
+        }
+      });
     } else {
       generator = null;
     }
   });
+
+  async function updateJobStatuses() {
+    if (!generator) return;
+
+    // Only query jobs that are not in a terminal state
+    const terminalStates = new Set([
+      'JOB_STATE_SUCCEEDED',
+      'JOB_STATE_FAILED',
+      'JOB_STATE_CANCELLED',
+      'JOB_STATE_EXPIRED',
+    ]);
+
+    for (const job of batchJobs) {
+      if (!terminalStates.has(job.status)) {
+        try {
+          const updated = await generator.query(job.id);
+          job.status = updated.state;
+          if (updated.dest?.fileName) {
+            job.resultFile = updated.dest.fileName;
+          }
+        } catch (e) {
+          console.error(`Failed to update job ${job.id}`, e);
+        }
+      }
+    }
+    // Trigger persistence via reactivity
+    batchJobs = [...batchJobs];
+  }
 
   function saveAPIKey(e: SubmitEvent) {
     e.preventDefault();
@@ -80,7 +145,7 @@
     keyInput = '';
   }
 
-  async function generateBatch(e: SubmitEvent) {
+  async function queueGeneration(e: SubmitEvent) {
     e.preventDefault();
     if (!generator) return;
 
@@ -96,20 +161,27 @@
 
     loading = true;
     error = '';
-    generatedImages = [];
 
     try {
-      // generator.batch returns string[] of base64 images
-      const results = await generator.batch(lines);
+      const simpleDate = new Date().toISOString().split('T')[0];
+      const name = `batch-${simpleDate}-${lines.length}-images`;
 
-      if (results.length > 0) {
-        generatedImages = results;
-      } else {
-        error = 'No images generated.';
-      }
+      // Enqueue
+      const jobData = await generator.enqueue(lines, name);
+
+      const newJob: BatchJob = {
+        id: jobData.name, // resource name
+        apiName: jobData.displayName || name,
+        userDisplayName: name,
+        status: jobData.state,
+        createdAt: Date.now(),
+      };
+
+      batchJobs = [newJob, ...batchJobs];
+      promptsInput = ''; // Clear input on success
     } catch (e: any) {
       console.error(e);
-      error = e.message || 'An error occurred during batch generation.';
+      error = e.message || 'An error occurred during queuing.';
     } finally {
       loading = false;
     }
@@ -119,23 +191,89 @@
     e.preventDefault();
     promptsInput = '';
     selectedPromptKey = 'creature';
-    generatedImages = [];
     error = '';
 
-    await delMany([
-      'batch-promptsInput',
-      'batch-selectedPromptKey',
-      'batch-generatedImages',
-    ]);
+    await delMany(['batch-promptsInput', 'batch-selectedPromptKey']);
   }
 
-  async function downloadAll() {
+  function deleteJob(index: number) {
+    const job = batchJobs[index];
+    if (
+      confirm(`Are you sure you want to delete batch "${job.userDisplayName}"?`)
+    ) {
+      batchJobs = batchJobs.filter((_, i) => i !== index);
+    }
+  }
+
+  function renameJob(index: number) {
+    const job = batchJobs[index];
+    const newName = prompt('Enter new name for batch:', job.userDisplayName);
+    if (newName) {
+      job.userDisplayName = newName;
+      batchJobs = [...batchJobs];
+    }
+  }
+
+  async function openBatchResults(job: BatchJob) {
+    if (job.status !== 'JOB_STATE_SUCCEEDED') return;
+
+    // If we don't have images loaded yet, fetch them
+    if (!job.images || job.images.length === 0) {
+      if (!job.resultFile) {
+        error = 'Job succeeded but no result file found.';
+        return;
+      }
+      loading = true;
+      try {
+        const images = await generator!.get(job.resultFile);
+        job.images = images;
+        batchJobs = [...batchJobs]; // Persist the cached images
+      } catch (e: any) {
+        console.error(e);
+        error = 'Failed to retrieve results: ' + e.message;
+        loading = false;
+        return;
+      } finally {
+        loading = false;
+      }
+    }
+
+    activeDialogImages = job.images || [];
+    dialogIndex = 0;
+    dialogOpen = true;
+  }
+
+  async function downloadAll(job: BatchJob) {
+    if (!job.images || job.images.length === 0) {
+      // Should generally open results first or ensure loaded, assuming button inside details view or valid state
+      // If called directly from list (if implemented), check loaded.
+      // For now, only assume images are loaded if this is called.
+      // If not, try load.
+      if (job.status === 'JOB_STATE_SUCCEEDED' && job.resultFile) {
+        try {
+          loading = true;
+          const images = await generator!.get(job.resultFile);
+          job.images = images;
+          batchJobs = [...batchJobs];
+        } catch (e) {
+          alert('Failed to load images for download');
+          loading = false;
+          return;
+        } finally {
+          loading = false;
+        }
+      } else {
+        return;
+      }
+    }
+
     try {
       const dirHandle = await window.showDirectoryPicker();
+      const baseName = slugify(job.userDisplayName);
 
-      for (const [index, img] of generatedImages.entries()) {
-        const uniqueId = crypto.randomUUID();
-        const filename = `image-${index + 1}-${uniqueId}.png`;
+      for (const [index, img] of job.images!.entries()) {
+        const uniqueId = crypto.randomUUID().split('-')[0];
+        const filename = `${baseName}-${uniqueId}-${index + 1}.png`;
 
         const fileHandle = await dirHandle.getFileHandle(filename, {
           create: true,
@@ -156,12 +294,14 @@
     }
   }
 
-  function openDialog(index: number) {
-    dialogIndex = index;
-    dialogOpen = true;
+  function getStatusIcon(status: string) {
+    if (status === 'JOB_STATE_SUCCEEDED') return 'check';
+    if (status === 'JOB_STATE_FAILED') return 'close';
+    return 'sparkle'; // Active/Pending
   }
 </script>
 
+```
 <div class="container">
   <h1>Batch Image Generator</h1>
 
@@ -187,7 +327,8 @@
       >
     </div>
 
-    <form class="generator-form" onsubmit={generateBatch}>
+    <!-- Generation Form -->
+    <form class="generator-form" onsubmit={queueGeneration}>
       <div class="group">
         <label for="prompt-select">System Prompt</label>
         <select id="prompt-select" bind:value={selectedPromptKey}>
@@ -218,7 +359,7 @@
           disabled={loading || !promptsInput}
         >
           <Icon icon="sparkle" />
-          Generate Batch
+          Queue Generation
         </button>
       </div>
     </form>
@@ -226,7 +367,7 @@
     {#if loading}
       <div class="loader-container">
         <Loader />
-        <p>Processing batch request... This may take a few minutes.</p>
+        <p>Processing...</p>
       </div>
     {/if}
 
@@ -236,36 +377,99 @@
       </div>
     {/if}
 
-    {#if generatedImages.length > 0}
-      <div class="result">
-        <div class="result-header">
-          <h2>Results ({generatedImages.length})</h2>
-          <button class="primary" onclick={downloadAll}>
-            <Icon icon="download" /> Download All
-          </button>
-        </div>
+    <!-- Batch History List -->
+    <div class="batch-history">
+      <div class="force-row">
+        <h2>Batch History</h2>
+        <button
+          class="secondary small"
+          onclick={updateJobStatuses}
+          disabled={loading}
+          title="Refresh Status"
+        >
+          <Icon icon="sparkle" /> Refresh
+        </button>
+      </div>
 
-        <div class="image-grid">
-          {#each generatedImages as img, index}
-            <div class="image-wrapper">
-              <button
-                type="button"
-                class="image-btn"
-                onclick={() => openDialog(index)}
-              >
-                <img src={img} alt="Generated result {index + 1}" />
-              </button>
+      {#if batchJobs.length === 0}
+        <p class="empty-list">No batch jobs yet.</p>
+      {:else}
+        <div class="job-list">
+          {#each batchJobs as job, index}
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <div
+              class="job-item"
+              class:success={job.status === 'JOB_STATE_SUCCEEDED'}
+              class:failed={job.status === 'JOB_STATE_FAILED'}
+              role="button"
+              tabindex="0"
+              onclick={() => openBatchResults(job)}
+            >
+              <div class="job-icon">
+                <Icon icon={getStatusIcon(job.status)} />
+              </div>
+              <div class="job-info">
+                <div class="job-name">
+                  {job.userDisplayName}
+                </div>
+                <div class="job-meta">
+                  <span class="status"
+                    >{job.status.replace('JOB_STATE_', '')}</span
+                  >
+                  <span class="date"
+                    >{new Date(job.createdAt).toLocaleString()}</span
+                  >
+                </div>
+              </div>
+              <div class="job-actions">
+                <button
+                  type="button"
+                  class="action-btn"
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    renameJob(index);
+                  }}
+                  title="Rename"
+                >
+                  <Icon icon="sparkle" />
+                  <!-- Use edit icon if available, otherwise generic -->
+                </button>
+                {#if job.status === 'JOB_STATE_SUCCEEDED'}
+                  <button
+                    type="button"
+                    class="action-btn"
+                    onclick={(e) => {
+                      e.stopPropagation();
+                      downloadAll(job);
+                    }}
+                    title="Download All"
+                  >
+                    <Icon icon="download" />
+                  </button>
+                {/if}
+                <button
+                  type="button"
+                  class="action-btn delete"
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    deleteJob(index);
+                  }}
+                  title="Delete"
+                >
+                  <Icon icon="close" />
+                </button>
+              </div>
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
+    </div>
   {/if}
 </div>
 
 <!-- Image Preview Dialog -->
 <ImageDialog
-  images={generatedImages}
+  images={activeDialogImages}
   bind:open={dialogOpen}
   startIndex={dialogIndex}
 />
@@ -277,10 +481,19 @@
     padding: 2rem;
   }
 
-  h1 {
-    margin-bottom: 2rem;
-    font-size: 2rem;
+  h1,
+  h2 {
+    margin-bottom: 1rem;
     font-weight: bold;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
   }
 
   .group {
@@ -306,7 +519,7 @@
   textarea {
     resize: vertical;
     field-sizing: content;
-    min-height: 10rem;
+    min-height: 8rem;
     width: 100%;
     padding: 0.5rem;
   }
@@ -362,53 +575,6 @@
     margin-bottom: 1rem;
   }
 
-  .result {
-    margin-top: 3rem;
-    border-top: 1px solid var(--light-grey, #ccc);
-    padding-top: 2rem;
-
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-
-      h2 {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .image-wrapper {
-    .image-btn {
-      display: block;
-      width: 100%;
-      padding: 0;
-      border: none;
-      background: none;
-      cursor: zoom-in;
-
-      img {
-        width: 100%;
-        height: auto;
-        border-radius: 0.5rem;
-        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-        display: block;
-        transition: transform 0.2s;
-      }
-
-      &:hover img {
-        transform: scale(1.02);
-      }
-    }
-  }
-
   .hint {
     font-size: 0.75rem;
     color: var(--dark-grey, #666);
@@ -447,5 +613,103 @@
     &:disabled {
       opacity: 0.5;
     }
+  }
+
+  /* Batch History Styles */
+  .batch-history {
+    margin-top: 2rem;
+    border-top: 1px solid var(--light-grey, #ccc);
+  }
+
+  .force-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .job-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .job-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--light-grey, #ccc);
+    border-radius: 0.5rem;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #f9f9f9;
+    }
+
+    &.success {
+      border-left: 5px solid var(--green, #28a745);
+    }
+    &.failed {
+      border-left: 5px solid var(--dark-red, #c00);
+    }
+  }
+
+  .job-icon {
+    color: var(--dark-grey, #666);
+    :global(.icon) {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  .job-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .job-name {
+    font-weight: bold;
+  }
+
+  .job-meta {
+    font-size: 0.75rem;
+    color: var(--dark-grey, #666);
+    display: flex;
+    gap: 1rem;
+
+    .status {
+      text-transform: capitalize;
+    }
+  }
+
+  .job-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    padding: 0.25rem;
+    background: none;
+    border: none;
+    color: var(--dark-grey, #666);
+
+    &:hover {
+      color: black;
+    }
+
+    &.delete:hover {
+      color: var(--dark-red, #c00);
+    }
+  }
+
+  .empty-list {
+    color: var(--dark-grey, #666);
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
   }
 </style>

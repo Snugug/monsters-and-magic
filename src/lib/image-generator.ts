@@ -74,8 +74,13 @@ export class ImageGenerator {
     return null;
   }
 
-  async batch(prompts: string[]): Promise<string[]> {
-    // 1. Create and upload file
+  /**
+   * Enqueues a batch generation job.
+   * @param prompts List of text prompts.
+   * @param name Optional display name for the batch job.
+   * @returns The created batch job object.
+   */
+  async enqueue(prompts: string[], name?: string): Promise<any> {
     const lines = prompts.map((prompt) => {
       return JSON.stringify({
         request: {
@@ -106,56 +111,43 @@ export class ImageGenerator {
       throw new Error('Failed to upload batch file');
     }
 
-    // 2. Create batch job
-    let batchJob = await this.ai.batches.create({
+    return await this.ai.batches.create({
       model: this.model,
       src: uploadResult.name,
+      config: name ? { displayName: name } : undefined,
     });
+  }
 
-    // 3. Monitor job status
-    const completedStates = new Set([
-      'JOB_STATE_SUCCEEDED',
-      'JOB_STATE_FAILED',
-      'JOB_STATE_CANCELLED',
-      'JOB_STATE_EXPIRED',
-    ]);
+  /**
+   * Queries the status of a batch job.
+   * @param name The resource name of the batch job (e.g. "jobs/...").
+   * @returns The latest batch job object.
+   */
+  async query(name: string): Promise<any> {
+    return await this.ai.batches.get({ name });
+  }
 
-    while (!batchJob.state || !completedStates.has(batchJob.state)) {
-      // Wait for 10 seconds before polling again
-      await new Promise((resolve) => setTimeout(resolve, 10000));
-      if (batchJob.name) {
-        batchJob = await this.ai.batches.get({ name: batchJob.name });
-      } else {
-        throw new Error('Batch job name is missing');
-      }
+  /**
+   * Retrieves and parses the results of a completed batch job.
+   * @param outputFileName The resource name of the output file (e.g. "files/...").
+   * @returns Array of base64 image strings.
+   */
+  async get(outputFileName: string): Promise<string[]> {
+    // Download using fetch because ai.files.download is not supported in browser
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/download/v1beta/${outputFileName}:download?key=${this.apiKey}&alt=media`,
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to download results: ${response.statusText}`);
     }
 
-    if (batchJob.state !== 'JOB_STATE_SUCCEEDED') {
-      throw new Error(`Batch job failed with state: ${batchJob.state}`);
-    }
-
-    // 4. Retrieve results
+    const fileContent = await response.text();
     const results: string[] = [];
-    if (batchJob.dest?.fileName) {
-      // The SDK's download method might require a downloadPath or return a response.
-      // Based on docs, it should return content if no path provided, but lint says otherwise.
-      // We will cast to any to bypass the strict check and assume it returns the buffer/string
-      // as hinted by the documentation example I read earlier.
-      // If it fails at runtime, we will know.
-      // Download using fetch because ai.files.download is not supported in browser
-      // Use the correct download endpoint structure found in documentation
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/download/v1beta/${batchJob.dest.fileName}:download?key=${this.apiKey}&alt=media`,
-      );
 
-      if (!response.ok) {
-        throw new Error(`Failed to download results: ${response.statusText}`);
-      }
-
-      const fileContent = await response.text();
-
-      for (const line of fileContent.split('\n')) {
-        if (line) {
+    for (const line of fileContent.split('\n')) {
+      if (line) {
+        try {
           const parsedResponse = JSON.parse(line);
           if (parsedResponse.response) {
             for (const part of parsedResponse.response.candidates[0].content
@@ -165,8 +157,13 @@ export class ImageGenerator {
               }
             }
           } else if (parsedResponse.error) {
-            throw new Error(`Batch item error: ${parsedResponse.error}`);
+            // Log or handle individual item error
+            console.error(
+              `Batch item error: ${JSON.stringify(parsedResponse.error)}`,
+            );
           }
+        } catch (e) {
+          console.error('Failed to parse result line', e);
         }
       }
     }

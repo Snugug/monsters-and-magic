@@ -1,3 +1,11 @@
-All images are SVGs stored in `src/components/Sprite.astro` as an SVG Icon Sprite. **CORE REQUIREMENT** Any new icons you create **MUST** be SVGs, **MUST** be placed in the Icon Sprite, **MUST** have an ID that starts with `icon--`, **MUST** be monochromatic, and **MUST** match the sizing and style of 24px Google Material Design icons. To do so, use the Material Design Icons GitHub source code (https://github.com/google/material-design-icons/tree/master/src) to see existing icons, and Google's best practices for designing icons (https://m3.material.io/styles/icons/designing-icons) for creating new ones.
+---
+trigger: always_on
+---
 
-To use an icon from the Icon Sprite, use the components from `Icon.svelte` and pass in the icon name. The icon name is the part of the ID that follows `icon--` in the ID, so an icon with ID `icon--hourglass` has a name of `hourglass`.
+Available icons can be found in src/components/Sprite.astro. Use their id (without `icon--`) as the icon name for the Icon components (`src/components/Icon.svelte`).
+
+If you cannot find an icon you need, you should add it to the sprite. To do so:
+
+- Search for the relevant icon in the Google Material 3 icon set (https://github.com/google/material-design-icons). If there are multiple options, use the 24px sized one and the outlined style
+- Add it to the sprite, removing any fill, height, or width attributes on the SVG
+- Give it an id in the form of `icon--{name}` with `name` being slugified
