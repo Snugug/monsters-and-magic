@@ -25,6 +25,7 @@
 
   let selectedPromptKey = $state('creature');
   let promptsInput = $state('');
+  let batchNameInput = $state(''); // New batch name field
 
   // Persistent list of jobs
   let batchJobs = $state<BatchJob[]>([]);
@@ -36,6 +37,9 @@
   let dialogOpen = $state(false);
   let dialogIndex = $state(0);
   let activeDialogImages = $state<string[]>([]);
+
+  // Editing state
+  let editingJobId = $state<string | null>(null);
 
   let loaded = $state(false);
 
@@ -49,8 +53,7 @@
     JOB_STATE_FAILED: 'close',
     JOB_STATE_CANCELLED: 'close',
     JOB_STATE_EXPIRED: 'close',
-    JOB_STATE_PENDING: 'time', // Assuming 'time' or 'clock' icon exists? using 'sparkle' or 'refresh' if not. Assuming 'time' doesn't exist based on Icon.svelte usually having minimal set. I'll check Icon.svelte later or stick to generic. I'll use 'sparkle' for active for now or just text.
-    // If status is unknown/active, show loader or generic.
+    JOB_STATE_PENDING: 'refresh', // Using refresh for pending/active
   };
 
   // Load API Key from LocalStorage
@@ -62,15 +65,17 @@
   $effect(() => {
     (async () => {
       if (loaded === false) {
-        const [p, k, jobs] = await getMany([
+        const [p, k, jobs, bn] = await getMany([
           'batch-promptsInput',
           'batch-selectedPromptKey',
           'batch-jobs',
+          'batch-batchNameInput',
         ]);
 
         if (p) promptsInput = p;
         if (k) selectedPromptKey = k;
         if (jobs) batchJobs = jobs;
+        if (bn) batchNameInput = bn;
 
         loaded = true;
 
@@ -83,6 +88,7 @@
           ['batch-promptsInput', $state.snapshot(promptsInput)],
           ['batch-selectedPromptKey', $state.snapshot(selectedPromptKey)],
           ['batch-jobs', $state.snapshot(batchJobs)],
+          ['batch-batchNameInput', $state.snapshot(batchNameInput)],
         ]);
       }
     })();
@@ -164,7 +170,9 @@
 
     try {
       const simpleDate = new Date().toISOString().split('T')[0];
-      const name = `batch-${simpleDate}-${lines.length}-images`;
+      // Use user provided name or fallback
+      const name =
+        batchNameInput.trim() || `batch-${simpleDate}-${lines.length}-images`;
 
       // Enqueue
       const jobData = await generator.enqueue(lines, name);
@@ -179,6 +187,7 @@
 
       batchJobs = [newJob, ...batchJobs];
       promptsInput = ''; // Clear input on success
+      batchNameInput = ''; // Clear name input
     } catch (e: any) {
       console.error(e);
       error = e.message || 'An error occurred during queuing.';
@@ -190,10 +199,15 @@
   async function reset(e: Event) {
     e.preventDefault();
     promptsInput = '';
+    batchNameInput = '';
     selectedPromptKey = 'creature';
     error = '';
 
-    await delMany(['batch-promptsInput', 'batch-selectedPromptKey']);
+    await delMany([
+      'batch-promptsInput',
+      'batch-selectedPromptKey',
+      'batch-batchNameInput',
+    ]);
   }
 
   function deleteJob(index: number) {
@@ -202,19 +216,42 @@
       confirm(`Are you sure you want to delete batch "${job.userDisplayName}"?`)
     ) {
       batchJobs = batchJobs.filter((_, i) => i !== index);
+      if (editingJobId === job.id) editingJobId = null; // Clear editing state if deleted job was being edited
     }
   }
 
-  function renameJob(index: number) {
+  function getIsEditing(jobId: string) {
+    return editingJobId === jobId;
+  }
+
+  function toggleEdit(index: number) {
     const job = batchJobs[index];
-    const newName = prompt('Enter new name for batch:', job.userDisplayName);
-    if (newName) {
-      job.userDisplayName = newName;
-      batchJobs = [...batchJobs];
+    if (getIsEditing(job.id)) {
+      // If currently editing, save
+      saveRename(index);
+    } else {
+      // Start editing
+      editingJobId = job.id;
+    }
+  }
+
+  function saveRename(index: number) {
+    // The value is already bound to job.userDisplayName, so just clear editing state
+    if (editingJobId === batchJobs[index].id) {
+      editingJobId = null;
+      batchJobs = [...batchJobs]; // Trigger persistence via reactivity
+    }
+  }
+
+  function handleNameKeydown(e: KeyboardEvent, index: number) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveRename(index);
     }
   }
 
   async function openBatchResults(job: BatchJob) {
+    if (editingJobId === job.id) return; // Don't open if editing title
     if (job.status !== 'JOB_STATE_SUCCEEDED') return;
 
     // If we don't have images loaded yet, fetch them
@@ -297,11 +334,10 @@
   function getStatusIcon(status: string) {
     if (status === 'JOB_STATE_SUCCEEDED') return 'check';
     if (status === 'JOB_STATE_FAILED') return 'close';
-    return 'sparkle'; // Active/Pending
+    return 'refresh'; // Active/Pending
   }
 </script>
 
-```
 <div class="container">
   <h1>Batch Image Generator</h1>
 
@@ -330,6 +366,17 @@
     <!-- Generation Form -->
     <form class="generator-form" onsubmit={queueGeneration}>
       <div class="group">
+        <label for="batch-name">Batch Name (Optional)</label>
+        <input
+          type="text"
+          id="batch-name"
+          bind:value={batchNameInput}
+          placeholder="e.g. Forest Creatures"
+          disabled={loading}
+        />
+      </div>
+
+      <div class="group">
         <label for="prompt-select">System Prompt</label>
         <select id="prompt-select" bind:value={selectedPromptKey}>
           {#each Object.entries(prompts) as [key, { label }]}
@@ -338,7 +385,7 @@
         </select>
       </div>
 
-      <div class="group">
+      <div class="group prompts">
         <label for="prompts-input">Prompt Values (One per line)</label>
         <textarea
           id="prompts-input"
@@ -387,7 +434,7 @@
           disabled={loading}
           title="Refresh Status"
         >
-          <Icon icon="sparkle" /> Refresh
+          <Icon icon="refresh" /> Refresh
         </button>
       </div>
 
@@ -410,7 +457,19 @@
               </div>
               <div class="job-info">
                 <div class="job-name">
-                  {job.userDisplayName}
+                  {#if getIsEditing(job.id)}
+                    <input
+                      type="text"
+                      bind:value={job.userDisplayName}
+                      onclick={(e) => e.stopPropagation()}
+                      onblur={() => saveRename(index)}
+                      onkeydown={(e) => handleNameKeydown(e, index)}
+                      class="rename-input"
+                      autofocus
+                    />
+                  {:else}
+                    {job.userDisplayName}
+                  {/if}
                 </div>
                 <div class="job-meta">
                   <span class="status"
@@ -427,12 +486,11 @@
                   class="action-btn"
                   onclick={(e) => {
                     e.stopPropagation();
-                    renameJob(index);
+                    toggleEdit(index);
                   }}
-                  title="Rename"
+                  title={getIsEditing(job.id) ? 'Save' : 'Rename'}
                 >
-                  <Icon icon="sparkle" />
-                  <!-- Use edit icon if available, otherwise generic -->
+                  <Icon icon={getIsEditing(job.id) ? 'check' : 'edit'} />
                 </button>
                 {#if job.status === 'JOB_STATE_SUCCEEDED'}
                   <button
@@ -475,6 +533,17 @@
 />
 
 <style lang="scss">
+  .generator-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .prompts,
+  .form-actions {
+    grid-column: 1 / -1;
+  }
+
   .container {
     max-width: 800px;
     margin: 0 auto;
@@ -500,7 +569,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
 
     label {
       font-size: 0.75rem;
@@ -649,7 +718,7 @@
     }
 
     &.success {
-      border-left: 5px solid var(--green, #28a745);
+      border-left: 5px solid var(--dark-green, #28a745);
     }
     &.failed {
       border-left: 5px solid var(--dark-red, #c00);
@@ -673,6 +742,7 @@
 
   .job-name {
     font-weight: bold;
+    min-height: 1.5rem; /* ensure height when empty or input */
   }
 
   .job-meta {
@@ -711,5 +781,38 @@
     font-style: italic;
     text-align: center;
     padding: 2rem;
+  }
+
+  .rename-input {
+    width: 100%;
+    height: 1.5rem;
+    padding: 0 0.25rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: 1px solid var(--light-grey, #ccc);
+    border-radius: 0.25rem;
+    font-family: inherit;
+  }
+
+  .job-name {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    margin-inline: -0.5rem;
+    display: flex;
+
+    &:has(input) {
+      border-color: var(--light-grey, #ccc);
+      background: white;
+      padding: 0;
+    }
+
+    input {
+      padding: 0.25rem 0.5rem;
+      border: 0;
+      background: none;
+      height: auto;
+      // height: 100%;
+    }
   }
 </style>
