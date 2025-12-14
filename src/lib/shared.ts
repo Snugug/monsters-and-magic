@@ -89,7 +89,7 @@ export const newAttackBase = {
   damage: '1d6' as (typeof dieSizes)[number] | '',
   element: '' as (typeof elements)[number] | '',
   condition: '',
-  ap: 2,
+  ap: 1,
   fatigue: 0,
   trigger: '',
   recharge: '' as '1d4' | '1d6' | '1d8' | '1d10',

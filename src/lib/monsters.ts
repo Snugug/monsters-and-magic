@@ -232,6 +232,9 @@ export function calculatePoints(
         if (w.ap > 2) {
           ap -= points(w.ap - 2);
         }
+        if (w.ap === 1) {
+          ap += 1;
+        }
         if (w.fatigue > p.fatigue / 2) {
           ap -= points(w.fatigue - p.fatigue / 2);
         } else {

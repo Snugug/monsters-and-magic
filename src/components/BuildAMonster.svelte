@@ -1066,7 +1066,7 @@
                 name="nwa-ap-{i}"
                 id="nwa-ap-{i}"
                 bind:value={l.ap}
-                min="2"
+                min="1"
                 required
                 disabled={l.type === 'reaction'}
               />
