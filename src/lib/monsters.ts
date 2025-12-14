@@ -87,6 +87,7 @@ export function calculatePoints(
     if (monster.feats?.length) {
       const s = spend(monster.feats, feats);
       p.points += points(s, 3);
+      p.tags.push('trained');
     }
 
     // Vision
