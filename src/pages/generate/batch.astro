@@ -1,0 +1,8 @@
+---
+import Layout from '$layouts/Layout.astro';
+import BatchGeneratorPage from '$components/BatchGeneratorPage.svelte';
+---
+
+<Layout title="AI Batch Image Generator">
+  <BatchGeneratorPage client:only="svelte" />
+</Layout>
