@@ -250,10 +250,10 @@ export function calculatePoints(
           }
 
           if (w.thread) {
-            ap /= points(2);
+            ap /= points(3);
           }
         } else if (w.thread) {
-          ap /= points(6);
+          ap /= points(5);
         }
 
         ap = Math.round(ap);
