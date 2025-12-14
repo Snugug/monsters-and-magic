@@ -57,7 +57,7 @@ test.describe('ImagePicker Bug Fixes', () => {
     await page.fill('textarea[name="prompt"]', 'A red pixel');
 
     // Click Generate
-    await page.click('input[value="Generate image"]');
+    await page.getByRole('button', { name: 'Generate', exact: true }).click();
 
     // Wait for "Use" button to appear (meaning preview is set)
     const useBtn = page.locator('button:has-text("Use")');
@@ -109,7 +109,7 @@ test.describe('ImagePicker Bug Fixes', () => {
 
     await page.getByRole('button', { name: 'Generate an Image' }).click();
     await page.fill('textarea[name="prompt"]', 'A red pixel');
-    await page.click('input[value="Generate image"]');
+    await page.getByRole('button', { name: 'Generate', exact: true }).click();
 
     // 2. Click Save
     // We need to verify it calls showSaveFilePicker.
@@ -128,11 +128,11 @@ test.describe('ImagePicker Bug Fixes', () => {
           }),
           getFile: async () =>
             new File([''], 'test.png', { type: 'image/png' }),
-        };
+        } as unknown as FileSystemFileHandle;
       };
     });
 
-    const saveBtn = page.locator('button:has-text("Save")');
+    const saveBtn = page.getByRole('button', { name: 'Save', exact: true });
     await expect(saveBtn).toBeVisible();
     await saveBtn.click();
 

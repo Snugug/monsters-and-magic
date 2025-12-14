@@ -55,11 +55,11 @@ test.describe('Image Generator Persistence', () => {
 
     // 2. Click Reset
     page.on('dialog', (dialog) => dialog.accept()); // Handle confirmation
-    await page.getByRole('button', { name: 'Reset Prompt' }).click();
+    await page.getByRole('button', { name: 'Reset' }).click();
 
     // 3. Verify cleared
     await expect(page.getByLabel('Your Prompt')).toHaveValue('');
-    await expect(page.getByLabel('Number of Images')).toHaveValue('1');
+    await expect(page.getByLabel('Number of Images')).toHaveValue('4');
 
     // 4. Reload to ensure it was cleared from DB too
     await page.reload();

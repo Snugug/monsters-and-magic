@@ -64,11 +64,13 @@ test.describe('Image Generator Full Flow', () => {
     // 5. Verify Result (Loader check implies timing, skipping to result check)
 
     // 6. Verify Result and Persistence check implicitly
-    await expect(page.locator('.image-grid img')).toBeVisible();
-    await expect(page.locator('.image-grid img')).toHaveAttribute(
-      'src',
-      /data:image\/png;base64/,
-    );
+    // 6. Verify Result and Persistence check implicitly
+    const images = page.locator('.image-grid img');
+    await expect(images).toHaveCount(4);
+    for (const img of await images.all()) {
+      await expect(img).toBeVisible();
+      await expect(img).toHaveAttribute('src', /data:image\/png;base64/);
+    }
   });
 
   test('should handle API errors gracefully', async ({ page }) => {
