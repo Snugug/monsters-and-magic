@@ -537,7 +537,6 @@
       <select
         name="size"
         bind:value={monster.swarm}
-        required
         disabled={monster.size === 'tiny' ? true : null}
       >
         <option value="">-</option>
