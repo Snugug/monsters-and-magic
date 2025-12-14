@@ -1,0 +1,161 @@
+---
+title: Creating Monsters
+chapter: 9
+---
+
+Monsters are the lifeblood of the challenge players face! It's literally in the name of the game! While there are a large number of monsters to choose from, they may not suite the needs of your campaign exactly. These rules explain how the existing monsters were created so you can confidently change them to fit your story or create new ones.
+
+## Challenge Rating & Points
+
+A monster's relative difficulty is based on their Challenge Rating, or CR, which is in turn based on the number of points it took to build that particular monster. Every choice you make when building a monster, from its abilities to its attributes to its traits, even to its size, cost a certain number of points. Some choices are more powerful than others, being gargantuan, for instance, comes with a lot of bonuses and as such cost more than being tiny, which comes with some drawbacks so actually removes some points.
+
+Once you've added up all the points for a monster, subtract seven (challenge rating rounds up at 7, not 5, which is why we're subtracting 7 here), divide by ten, and round up—that's the monster's challenge rating. So, for instance, if you had a monster that had 27 total points, it's CR would be 2, but if you had a monster whose total points were 18, that would also be a CR 2 (18 - 7 is 11, divided by 10 is 1.1, rounded up is 2).
+
+The point based system makes scaling monsters fairly straightforward. Want a scarier swarm of rats for your new adventuring party? Take an existing monster and increase its damage or AC just enough to bump it up! Want to make a creature resistant to fire damage? See how that'll affect the overall challenge rating!
+
+Challenge Rating affects what monsters you put your players up against. A general rule of thumb is one CR1 monster per player for a challenging but not deadly encounter at Heroic Tier. For a party of 4, this could be 4 CR1 monsters, two CR2 monsters, one CR4 monster or, if you want a real battle, 8 CR0 monsters. At Epic and Legendary tiers, add an additional CR1 monster into your calculations, representing the expanding skill set of your players.
+
+## Size
+
+Monsters come in many sizes, ranging from tiny all the way up to gargantuan. Each size has a base damage output, a base set of HP, a base speed, a base reach, what size area it fits into, and how many points it adds to the monster.
+
+import Size from '$components/mdx/Size.svelte';
+
+<Size />
+
+You can also choose to make a **swarm** of monsters. When making a swarm, first choose how large the swarm is, then choose the size of the creatures in the swarm, which must be at least one size category smaller. The size of the swarm determines its space, the size of the creatures determines the rest. Swarms differ from normal creatures in that they cannot gain temporary HP, cannot regain HP, and deal ½ damage when bloodied. Making a creature a swarm subtracts 2 points from the monster's point total.
+
+## Type
+
+Monster type is mostly a categorization tool that you can use to help you add flavor to your monsters and your world.
+
+Beast
+: Animals native to the material plane. Includes hybrid animals, like owlbears and griffons. They may have special vision or movement, but typically don't have the `spicy` or `radiates` tags and typically don't have feats or techniques, or have the ability to cast spells.
+
+Humanoid
+: Creatures native to the material plane that form societies. They can have lineages and traits from those lineages, and may carry weapons or wear armor. They typically don't have the `spicy` or `radiates` tags.
+
+Celestial
+: Creatures native to the upper planes. They are usually benevolent, may carry weapons or armor, often deal radiant damage, and are often vulnerable to necrotic damage. They typically have the `extraplanar` tag.
+
+Fiends
+: Creatures native to the lower planes. They are usually selfish, may carry weapons or armor, often deal necrotic or fire damage, and are often vulnerable to radiant damage. They typically have the `extraplanar` tag.
+
+Undead
+: Creatures that have been brought back from the dead but not fully to life, like skeletons and zombies. They may carry weapons or armor, often have the `undying` or `unrelenting` tags, and are usually vulnerable to radiant damage.
+
+Elemental
+: Creatures from elemental planes or are manifestations of an element. They are always aligned to a specific element. They typically either have the `spicy` or `radiates` tags for their element, always deal damage of their specific element, are typically either resistant to, immune to, or absorb their element and often vulnerable to another appropriate element (fire vulnerable to cold, for instance). They typically have the `extraplanar` tag.
+
+Ooze
+: Homogenous creatures made of jelly-like substances. They typically can't talk, are are almost always `spicy`, `amorphous`, and an `occupier`.
+
+Aberration
+: Creatures alien to the material plane, like an eldritch horror. Usually psychic and typically can cast spells and deal fatigue.
+
+Fey
+: Creatures native to the feyrealm and deeply connected to nature. May carry weapons or armor and can typically cast spells.
+
+Dragon
+: Big lizards, breath weapons, like gold, you know, a dragon. Typically flies and has a breath weapon of a given damage type based on their color (red for fire, white for cold, blue for lightning, etc…) with resistance to that damage type (and often vulnerability to another appropriate element). Older, more ancient ones, often lives in a lair they have control over.
+
+Construct
+: Mechanical creatures. Typically can regenerate or have the `undying` or `unrelenting` tags.
+
+Monstrosity
+: Any creature that doesn't fit into another type.
+
+## Abilities
+
+Abilities work the same way they do for player characters, except they can go from -5 to +5, except for Luck, which can only go to -2. Monsters, like PCs, start with two abilities at +1.
+
+Points for abilities are calculated by adding up the total values for Focus, Power, Cunning, and Luck, subtracting 2, then multiplying by 2. For a monster with 0/1/1/0 its 0 points, 0/0/0/0 its -4 points, -1/3/1/0 its 2 points.
+
+## Vision
+
+Monsters start with standard vision. Improving their vision costs points, and for visions that have a range, they can be added in increments of 10'.
+
+| Vision           |      Points      |
+| :--------------- | :--------------: |
+| Low-light Vision |        1         |
+| Darkvision       |        2         |
+| Blindsight       |    Range / 10    |
+| Tremorsense      |    Range / 10    |
+| Truesight        | (Range / 10) × 2 |
+
+## Movement
+
+Monsters start with a base walking speed based on their size, and can have additional. Additional movement is added at the base walking speed of the monster. For every additional 10' above or below these base levels adds or subtracts 1 points and gain either the `fast` or `slow` tags.
+
+| Movement      | Points |
+| :------------ | :----: |
+| Flying        |   3    |
+| Climbing      |   1    |
+| Swimming      |   1    |
+| Burrowing     |   2    |
+| ±10' movement |   ±1   |
+
+## Offense
+
+Monsters can have their offensive capabilities enhanced to make the more dangerous.
+
+import Offense from '$components/mdx/Offense.svelte';
+
+<Offense />
+
+## Defense
+
+Monsters can have their defense capabilities enhanced to make them harder to kill.
+
+import Defense from '$components/mdx/Defense.svelte';
+
+<Defense />
+
+## Feats, Techniques, Cantrips, & Charms
+
+Creatures can be given feats, techniques, cantrips, and charms (for the cantrips they know). Each one added has a point cost, and if it's rare, the point cost is doubled.
+
+| Trait           | Effect          | Points |
+| :-------------- | :-------------- | :----: |
+| Trained         | Add a feat      |   +3   |
+| Skilled         | Add a technique |   +1   |
+| Caster          | Add a cantrip   |   +1   |
+| Advanced Caster | Add a charm     |   +2   |
+
+## Weapons, Equipment, & Actions
+
+Monsters
+
+Humanoids, Celestials, Fiends, Undead, Fey, and Constructs can equip weapons and armor.
+
+### Damage Steps
+
+Each monster has a base damage, based on their size. Their natural weapons, held weapons, or actions may deal more damage than that, though. To calculate how many points to add, take the attack that deals the most amount of damage and determine how many _damage steps_ it is above or below the monster's base damage.
+
+A damage step is an increase in maximum damage rolled, so going from 1d6 to 1d8 is 1 damage step and 1d6 to 1d4 is -1 damage step, but 1d12 to 2d6 is 0 damage steps because the maximum is the same. The damage steps for custom actions are doubled to compensate for the their custom nature. The number of damage steps is the number of points you add or subtract. If the point total goes up, add the `vicious` tag to the monster, if it goes down, the `timid` tag.
+
+When choosing damage output for a natural weapon or action, you cannot combine multiple die (like 1d4 + 2d6), but you can have multiple of the same die (3d4).
+
+### Natural Weapons
+
+Natural weapons are melee weapons that are part of the creature, think fists or claws. They each have a damage die associated with them and a damage type. Monsters can have more than one natural weapon, but they need to have at least one.
+
+### Actions
+
+You can create custom action you'd like your monster to take not covered by another option. Each action must have a name, a description, a type (attack, reaction, save with ability, or "other"), how many action points it takes (minimum 1), and how much fatigue it takes (minimum 0); reactions also require a trigger. Adding an action costs 2 points.
+
+Actions can deal damage. If it does, it needs a damage type. Point cost for the damage is calculated using damage steps and is added to the action's initial cost. They can also impose either a single condition or a status—doing so adds an addition 2 points to the initial.
+
+The number of action points an action requires changes how many points the action costs—if it costs 1 AP, add 1 point, for every AP above 2, subtract 1 point. Requiring each fatigue for the action can also reduce its cost by 1 point per fatigue.
+
+You can further reduce an action's cost by reducing its availability. You can have it recharge on a 1d4, 1d6, 1d8, or 1d10, doing so divides the cost by 2, 3, 4, and 5 respectively. You can also require a thread to use it—if it has a recharge, divide the cost again by 3, if it just recharges on a thread, divide the cost by 5. Round the point total normally to the nearest full point.
+
+## Traits
+
+Traits make monsters stand out. There are a number of traits available
+
+Swarms cannot regain HP or gain temporary HP and deal ½ damage when bloodied.
+
+import Tags from '$components/mdx/Tags.svelte';
+
+<Tags />
