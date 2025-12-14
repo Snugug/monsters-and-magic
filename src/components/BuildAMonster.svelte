@@ -1038,6 +1038,7 @@
                 id="nwa-element-{i}"
                 bind:value={l.element}
                 disabled={l.type === 'other'}
+                required={l.damage !== ''}
               >
                 <option value="">-</option>
                 {#each elements as e}
