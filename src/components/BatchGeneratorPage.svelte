@@ -5,6 +5,7 @@
   import { slugify } from '$lib/helpers';
   import { untrack } from 'svelte';
   import { getMany, setMany, delMany } from 'idb-keyval';
+  import { addToast } from '$lib/toast.svelte';
   import ImageDialog from '$components/ImageDialog.svelte';
   import Icon from '$components/Icon.svelte';
   import Loader from '$components/Loader.svelte';
@@ -16,6 +17,7 @@
     status: string; // JOB_STATE_...
     resultFile?: string; // Resource name of output file
     images?: string[]; // Cached image data if downloaded
+    itemCount?: number; // Number of prompts in the batch
     createdAt: number;
   }
 
@@ -30,8 +32,10 @@
   // Persistent list of jobs
   let batchJobs = $state<BatchJob[]>([]);
 
-  let loading = $state(false); // Global loading for actions (enqueue, delete, etc)
   let error = $state('');
+
+  // Track specific jobs that are performing actions (loading results/downloading)
+  let loadingJobIds = $state(new Set<string>());
 
   // Dialog state
   let dialogOpen = $state(false);
@@ -53,8 +57,20 @@
     JOB_STATE_FAILED: 'close',
     JOB_STATE_CANCELLED: 'close',
     JOB_STATE_EXPIRED: 'close',
-    JOB_STATE_PENDING: 'refresh', // Using refresh for pending/active
+    JOB_STATE_PENDING: 'pending',
+    JOB_STATE_QUEUING: 'refresh', // Tombstone state
   };
+
+  const TERMINAL_STATES = new Set([
+    'JOB_STATE_SUCCEEDED',
+    'JOB_STATE_FAILED',
+    'JOB_STATE_CANCELLED',
+    'JOB_STATE_EXPIRED',
+  ]);
+
+  let hasPending = $derived(
+    batchJobs.some((job) => !TERMINAL_STATES.has(job.status)),
+  );
 
   // Load API Key from LocalStorage
   $effect(() => {
@@ -80,9 +96,11 @@
         loaded = true;
 
         // Check status of active jobs on load
-        if (generator && batchJobs.length > 0) {
-          updateJobStatuses();
-        }
+        untrack(() => {
+          if (generator && batchJobs.length > 0) {
+            updateJobStatuses();
+          }
+        });
       } else {
         await setMany([
           ['batch-promptsInput', $state.snapshot(promptsInput)],
@@ -111,28 +129,45 @@
     }
   });
 
+  function updateLoadingJob(id: string, active: boolean) {
+    const next = new Set(loadingJobIds);
+    if (active) next.add(id);
+    else next.delete(id);
+    loadingJobIds = next;
+  }
+
   async function updateJobStatuses() {
     if (!generator) return;
 
-    // Only query jobs that are not in a terminal state
-    const terminalStates = new Set([
-      'JOB_STATE_SUCCEEDED',
-      'JOB_STATE_FAILED',
-      'JOB_STATE_CANCELLED',
-      'JOB_STATE_EXPIRED',
-    ]);
+    // Identify jobs to update
+    const jobsToUpdate = batchJobs.filter(
+      (job) =>
+        !TERMINAL_STATES.has(job.status) && job.status !== 'JOB_STATE_QUEUING',
+    );
 
-    for (const job of batchJobs) {
-      if (!terminalStates.has(job.status)) {
-        try {
-          const updated = await generator.query(job.id);
-          job.status = updated.state;
-          if (updated.dest?.fileName) {
-            job.resultFile = updated.dest.fileName;
-          }
-        } catch (e) {
-          console.error(`Failed to update job ${job.id}`, e);
+    if (jobsToUpdate.length === 0) return;
+
+    // Mark them as loading
+    const nextLoading = new Set(loadingJobIds);
+    for (const job of jobsToUpdate) {
+      nextLoading.add(job.id);
+    }
+    loadingJobIds = nextLoading;
+
+    for (const job of jobsToUpdate) {
+      try {
+        const updated = await generator.query(job.id);
+        job.status = updated.state;
+        if (updated.dest?.fileName) {
+          job.resultFile = updated.dest.fileName;
         }
+      } catch (e) {
+        console.error(`Failed to update job ${job.id}`, e);
+      } finally {
+        // Clear loading for this job
+        const current = new Set(loadingJobIds);
+        current.delete(job.id);
+        loadingJobIds = current;
       }
     }
     // Trigger persistence via reactivity
@@ -165,34 +200,59 @@
       return;
     }
 
-    loading = true;
+    // Do NOT set global loading
     error = '';
 
-    try {
-      const simpleDate = new Date().toISOString().split('T')[0];
-      // Use user provided name or fallback
-      const name =
-        batchNameInput.trim() || `batch-${simpleDate}-${lines.length}-images`;
+    const simpleDate = new Date().toISOString().split('T')[0];
+    const name =
+      batchNameInput.trim() || `batch-${simpleDate}-${lines.length}-images`;
+    // Create a temporary ID for the tombstone
+    const tempId = `temp-${Date.now()}`;
 
+    // Create Tombstone
+    const tombstone: BatchJob = {
+      id: tempId,
+      apiName: name,
+      userDisplayName: name,
+      status: 'JOB_STATE_QUEUING',
+      itemCount: lines.length,
+      createdAt: Date.now(),
+    };
+
+    batchJobs = [tombstone, ...batchJobs];
+
+    // Clear inputs immediately
+    const previousPrompts = promptsInput;
+    promptsInput = '';
+    batchNameInput = '';
+
+    try {
       // Enqueue
       const jobData = await generator.enqueue(lines, name);
 
-      const newJob: BatchJob = {
-        id: jobData.name, // resource name
-        apiName: jobData.displayName || name,
-        userDisplayName: name,
-        status: jobData.state,
-        createdAt: Date.now(),
-      };
-
-      batchJobs = [newJob, ...batchJobs];
-      promptsInput = ''; // Clear input on success
-      batchNameInput = ''; // Clear name input
+      // Find and replace tombstone with real job
+      const index = batchJobs.findIndex((j) => j.id === tempId);
+      if (index !== -1) {
+        const newJobs = [...batchJobs];
+        newJobs[index] = {
+          ...tombstone,
+          id: jobData.name, // Real API resource name
+          apiName: jobData.displayName || name,
+          status: jobData.state,
+        };
+        batchJobs = newJobs;
+      }
+      addToast(`Batch "${name}" queued successfully`, 'success');
     } catch (e: any) {
       console.error(e);
+      // Remove tombstone on failure
+      batchJobs = batchJobs.filter((j) => j.id !== tempId);
+      // Restore input? Maybe annoying if user cleared it.
+      // User prompts were cleared. I should probably restore them if it fails so they don't lose data.
+      promptsInput = previousPrompts;
+
       error = e.message || 'An error occurred during queuing.';
-    } finally {
-      loading = false;
+      addToast('Failed to queue batch', 'failure');
     }
   }
 
@@ -253,6 +313,7 @@
   async function openBatchResults(job: BatchJob) {
     if (editingJobId === job.id) return; // Don't open if editing title
     if (job.status !== 'JOB_STATE_SUCCEEDED') return;
+    if (loadingJobIds.has(job.id)) return; // Already loading
 
     // If we don't have images loaded yet, fetch them
     if (!job.images || job.images.length === 0) {
@@ -260,7 +321,9 @@
         error = 'Job succeeded but no result file found.';
         return;
       }
-      loading = true;
+
+      updateLoadingJob(job.id, true);
+
       try {
         const images = await generator!.get(job.resultFile);
         job.images = images;
@@ -268,10 +331,11 @@
       } catch (e: any) {
         console.error(e);
         error = 'Failed to retrieve results: ' + e.message;
-        loading = false;
+        addToast('Failed to retrieve results', 'failure');
+        updateLoadingJob(job.id, false);
         return;
       } finally {
-        loading = false;
+        updateLoadingJob(job.id, false);
       }
     }
 
@@ -281,25 +345,23 @@
   }
 
   async function downloadAll(job: BatchJob) {
+    if (loadingJobIds.has(job.id)) return;
+
+    updateLoadingJob(job.id, true);
+
     if (!job.images || job.images.length === 0) {
-      // Should generally open results first or ensure loaded, assuming button inside details view or valid state
-      // If called directly from list (if implemented), check loaded.
-      // For now, only assume images are loaded if this is called.
-      // If not, try load.
       if (job.status === 'JOB_STATE_SUCCEEDED' && job.resultFile) {
         try {
-          loading = true;
           const images = await generator!.get(job.resultFile);
           job.images = images;
           batchJobs = [...batchJobs];
         } catch (e) {
-          alert('Failed to load images for download');
-          loading = false;
+          addToast('Failed to load images for download', 'failure');
+          updateLoadingJob(job.id, false);
           return;
-        } finally {
-          loading = false;
         }
       } else {
+        updateLoadingJob(job.id, false);
         return;
       }
     }
@@ -322,19 +384,23 @@
         await writable.close();
       }
 
-      alert('All images downloaded successfully!');
+      addToast('All images downloaded successfully!', 'success');
     } catch (e: any) {
       if (e.name !== 'AbortError') {
         console.error(e);
         error = 'Failed to save images. ' + e.message;
+        addToast('Failed to save images', 'failure');
       }
+    } finally {
+      updateLoadingJob(job.id, false);
     }
   }
 
-  function getStatusIcon(status: string) {
-    if (status === 'JOB_STATE_SUCCEEDED') return 'check';
-    if (status === 'JOB_STATE_FAILED') return 'close';
-    return 'refresh'; // Active/Pending
+  function getStatusIcon(job: BatchJob) {
+    if (loadingJobIds.has(job.id) || job.status === 'JOB_STATE_QUEUING')
+      return 'progress'; // Spinner icon
+    if (job.status in STATUS_ICONS) return STATUS_ICONS[job.status];
+    return 'pending'; // Fallback
   }
 </script>
 
@@ -372,7 +438,6 @@
           id="batch-name"
           bind:value={batchNameInput}
           placeholder="e.g. Forest Creatures"
-          disabled={loading}
         />
       </div>
 
@@ -391,7 +456,7 @@
           id="prompts-input"
           bind:value={promptsInput}
           placeholder="Enter prompt values, one per line..."
-          disabled={loading}
+          disabled={false}
         ></textarea>
         <p class="hint">
           Each line will be concatenated with the system prompt.
@@ -400,23 +465,12 @@
 
       <div class="form-actions">
         <button class="secondary reset" onclick={reset}>Reset</button>
-        <button
-          type="submit"
-          class="ai-generate-btn"
-          disabled={loading || !promptsInput}
-        >
+        <button type="submit" class="ai-generate-btn" disabled={!promptsInput}>
           <Icon icon="sparkle" />
           Queue Generation
         </button>
       </div>
     </form>
-
-    {#if loading}
-      <div class="loader-container">
-        <Loader />
-        <p>Processing...</p>
-      </div>
-    {/if}
 
     {#if error}
       <div class="error">
@@ -431,7 +485,7 @@
         <button
           class="secondary small"
           onclick={updateJobStatuses}
-          disabled={loading}
+          disabled={!hasPending}
           title="Refresh Status"
         >
           <Icon icon="refresh" /> Refresh
@@ -452,8 +506,12 @@
               tabindex="0"
               onclick={() => openBatchResults(job)}
             >
-              <div class="job-icon">
-                <Icon icon={getStatusIcon(job.status)} />
+              <div
+                class="job-icon"
+                class:spinning={loadingJobIds.has(job.id) ||
+                  job.status === 'JOB_STATE_QUEUING'}
+              >
+                <Icon icon={getStatusIcon(job)} />
               </div>
               <div class="job-info">
                 <div class="job-name">
@@ -475,12 +533,18 @@
                   <span class="status"
                     >{job.status.replace('JOB_STATE_', '')}</span
                   >
+                  {#if job.itemCount}
+                    <span class="count">{job.itemCount} items</span>
+                  {/if}
                   <span class="date"
                     >{new Date(job.createdAt).toLocaleString()}</span
                   >
                 </div>
               </div>
               <div class="job-actions">
+                {#if loadingJobIds.has(job.id)}
+                  <span class="loading-label">Loading...</span>
+                {/if}
                 <button
                   type="button"
                   class="action-btn"
@@ -712,25 +776,48 @@
     background: white;
     cursor: pointer;
     transition: background-color 0.2s;
+    border-left: 5px solid var(--light-grey);
 
     &:hover {
       background: #f9f9f9;
     }
 
     &.success {
-      border-left: 5px solid var(--dark-green, #28a745);
+      border-left-color: var(--dark-green, #28a745);
     }
     &.failed {
-      border-left: 5px solid var(--dark-red, #c00);
+      border-left-color: var(--dark-red, #c00);
     }
   }
 
   .job-icon {
     color: var(--dark-grey, #666);
+    display: flex; /* Ensure centering for rotation */
     :global(.icon) {
       width: 1.5rem;
       height: 1.5rem;
     }
+
+    &.spinning {
+      animation: spin 1s linear infinite;
+      color: var(--blue, #007bff);
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-label {
+    font-size: 0.75rem;
+    color: var(--dark-grey);
+    align-self: center;
+    margin-right: 0.5rem;
   }
 
   .job-info {
