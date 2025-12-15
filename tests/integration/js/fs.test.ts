@@ -61,7 +61,7 @@ describe('fs.svelte.ts', () => {
 
   it('should initialize folder from idb', async () => {
     expect(idb.get).toHaveBeenCalledWith('project');
-    expect(fsModule.folder).toBe(mockDirectoryHandle);
+    expect(fsModule.folder.current).toEqual(mockDirectoryHandle);
   });
 
   describe('chooseFolder', () => {
@@ -70,7 +70,7 @@ describe('fs.svelte.ts', () => {
 
       expect(showDirectoryPicker).toHaveBeenCalled();
       expect(idb.set).toHaveBeenCalledWith('project', mockDirectoryHandle);
-      expect(fsModule.folder).toBe(mockDirectoryHandle);
+      expect(fsModule.folder.current).toEqual(mockDirectoryHandle);
     });
   });
 

@@ -307,7 +307,7 @@ describe('ImageGenerator', () => {
     });
   });
 
-  describe('batch', () => {
+  describe('batch operations', () => {
     const mockUpload = vi.fn();
     const mockCreateBatch = vi.fn();
     const mockGetBatch = vi.fn();
@@ -324,8 +324,7 @@ describe('ImageGenerator', () => {
       global.fetch = vi.fn();
     });
 
-    it('should create a batch job, poll for completion, and return results', async () => {
-      vi.useFakeTimers();
+    it('should enqueue a batch job', async () => {
       const prompts = ['prompt 1', 'prompt 2'];
 
       mockUpload.mockResolvedValue({ name: 'files/batch-file-id' });
@@ -334,16 +333,52 @@ describe('ImageGenerator', () => {
         state: 'ACTIVE',
       });
 
-      // Mock polling: First call returns ACTIVE, second returns SUCCEEDED
-      mockGetBatch
-        .mockResolvedValueOnce({ name: 'jobs/batch-job-id', state: 'ACTIVE' })
-        .mockResolvedValueOnce({
-          name: 'jobs/batch-job-id',
-          state: 'JOB_STATE_SUCCEEDED',
-          dest: { fileName: 'results.jsonl' },
-        });
+      const result = await imageGenerator.enqueue(prompts, 'test-batch');
 
-      // Mock download result via fetch
+      expect(mockUpload).toHaveBeenCalledWith(
+        expect.objectContaining({
+          config: { mimeType: 'application/json' },
+        }),
+      );
+
+      // Verify file content construction
+      const uploadCall = mockUpload.mock.calls[0][0];
+      const fileContent = await uploadCall.file.text();
+      const lines = fileContent.split('\n');
+
+      const req1 = JSON.parse(lines[0]);
+      expect(req1.request.contents[0].parts[0].text).toBe(
+        'test-system-promptprompt 1',
+      );
+
+      expect(mockCreateBatch).toHaveBeenCalledWith({
+        model: 'nano-banana-pro-preview',
+        src: 'files/batch-file-id',
+        config: { displayName: 'test-batch' },
+      });
+
+      expect(result).toEqual({
+        name: 'jobs/batch-job-id',
+        state: 'ACTIVE',
+      });
+    });
+
+    it('should query a batch job', async () => {
+      mockGetBatch.mockResolvedValue({
+        name: 'jobs/batch-job-id',
+        state: 'ACTIVE',
+      });
+
+      const result = await imageGenerator.query('jobs/batch-job-id');
+
+      expect(mockGetBatch).toHaveBeenCalledWith({ name: 'jobs/batch-job-id' });
+      expect(result).toEqual({
+        name: 'jobs/batch-job-id',
+        state: 'ACTIVE',
+      });
+    });
+
+    it('should get and parse batch results', async () => {
       const mockResultContent = [
         JSON.stringify({
           response: {
@@ -366,97 +401,17 @@ describe('ImageGenerator', () => {
         text: () => Promise.resolve(mockResultContent),
       });
 
-      const batchPromise = imageGenerator.batch(prompts);
-
-      // Fast-forward time for polling
-      // We need to advance timers to trigger the loop iterations
-      // Since polling uses `await new Promise(...)`, just advancing timers might not be enough if we don't await the promise chain.
-      // However, `batch` is async. We can use `vi.runAllTimersAsync()` if available or loop advancement.
-
-      // Let's rely on standard promise resolution with fake timers.
-      // We might need to step through the loop.
-      // But standard way is loop running in background.
-
-      await vi.advanceTimersByTimeAsync(11000); // Wait first 10s
-      await vi.advanceTimersByTimeAsync(11000); // Wait second 10s (if needed)
-
-      const results = await batchPromise;
+      const results = await imageGenerator.get('files/results.jsonl');
 
       expect(results).toHaveLength(2);
       expect(results[0]).toBe('data:image/png;base64, image-1');
       expect(results[1]).toBe('data:image/png;base64, image-2');
 
-      expect(mockUpload).toHaveBeenCalledWith(
-        expect.objectContaining({
-          config: { mimeType: 'application/json' },
-        }),
-      );
-
-      // Verify file content construction
-      const uploadCall = mockUpload.mock.calls[0][0];
-      const fileContent = await uploadCall.file.text();
-      const lines = fileContent.split('\n');
-
-      const req1 = JSON.parse(lines[0]);
-      expect(req1.request.contents[0].parts[0].text).toBe(
-        'test-system-promptprompt 1',
-      );
-      expect(req1.request.contents[0].role).toBe('user');
-      expect(req1.request.generationConfig.responseModalities).toEqual([
-        'IMAGE',
-      ]);
-      expect(req1.request.generationConfig.imageConfig).toBeUndefined();
-
-      const req2 = JSON.parse(lines[1]);
-      expect(req2.request.contents[0].parts[0].text).toBe(
-        'test-system-promptprompt 2',
-      );
-
-      expect(mockCreateBatch).toHaveBeenCalledWith({
-        model: 'nano-banana-pro-preview',
-        src: 'files/batch-file-id',
-      });
-
-      expect(mockGetBatch).toHaveBeenCalledTimes(2);
-
-      // Verify fetch was called for download
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining(
-          'https://generativelanguage.googleapis.com/download/v1beta/results.jsonl:download',
+          'https://generativelanguage.googleapis.com/download/v1beta/files/results.jsonl:download',
         ),
       );
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('key=test-api-key'),
-      );
-
-      vi.useRealTimers();
-    });
-
-    it('should throw error if batch job fails', async () => {
-      vi.useFakeTimers();
-      const prompts = ['prompt 1'];
-
-      mockUpload.mockResolvedValue({ name: 'files/batch-file-id' });
-      mockCreateBatch.mockResolvedValue({
-        name: 'jobs/batch-job-id',
-        state: 'ACTIVE',
-      });
-      mockGetBatch.mockResolvedValue({
-        name: 'jobs/batch-job-id',
-        state: 'JOB_STATE_FAILED',
-      });
-
-      const batchPromise = imageGenerator.batch(prompts);
-      // Attach the expectation immediately so the rejection is caught
-      const validationPromise = expect(batchPromise).rejects.toThrow(
-        'Batch job failed with state: JOB_STATE_FAILED',
-      );
-
-      await vi.advanceTimersByTimeAsync(11000);
-
-      await validationPromise;
-
-      vi.useRealTimers();
     });
   });
 });
