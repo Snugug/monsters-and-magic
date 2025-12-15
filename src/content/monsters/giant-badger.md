@@ -2,7 +2,7 @@
 title: Giant Badger
 size: medium
 type: beast
-image: ''
+image: images/monsters/giant-badger.png
 focus: 1
 power: 3
 cunning: 0

@@ -2,7 +2,7 @@
 title: Jackal
 size: small
 type: beast
-image: ''
+image: images/monsters/jackal.png
 focus: 1
 power: 0
 cunning: 2

@@ -2,7 +2,7 @@
 title: Warhorse
 size: large
 type: beast
-image: ''
+image: images/monsters/warhorse.png
 focus: 1
 power: 4
 cunning: 1

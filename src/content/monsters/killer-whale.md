@@ -2,7 +2,7 @@
 title: Killer Whale
 size: huge
 type: beast
-image: ''
+image: images/monsters/killer-whale.png
 focus: 1
 power: 4
 cunning: 2

@@ -2,7 +2,7 @@
 title: Wolf
 size: medium
 type: beast
-image: ''
+image: images/monsters/wolf.png
 focus: 1
 power: 2
 cunning: 2

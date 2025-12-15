@@ -2,7 +2,7 @@
 title: Eagle
 size: small
 type: beast
-image: ''
+image: images/monsters/eagle.png
 focus: 2
 power: 1
 cunning: 2

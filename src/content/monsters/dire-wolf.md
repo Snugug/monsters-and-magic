@@ -2,7 +2,7 @@
 title: Dire Wolf
 size: large
 type: beast
-image: ''
+image: images/monsters/dire-wolf.png
 focus: 1
 power: 3
 cunning: 2

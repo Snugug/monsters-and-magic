@@ -2,7 +2,7 @@
 title: Triceratops
 size: huge
 type: beast
-image: ''
+image: images/monsters/triceratops.png
 focus: 0
 power: 6
 cunning: -1

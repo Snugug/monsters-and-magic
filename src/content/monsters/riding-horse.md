@@ -2,7 +2,7 @@
 title: Riding Horse
 size: large
 type: beast
-image: ''
+image: images/monsters/riding-horse.png
 focus: 0
 power: 3
 cunning: 1

@@ -2,7 +2,7 @@
 title: Giant Wolf Spider
 size: medium
 type: beast
-image: ''
+image: images/monsters/giant-wolf-spider.png
 focus: 1
 power: 1
 cunning: 3

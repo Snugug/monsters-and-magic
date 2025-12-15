@@ -2,7 +2,7 @@
 title: Frog
 size: tiny
 type: beast
-image: ''
+image: images/monsters/frog.png
 focus: -1
 power: -1
 cunning: 1

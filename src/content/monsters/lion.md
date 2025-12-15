@@ -2,7 +2,7 @@
 title: Lion
 size: large
 type: beast
-image: ''
+image: images/monsters/lion.png
 focus: 1
 power: 3
 cunning: 2

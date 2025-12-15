@@ -2,7 +2,7 @@
 title: Hippopotamus
 size: large
 type: beast
-image: ''
+image: images/monsters/hippopotamus.png
 focus: 1
 power: 5
 cunning: -2

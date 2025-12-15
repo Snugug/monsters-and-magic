@@ -2,7 +2,7 @@
 title: Hunter Shark
 size: large
 type: beast
-image: ''
+image: images/monsters/hunter-shark.png
 focus: 0
 power: 4
 cunning: 2

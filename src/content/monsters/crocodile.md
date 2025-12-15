@@ -2,7 +2,7 @@
 title: Crocodile
 size: large
 type: beast
-image: ''
+image: images/monsters/crocodile.png
 focus: 0
 power: 2
 cunning: 0

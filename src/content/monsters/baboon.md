@@ -2,7 +2,7 @@
 title: Baboon
 size: small
 type: beast
-image: ''
+image: images/monsters/baboon.png
 focus: 1
 power: 0
 cunning: 2

@@ -2,7 +2,7 @@
 title: Seahorse
 size: tiny
 type: beast
-image: ''
+image: images/monsters/seahorse.png
 focus: 0
 power: -1
 cunning: 1

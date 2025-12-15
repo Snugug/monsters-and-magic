@@ -2,7 +2,7 @@
 title: Giant Crab
 size: medium
 type: beast
-image: ''
+image: images/monsters/giant-crab.png
 focus: -1
 power: 1
 cunning: 1

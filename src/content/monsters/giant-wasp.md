@@ -2,7 +2,7 @@
 title: Giant Wasp
 size: medium
 type: beast
-image: ''
+image: images/monsters/giant-wasp.png
 focus: 0
 power: 0
 cunning: 2

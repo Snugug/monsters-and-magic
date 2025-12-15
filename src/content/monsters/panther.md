@@ -2,7 +2,7 @@
 title: Panther
 size: medium
 type: beast
-image: ''
+image: images/monsters/panther.png
 focus: 2
 power: 2
 cunning: 3

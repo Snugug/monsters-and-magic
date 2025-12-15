@@ -2,7 +2,7 @@
 title: Swarm of Rats
 size: medium
 type: beast
-image: ''
+image: images/monsters/swarm-of-rats.png
 focus: 0
 power: -1
 cunning: 0

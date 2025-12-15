@@ -2,7 +2,7 @@
 title: Draft Horse
 size: large
 type: beast
-image: ''
+image: images/monsters/draft-horse.png
 focus: 0
 power: 4
 cunning: 0

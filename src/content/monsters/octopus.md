@@ -2,7 +2,7 @@
 title: Octopus
 size: small
 type: beast
-image: ''
+image: images/monsters/octopus.png
 focus: 0
 power: 0
 cunning: 2

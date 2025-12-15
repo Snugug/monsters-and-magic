@@ -2,7 +2,7 @@
 title: Giant Bat
 size: large
 type: beast
-image: ''
+image: images/monsters/giant-bat.png
 focus: 1
 power: 2
 cunning: 3

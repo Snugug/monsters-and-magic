@@ -2,7 +2,7 @@
 title: Weasel
 size: tiny
 type: beast
-image: ''
+image: images/monsters/weasel.png
 focus: 1
 power: -1
 cunning: 3

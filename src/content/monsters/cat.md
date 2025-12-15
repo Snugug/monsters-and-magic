@@ -2,7 +2,7 @@
 title: Cat
 size: tiny
 type: beast
-image: ''
+image: images/monsters/cat.png
 focus: 1
 power: 0
 cunning: 2

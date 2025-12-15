@@ -2,7 +2,7 @@
 title: Boar
 size: medium
 type: beast
-image: ''
+image: images/monsters/boar.png
 focus: -1
 power: 2
 cunning: 0

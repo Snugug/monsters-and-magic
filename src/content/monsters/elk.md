@@ -2,7 +2,7 @@
 title: Elk
 size: large
 type: beast
-image: ''
+image: images/monsters/elk.png
 focus: 0
 power: 3
 cunning: 0

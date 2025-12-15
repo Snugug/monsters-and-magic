@@ -2,7 +2,7 @@
 title: Brown Bear
 size: large
 type: beast
-image: ''
+image: images/monsters/brown-bear.png
 focus: 1
 power: 3
 cunning: 1

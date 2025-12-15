@@ -2,7 +2,7 @@
 title: Giant Frog
 size: medium
 type: beast
-image: ''
+image: images/monsters/giant-frog.png
 focus: 0
 power: 1
 cunning: 1

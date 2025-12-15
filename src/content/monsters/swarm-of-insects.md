@@ -2,7 +2,7 @@
 title: Swarm of Insects
 size: medium
 type: beast
-image: ''
+image: images/monsters/swarm-of-insects.png
 focus: -2
 power: 2
 cunning: 1

@@ -2,7 +2,7 @@
 title: Hyena
 size: medium
 type: beast
-image: ''
+image: images/monsters/hyena.png
 focus: 1
 power: 1
 cunning: 1

@@ -2,7 +2,7 @@
 title: Deer
 size: medium
 type: beast
-image: ''
+image: images/monsters/deer.png
 focus: 2
 power: 0
 cunning: 3

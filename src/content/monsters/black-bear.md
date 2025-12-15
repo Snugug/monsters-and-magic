@@ -2,7 +2,7 @@
 title: Black Bear
 size: medium
 type: beast
-image: ''
+image: images/monsters/black-bear.png
 focus: 1
 power: 2
 cunning: 1

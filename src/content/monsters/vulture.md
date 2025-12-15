@@ -2,7 +2,7 @@
 title: Vulture
 size: medium
 type: beast
-image: ''
+image: images/monsters/vulture.png
 focus: 1
 power: 1
 cunning: 0

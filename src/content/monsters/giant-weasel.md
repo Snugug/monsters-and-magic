@@ -2,7 +2,7 @@
 title: Giant Weasel
 size: medium
 type: beast
-image: ''
+image: images/monsters/giant-weasel.png
 focus: 1
 power: 0
 cunning: 3

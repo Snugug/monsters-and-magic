@@ -2,7 +2,7 @@
 title: Blood Hawk
 size: small
 type: beast
-image: ''
+image: images/monsters/blood-hawk.png
 focus: 2
 power: 0
 cunning: 2

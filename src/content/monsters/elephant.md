@@ -2,7 +2,7 @@
 title: Elephant
 size: huge
 type: beast
-image: ''
+image: images/monsters/elephant.png
 focus: 0
 power: 6
 cunning: -1

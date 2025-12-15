@@ -2,7 +2,7 @@
 title: Ape
 size: medium
 type: beast
-image: ''
+image: images/monsters/ape.png
 focus: 1
 power: 3
 cunning: 2

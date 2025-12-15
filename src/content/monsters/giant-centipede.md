@@ -2,7 +2,7 @@
 title: Giant Centipede
 size: small
 type: beast
-image: ''
+image: images/monsters/giant-centipede.png
 focus: -2
 power: 1
 cunning: 2

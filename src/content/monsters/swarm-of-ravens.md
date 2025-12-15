@@ -2,7 +2,7 @@
 title: Swarm of Ravens
 size: medium
 type: beast
-image: ''
+image: images/monsters/swarm-of-ravens.png
 focus: 1
 power: 1
 cunning: 2

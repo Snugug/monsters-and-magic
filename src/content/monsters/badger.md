@@ -2,7 +2,7 @@
 title: Badger
 size: tiny
 type: beast
-image: ''
+image: images/monsters/badger.png
 focus: 1
 power: 3
 cunning: 0

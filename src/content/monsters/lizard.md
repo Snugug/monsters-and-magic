@@ -2,7 +2,7 @@
 title: Lizard
 size: tiny
 type: beast
-image: ''
+image: images/monsters/lizard.png
 focus: -1
 power: 0
 cunning: 0

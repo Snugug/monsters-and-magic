@@ -2,7 +2,7 @@
 title: Swarm of Bats
 size: large
 type: beast
-image: ''
+image: images/monsters/swarm-of-bats.png
 focus: 1
 power: 0
 cunning: 2

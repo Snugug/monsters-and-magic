@@ -2,7 +2,7 @@
 title: Mule
 size: medium
 type: beast
-image: ''
+image: images/monsters/mule.png
 focus: 0
 power: 2
 cunning: 0

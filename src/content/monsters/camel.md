@@ -2,7 +2,7 @@
 title: Camel
 size: large
 type: beast
-image: ''
+image: images/monsters/camel.png
 focus: 0
 power: 3
 cunning: -1

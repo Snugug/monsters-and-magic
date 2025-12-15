@@ -2,7 +2,7 @@
 title: Saber-Toothed Tiger
 size: large
 type: beast
-image: ''
+image: images/monsters/saber-toothed-tiger.png
 focus: 1
 power: 4
 cunning: 3

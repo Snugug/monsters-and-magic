@@ -2,7 +2,7 @@
 title: Owl
 size: tiny
 type: beast
-image: ''
+image: images/monsters/owl.png
 focus: 1
 power: -1
 cunning: 1

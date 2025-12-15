@@ -2,7 +2,7 @@
 title: Hawk
 size: tiny
 type: beast
-image: ''
+image: images/monsters/hawk.png
 focus: 2
 power: -1
 cunning: 3

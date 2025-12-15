@@ -2,7 +2,7 @@
 title: Swarm of Venomous Snakes
 size: medium
 type: beast
-image: ''
+image: images/monsters/swarm-of-venomous-snakes.png
 focus: 0
 power: 0
 cunning: 4

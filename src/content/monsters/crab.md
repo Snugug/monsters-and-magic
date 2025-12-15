@@ -2,7 +2,7 @@
 title: Crab
 size: tiny
 type: beast
-image: ''
+image: images/monsters/crab.png
 focus: -1
 power: 1
 cunning: 0

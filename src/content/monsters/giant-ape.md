@@ -2,7 +2,7 @@
 title: Giant Ape
 size: huge
 type: beast
-image: ''
+image: images/monsters/giant-ape.png
 focus: 1
 power: 6
 cunning: 2

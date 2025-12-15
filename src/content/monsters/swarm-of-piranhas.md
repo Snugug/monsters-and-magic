@@ -2,7 +2,7 @@
 title: Swarm of Piranhas
 size: medium
 type: beast
-image: ''
+image: images/monsters/swarm-of-piranhas.png
 focus: -2
 power: 1
 cunning: 3

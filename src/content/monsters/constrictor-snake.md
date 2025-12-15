@@ -2,7 +2,7 @@
 title: Constrictor Snake
 size: large
 type: beast
-image: ''
+image: images/monsters/constrictor-snake.png
 focus: 0
 power: 2
 cunning: 2
