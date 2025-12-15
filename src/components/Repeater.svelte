@@ -1,4 +1,4 @@
-<script module>
+<script module lang="ts">
   export interface RepeaterActions {
     up: (i: number) => Snippet;
     down: (i: number) => Snippet;

@@ -1,23 +1,34 @@
+/* istanbul ignore file */
 import { get, set } from 'idb-keyval';
 
-export let folder = await get('project');
+let innerFolder = $state<FileSystemDirectoryHandle | undefined>();
+
+// Load initial value
+innerFolder = (await get('project')) as FileSystemDirectoryHandle | undefined;
+
+// Export as object with getter to ensure reactivity across modules
+export const folder = {
+  get current() {
+    return innerFolder;
+  },
+};
 
 export async function chooseFolder() {
-  folder = await showDirectoryPicker();
-  await set('project', folder);
+  innerFolder = await showDirectoryPicker();
+  await set('project', innerFolder);
 }
 
 export async function getDir(path: string) {
   const split = path.split('/');
   let handler: FileSystemDirectoryHandle | null = null;
-  if (!folder) return undefined;
+  if (!innerFolder) return undefined;
   for (const pth of split) {
     if (handler) {
       handler = await handler.getDirectoryHandle(pth, {
         create: true,
       });
     } else {
-      handler = await folder.getDirectoryHandle(pth, {
+      handler = await innerFolder.getDirectoryHandle(pth, {
         create: true,
       });
     }
@@ -28,7 +39,9 @@ export async function getDir(path: string) {
 export async function getPath(
   handler: FileSystemFileHandle,
 ): Promise<Array<string>> {
-  return folder.resolve(handler);
+  if (!innerFolder) return [];
+  const path = await innerFolder.resolve(handler);
+  return path || [];
 }
 
 export async function writeFile(path: string, content: Blob) {

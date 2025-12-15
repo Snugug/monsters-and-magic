@@ -23,6 +23,8 @@
     writeImage,
     getFileHandle,
     getDir,
+    folder,
+    chooseFolder,
   } from '$js/fs.svelte';
   import Multiselect from '$components/Multiselect.svelte';
   import Repeater from '$components/Repeater.svelte';
@@ -510,671 +512,682 @@
   let swarmBase = $derived(sizes.slice(0, sizes.indexOf(monster.size)));
 </script>
 
-<!-- {#if !folder}
-  <button onclick={chooseFolder}>Choose local folder</button>
-{/if} -->
-
-<form class="container" onsubmit={saveMonster}>
-  <h1 class="type--h1">Build a Monster</h1>
-
-  <div class="form">
-    <div class="group top">
-      <label for="title">Name</label>
-      <input type="text" name="title" bind:value={monster.title} required />
-    </div>
-
-    <div class="group">
-      <label for="size">Size</label>
-      <select name="size" bind:value={monster.size} required>
-        {#each sizes as s}
-          <option value={s}>{capitalize(s)}</option>
-        {/each}
-      </select>
-    </div>
-
-    <div class="group">
-      <label for="size">Swarm Of</label>
-      <select
-        name="size"
-        bind:value={monster.swarm}
-        disabled={monster.size === 'tiny' ? true : null}
-      >
-        <option value="">-</option>
-        {#each swarmBase as s}
-          <option value={s}>{capitalize(s)}</option>
-        {/each}
-      </select>
-    </div>
-
-    <div class="group top">
-      <label for="type">Type</label>
-      <select name="type" bind:value={monster.type} required>
-        {#each monsterTypes as type}
-          <option value={type}
-            >{capitalize(
-              monster.swarm ? pluralMonsterType(type) : type,
-            )}</option
-          >
-        {/each}
-      </select>
-    </div>
-
-    <div class="group full">
-      <label for="body">Description</label>
-      <textarea name="body" bind:value={body}></textarea>
-    </div>
-
-    <div class="image">
-      <ImagePicker
-        bind:image
-        bind:file
-        bind:handler
-        bind:prompt
-        bind:this={imagePicker}
-        type="monster"
-      />
-    </div>
-
-    <fieldset class="abilities">
-      <legend>Abilities</legend>
-      <div class="group">
-        <label for="focus"
-          >Focus ({abilities.focus.min}-{abilities.focus.max})</label
-        >
-        <input
-          type="number"
-          name="focus"
-          bind:value={monster.focus}
-          min={abilities.focus.min}
-          max={abilities.focus.max}
-          required
-        />
-      </div>
-      <div class="group">
-        <label for="power"
-          >Power ({abilities.power.min}-{abilities.power.max})</label
-        >
-        <input
-          type="number"
-          name="power"
-          bind:value={monster.power}
-          min={abilities.power.min}
-          max={abilities.power.max}
-          required
-        />
-      </div>
-      <div class="group">
-        <label for="cunning"
-          >Cunning ({abilities.cunning.min}-{abilities.cunning.max})</label
-        >
-        <input
-          type="number"
-          name="cunning"
-          bind:value={monster.cunning}
-          min={abilities.cunning.min}
-          max={abilities.cunning.max}
-          required
-        />
-      </div>
-      <div class="group">
-        <label for="cunning"
-          >Luck ({abilities.luck.min}-{abilities.luck.max})</label
-        >
-        <input
-          type="number"
-          name="cunning"
-          bind:value={monster.luck}
-          min={abilities.luck.min}
-          max={abilities.luck.max}
-          required
-        />
-      </div>
+{#if !folder.current}
+  <div class="folder-picker">
+    <div class="message">
+      <h1 class="type--h1">Project Folder Required</h1>
       <p>
-        All monsters start with a 0/1/1/0 spread. Different creature types have
-        different minimums and maximums.
+        Please select the folder where the BuildAMonster tool should save its
+        data.
       </p>
-    </fieldset>
+    </div>
+    <button class="folder-btn" onclick={chooseFolder}>
+      <Icon icon="folder" /> Choose Folder
+    </button>
+  </div>
+{:else}
+  <form class="container" onsubmit={saveMonster}>
+    <h1 class="type--h1">Build a Monster</h1>
 
-    {#if monster.type === 'humanoid'}
-      <fieldset>
-        <legend>Lineage</legend>
-        <div class="group">
-          <label for="lineage">Lineage</label>
-          <select name="type" bind:value={monster.lineage}>
-            <option value="">-</option>
-            {#each lineages as l}
-              <option value={l.id}>{l.title}</option>
-            {/each}
-          </select>
-        </div>
-
-        {#if monster.lineage}
-          <Multiselect
-            bind:list={monster.traits}
-            items={traits}
-            legend="Traits"
-            button="Add Trait"
-            filter={(a) => a.lineage.id === monster.lineage}
-          />
-        {/if}
-      </fieldset>
-    {/if}
-
-    <fieldset class="megagroup">
-      <legend>Vision & Movement</legend>
-      <Multiselect
-        bind:list={monster.vision}
-        items={visionList}
-        legend="Special Vision"
-        button="Add Vision"
-        filter={(a) => {
-          if (
-            monster.vision.includes('low-light vision') &&
-            a.id === 'darkvision'
-          )
-            return false;
-
-          if (
-            monster.vision.includes('darkvision') &&
-            a.id === 'low-light vision'
-          )
-            return false;
-          return true;
-        }}
-      />
-
-      {#each monster.vision as v}
-        {#if v !== 'low-light vision' && v !== 'darkvision'}
-          <div class="group">
-            <label for={v}>{capitalize(v)} Distance</label>
-            <input
-              type="number"
-              name={v}
-              bind:value={monster[v]}
-              min="10"
-              step="10"
-            />
-            <p>Set {v} distance, in feet</p>
-          </div>
-        {/if}
-      {/each}
-
-      <Multiselect
-        bind:list={monster.speeds}
-        items={speedList}
-        legend="Special Movement"
-        button="Add Movement"
-      />
-      <div class="group">
-        <label for="speed">Walking Speed</label>
-        <input
-          type="number"
-          name="speed"
-          bind:value={monster.walking}
-          required
-          min="5"
-          step="5"
-        />
-        <p>Set walking speed, in feet</p>
+    <div class="form">
+      <div class="group top">
+        <label for="title">Name</label>
+        <input type="text" name="title" bind:value={monster.title} required />
       </div>
-      {#each monster.speeds as s}
+
+      <div class="group">
+        <label for="size">Size</label>
+        <select name="size" bind:value={monster.size} required>
+          {#each sizes as s}
+            <option value={s}>{capitalize(s)}</option>
+          {/each}
+        </select>
+      </div>
+
+      <div class="group">
+        <label for="size">Swarm Of</label>
+        <select
+          name="size"
+          bind:value={monster.swarm}
+          disabled={monster.size === 'tiny' ? true : null}
+        >
+          <option value="">-</option>
+          {#each swarmBase as s}
+            <option value={s}>{capitalize(s)}</option>
+          {/each}
+        </select>
+      </div>
+
+      <div class="group top">
+        <label for="type">Type</label>
+        <select name="type" bind:value={monster.type} required>
+          {#each monsterTypes as type}
+            <option value={type}
+              >{capitalize(
+                monster.swarm ? pluralMonsterType(type) : type,
+              )}</option
+            >
+          {/each}
+        </select>
+      </div>
+
+      <div class="group full">
+        <label for="body">Description</label>
+        <textarea name="body" bind:value={body}></textarea>
+      </div>
+
+      <div class="image">
+        <ImagePicker
+          bind:image
+          bind:file
+          bind:handler
+          bind:prompt
+          bind:this={imagePicker}
+          type="monster"
+        />
+      </div>
+
+      <fieldset class="abilities">
+        <legend>Abilities</legend>
         <div class="group">
-          <label for="{s}-speed">{capitalize(s)} Speed</label>
+          <label for="focus"
+            >Focus ({abilities.focus.min}-{abilities.focus.max})</label
+          >
           <input
             type="number"
-            name="{s}-speed"
-            bind:value={monster[s]}
+            name="focus"
+            bind:value={monster.focus}
+            min={abilities.focus.min}
+            max={abilities.focus.max}
+            required
+          />
+        </div>
+        <div class="group">
+          <label for="power"
+            >Power ({abilities.power.min}-{abilities.power.max})</label
+          >
+          <input
+            type="number"
+            name="power"
+            bind:value={monster.power}
+            min={abilities.power.min}
+            max={abilities.power.max}
+            required
+          />
+        </div>
+        <div class="group">
+          <label for="cunning"
+            >Cunning ({abilities.cunning.min}-{abilities.cunning.max})</label
+          >
+          <input
+            type="number"
+            name="cunning"
+            bind:value={monster.cunning}
+            min={abilities.cunning.min}
+            max={abilities.cunning.max}
+            required
+          />
+        </div>
+        <div class="group">
+          <label for="cunning"
+            >Luck ({abilities.luck.min}-{abilities.luck.max})</label
+          >
+          <input
+            type="number"
+            name="cunning"
+            bind:value={monster.luck}
+            min={abilities.luck.min}
+            max={abilities.luck.max}
+            required
+          />
+        </div>
+        <p>
+          All monsters start with a 0/1/1/0 spread. Different creature types
+          have different minimums and maximums.
+        </p>
+      </fieldset>
+
+      {#if monster.type === 'humanoid'}
+        <fieldset>
+          <legend>Lineage</legend>
+          <div class="group">
+            <label for="lineage">Lineage</label>
+            <select name="type" bind:value={monster.lineage}>
+              <option value="">-</option>
+              {#each lineages as l}
+                <option value={l.id}>{l.title}</option>
+              {/each}
+            </select>
+          </div>
+
+          {#if monster.lineage}
+            <Multiselect
+              bind:list={monster.traits}
+              items={traits}
+              legend="Traits"
+              button="Add Trait"
+              filter={(a) => a.lineage.id === monster.lineage}
+            />
+          {/if}
+        </fieldset>
+      {/if}
+
+      <fieldset class="megagroup">
+        <legend>Vision & Movement</legend>
+        <Multiselect
+          bind:list={monster.vision}
+          items={visionList}
+          legend="Special Vision"
+          button="Add Vision"
+          filter={(a) => {
+            if (
+              monster.vision.includes('low-light vision') &&
+              a.id === 'darkvision'
+            )
+              return false;
+
+            if (
+              monster.vision.includes('darkvision') &&
+              a.id === 'low-light vision'
+            )
+              return false;
+            return true;
+          }}
+        />
+
+        {#each monster.vision as v}
+          {#if v !== 'low-light vision' && v !== 'darkvision'}
+            <div class="group">
+              <label for={v}>{capitalize(v)} Distance</label>
+              <input
+                type="number"
+                name={v}
+                bind:value={monster[v]}
+                min="10"
+                step="10"
+              />
+              <p>Set {v} distance, in feet</p>
+            </div>
+          {/if}
+        {/each}
+
+        <Multiselect
+          bind:list={monster.speeds}
+          items={speedList}
+          legend="Special Movement"
+          button="Add Movement"
+        />
+        <div class="group">
+          <label for="speed">Walking Speed</label>
+          <input
+            type="number"
+            name="speed"
+            bind:value={monster.walking}
+            required
             min="5"
             step="5"
           />
-          <p>Set {s} speed, in feet</p>
+          <p>Set walking speed, in feet</p>
         </div>
-      {/each}
-    </fieldset>
+        {#each monster.speeds as s}
+          <div class="group">
+            <label for="{s}-speed">{capitalize(s)} Speed</label>
+            <input
+              type="number"
+              name="{s}-speed"
+              bind:value={monster[s]}
+              min="5"
+              step="5"
+            />
+            <p>Set {s} speed, in feet</p>
+          </div>
+        {/each}
+      </fieldset>
 
-    <fieldset>
-      <legend>Offense</legend>
-      <div class="group">
-        <label for="vicious">Savage</label>
-        <input
-          type="number"
-          name="vicious"
-          bind:value={monster.savage}
-          min="0"
-        />
-        <p>Adds piercing to natural and weapon damage</p>
-      </div>
-      <div class="group">
-        <label for="vicious">Strength</label>
-        <input
-          type="number"
-          name="vicious"
-          bind:value={monster.strong}
-          min={abilities.strong}
-        />
-        <p>Increases or decreases damage bonus</p>
-      </div>
-
-      <div class="group">
-        <label for="energetic">Energetic</label>
-        <input
-          type="number"
-          name="energetic"
-          bind:value={monster.energetic}
-          min="0"
-        />
-        <p>Increases fatigue by 3</p>
-      </div>
-      <div class="group">
-        <label for="conditioned">Conditioned</label>
-        <input
-          type="number"
-          name="conditioned"
-          bind:value={monster.conditioned}
-          min="0"
-          max="3"
-        />
-        <p>Increases exhaustion by 2</p>
-      </div>
-
-      <div class="group">
-        <label for="type">Spicy</label>
-        <select name="type" bind:value={monster.spicy}>
-          <option value="">-</option>
-          {#each elements as e}
-            <option value={e}>{capitalize(e)}</option>
-          {/each}
-        </select>
-        <p>
-          The first time a creature touches this monster in a turn, it takes {nwBase.damage}
-          damage of this type.
-        </p>
-      </div>
-      <div class="group">
-        <label for="type">Radiates</label>
-        <select name="type" bind:value={monster.radiates}>
-          <option value="">-</option>
-          {#each elements as e}
-            <option value={e}>{capitalize(e)}</option>
-          {/each}
-        </select>
-        <p>
-          The first time a creature comes within {preview.cr * 5 + 5}' of this
-          monster in a turn, it takes
-          {nwBase.damage} damage of this type.
-        </p>
-      </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>{equipment ? 'Equipment & ' : 'Weapons & '}Training</legend>
       <fieldset>
-        <legend>Natural Weapons</legend>
+        <legend>Offense</legend>
+        <div class="group">
+          <label for="vicious">Savage</label>
+          <input
+            type="number"
+            name="vicious"
+            bind:value={monster.savage}
+            min="0"
+          />
+          <p>Adds piercing to natural and weapon damage</p>
+        </div>
+        <div class="group">
+          <label for="vicious">Strength</label>
+          <input
+            type="number"
+            name="vicious"
+            bind:value={monster.strong}
+            min={abilities.strong}
+          />
+          <p>Increases or decreases damage bonus</p>
+        </div>
+
+        <div class="group">
+          <label for="energetic">Energetic</label>
+          <input
+            type="number"
+            name="energetic"
+            bind:value={monster.energetic}
+            min="0"
+          />
+          <p>Increases fatigue by 3</p>
+        </div>
+        <div class="group">
+          <label for="conditioned">Conditioned</label>
+          <input
+            type="number"
+            name="conditioned"
+            bind:value={monster.conditioned}
+            min="0"
+            max="3"
+          />
+          <p>Increases exhaustion by 2</p>
+        </div>
+
+        <div class="group">
+          <label for="type">Spicy</label>
+          <select name="type" bind:value={monster.spicy}>
+            <option value="">-</option>
+            {#each elements as e}
+              <option value={e}>{capitalize(e)}</option>
+            {/each}
+          </select>
+          <p>
+            The first time a creature touches this monster in a turn, it takes {nwBase.damage}
+            damage of this type.
+          </p>
+        </div>
+        <div class="group">
+          <label for="type">Radiates</label>
+          <select name="type" bind:value={monster.radiates}>
+            <option value="">-</option>
+            {#each elements as e}
+              <option value={e}>{capitalize(e)}</option>
+            {/each}
+          </select>
+          <p>
+            The first time a creature comes within {preview.cr * 5 + 5}' of this
+            monster in a turn, it takes
+            {nwBase.damage} damage of this type.
+          </p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>{equipment ? 'Equipment & ' : 'Weapons & '}Training</legend>
+        <fieldset>
+          <legend>Natural Weapons</legend>
+          <div class="weapon-group">
+            <Repeater bind:list={monster.naturalWeapons} base={nwBase} min="1">
+              {#snippet item(
+                l: typeof nwBase,
+                i: number,
+                actions: RepeaterActions,
+              )}
+                <div class="group">
+                  <label for="base-nw-damage-{i}">Name</label>
+                  <input
+                    type="text"
+                    id="base-nw-name-{i}"
+                    bind:value={l.name}
+                    required
+                  />
+                </div>
+                <div class="group">
+                  <label for="base-nw-damage-{i}">Damage</label>
+                  <!-- dieSizes -->
+                  <select
+                    name="type"
+                    id="base-nw-damage-{i}"
+                    bind:value={l.damage}
+                    required
+                  >
+                    {#each dieSizes as e}
+                      <option value={e}>{e}</option>
+                    {/each}
+                  </select>
+                </div>
+                <div class="group">
+                  <label for="base-nw-type-{i}">Damage Type</label>
+                  <select
+                    name="type"
+                    id="base-nw-type-{i}"
+                    bind:value={l.element}
+                    required
+                  >
+                    {#each elements as e}
+                      <option value={e}>{capitalize(e)}</option>
+                    {/each}
+                  </select>
+                </div>
+                {@render actions.all(i)}
+              {/snippet}
+            </Repeater>
+          </div>
+        </fieldset>
+
+        {#if equipment}
+          <Multiselect
+            bind:list={monster.weapons}
+            items={weapons}
+            legend="Weapons"
+            button="Add Weapon"
+          />
+          <Multiselect
+            bind:list={monster.armor}
+            items={armor}
+            legend="Armor"
+            button="Add Armor"
+            filter={(a) => {
+              const shield = monster.armor
+                ?.map((m) => armor.find((n) => n.id === m))
+                .filter((m) => m?.type === 'shield')?.length;
+
+              if (monster.armor?.length && !shield && a.type !== 'shield') {
+                return false;
+              }
+
+              if (monster.armor.length === 2) {
+                return false;
+              }
+
+              return true;
+            }}
+          />
+        {/if}
+        <Multiselect
+          bind:list={monster.feats}
+          items={feats}
+          legend="Feats"
+          button="Add Feat"
+        />
+        <Multiselect
+          bind:list={monster.techniques}
+          items={techniques}
+          legend="Techniques"
+          button="Add Technique"
+        />
+        <Multiselect
+          bind:list={monster.cantrips}
+          items={cantrips}
+          legend="Cantrips"
+          button="Add Cantrip"
+        />
+        {#if monster.cantrips.length}
+          <Multiselect
+            bind:list={monster.charms}
+            items={charms}
+            legend="Charms"
+            button="Add Charm"
+            filter={(a) => {
+              for (const s of a.spells) {
+                if (monster.cantrips.includes(s.id)) {
+                  return true;
+                }
+              }
+              return false;
+            }}
+          />
+        {/if}
+      </fieldset>
+
+      <fieldset>
+        <legend>Defense</legend>
+        <div class="group">
+          <label for="hp">HP</label>
+          <input
+            type="number"
+            name="hp"
+            bind:value={monster.hp}
+            min={abilities.hp}
+          />
+          <p>Increases HP by {hp}</p>
+        </div>
+        <div class="group">
+          <label for="armored">Armor</label>
+          <input type="number" name="armored" bind:value={monster.armored} />
+          <p>Increases AC by 1</p>
+        </div>
+
+        <Multiselect
+          bind:list={monster.resistance}
+          items={resistList}
+          legend="Resistances"
+          button="Add Resistance"
+        />
+        <Multiselect
+          bind:list={monster.vulnerable}
+          items={vulnList}
+          legend="Vulnerabilities"
+          button="Add Vulnerability"
+        />
+        <Multiselect
+          bind:list={monster.immunity}
+          items={immuneList}
+          legend="Elemental Immunities"
+          button="Add Immunity"
+        />
+        <Multiselect
+          bind:list={monster.conditions}
+          items={conditions}
+          legend="Condition Immunities"
+          button="Add Immunity"
+          filter={(c) => c.status === false}
+        />
+        <Multiselect
+          bind:list={monster.absorbent}
+          items={absList}
+          legend="Absorbs"
+          button="Add Absorption"
+        />
+      </fieldset>
+
+      <fieldset>
+        <legend>Actions</legend>
         <div class="weapon-group">
-          <Repeater bind:list={monster.naturalWeapons} base={nwBase} min="1">
+          <Repeater
+            bind:list={monster.attacks}
+            base={nwAtkBase}
+            empty="Add Action"
+            min={0}
+          >
             {#snippet item(
-              l: typeof nwBase,
+              l: typeof newAttackBase,
               i: number,
               actions: RepeaterActions,
             )}
-              <div class="group">
-                <label for="base-nw-damage-{i}">Name</label>
+              <div class="group full">
+                <label for="nwa-name-{i}">Name</label>
                 <input
                   type="text"
-                  id="base-nw-name-{i}"
+                  name="nwa-name-{i}"
+                  id="nwa-name-{i}"
                   bind:value={l.name}
                   required
                 />
               </div>
               <div class="group">
-                <label for="base-nw-damage-{i}">Damage</label>
-                <!-- dieSizes -->
+                <label for="nwa-type-{i}">Type</label>
                 <select
-                  name="type"
-                  id="base-nw-damage-{i}"
-                  bind:value={l.damage}
+                  name="nwa-type-{i}"
+                  id="nwa-type-{i}"
+                  bind:value={l.type}
                   required
                 >
+                  <option value="attack">Attack</option>
+                  <option value="focus">Focus Save</option>
+                  <option value="power">Power Save</option>
+                  <option value="cunning">Cunning Save</option>
+                  <option value="reaction">Reaction</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="group">
+                <label for="nwa-damage-{i}">Damage</label>
+                <!-- dieSizes -->
+                <select
+                  name="nwa-damage-{i}"
+                  id="nwa-damage-{i}"
+                  bind:value={l.damage}
+                  disabled={l.type === 'other'}
+                >
+                  <option value="">-</option>
                   {#each dieSizes as e}
                     <option value={e}>{e}</option>
                   {/each}
                 </select>
               </div>
               <div class="group">
-                <label for="base-nw-type-{i}">Damage Type</label>
+                <label for="nwa-element-{i}">Damage Type</label>
                 <select
-                  name="type"
-                  id="base-nw-type-{i}"
+                  name="nwa-element-{i}"
+                  id="nwa-element-{i}"
                   bind:value={l.element}
-                  required
+                  disabled={l.type === 'other'}
+                  required={l.damage !== ''}
                 >
+                  <option value="">-</option>
                   {#each elements as e}
                     <option value={e}>{capitalize(e)}</option>
                   {/each}
                 </select>
               </div>
-              {@render actions.all(i)}
+              <div class="group">
+                <label for="nwa-condition-{i}">Condition or Status</label>
+                <select
+                  name="nwa-condition-{i}"
+                  id="nwa-condition-{i}"
+                  bind:value={l.condition}
+                >
+                  <option value="">-</option>
+                  {#each conditions as e}
+                    <option value={e.title}>{capitalize(e.title)}</option>
+                  {/each}
+                </select>
+              </div>
+
+              <div class="group">
+                <label for="nwa-ap-{i}">Action Points</label>
+                <input
+                  type="number"
+                  name="nwa-ap-{i}"
+                  id="nwa-ap-{i}"
+                  bind:value={l.ap}
+                  min="1"
+                  required
+                  disabled={l.type === 'reaction'}
+                />
+              </div>
+
+              <div class="group">
+                <label for="nwa-fatigue-{i}">Fatigue</label>
+                <input
+                  type="number"
+                  name="nwa-fatigue-{i}"
+                  id="nwa-fatigue-{i}"
+                  bind:value={l.fatigue}
+                  required
+                  min="0"
+                />
+              </div>
+
+              <div class="group">
+                <label for="nwa-recharge-{i}">Recharge</label>
+                <select
+                  name="nwa-recharge-{i}"
+                  id="nwa-recharge-{i}"
+                  bind:value={l.recharge}
+                >
+                  <option value="">-</option>
+                  {#each ['1d4', '1d6', '1d8', '1d10'] as e}
+                    <option value={e}>{e}</option>
+                  {/each}
+                </select>
+              </div>
+              <div class="group">
+                <label for="nwa-thread-{i}" class="switch">
+                  <span>Thread of Fate</span>
+                  <input
+                    id="nwa-thread-{i}"
+                    name="nwa-thread-{i}"
+                    type="checkbox"
+                    bind:checked={l.thread}
+                  />
+                </label>
+                <!-- <p>Requires a Thread of Fate to use</p> -->
+              </div>
+              {#if l.type === 'reaction'}
+                <div class="group full">
+                  <label for="nwa-trigger-{i}">Trigger</label>
+                  <input
+                    type="text"
+                    name="nwa-trigger-{i}"
+                    id="nwa-trigger-{i}"
+                    bind:value={l.trigger}
+                    required
+                  />
+                </div>
+              {/if}
+              <div class="group full">
+                <label for="nwa-desc-{i}">Description</label>
+                <textarea
+                  name="nwa-desc-{i}"
+                  id="nwa-desc-{i}"
+                  bind:value={l.description}
+                  required
+                ></textarea>
+              </div>
+              <div class="attack-actions">
+                {@render actions.all(i)}
+              </div>
             {/snippet}
           </Repeater>
         </div>
       </fieldset>
 
-      {#if equipment}
-        <Multiselect
-          bind:list={monster.weapons}
-          items={weapons}
-          legend="Weapons"
-          button="Add Weapon"
-        />
-        <Multiselect
-          bind:list={monster.armor}
-          items={armor}
-          legend="Armor"
-          button="Add Armor"
-          filter={(a) => {
-            const shield = monster.armor
-              ?.map((m) => armor.find((n) => n.id === m))
-              .filter((m) => m?.type === 'shield')?.length;
+      <fieldset>
+        <legend>Traits</legend>
+        {#each Object.entries(tags).sort( (a, b) => a[0].localeCompare(b[0]), ) as [t, d]}
+          <div class="group">
+            <label for={t} class="switch">
+              <span>{d.tag || capitalize(t)}</span>
+              <input id={t} type="checkbox" bind:checked={monster[t]} />
+            </label>
+            <p>{d.short || d.full}</p>
+          </div>
+        {/each}
+      </fieldset>
+    </div>
 
-            if (monster.armor?.length && !shield && a.type !== 'shield') {
-              return false;
-            }
-
-            if (monster.armor.length === 2) {
-              return false;
-            }
-
-            return true;
-          }}
-        />
-      {/if}
-      <Multiselect
-        bind:list={monster.feats}
-        items={feats}
-        legend="Feats"
-        button="Add Feat"
-      />
-      <Multiselect
-        bind:list={monster.techniques}
-        items={techniques}
-        legend="Techniques"
-        button="Add Technique"
-      />
-      <Multiselect
-        bind:list={monster.cantrips}
-        items={cantrips}
-        legend="Cantrips"
-        button="Add Cantrip"
-      />
-      {#if monster.cantrips.length}
-        <Multiselect
-          bind:list={monster.charms}
-          items={charms}
-          legend="Charms"
-          button="Add Charm"
-          filter={(a) => {
-            for (const s of a.spells) {
-              if (monster.cantrips.includes(s.id)) {
-                return true;
-              }
-            }
-            return false;
-          }}
-        />
-      {/if}
-    </fieldset>
-
-    <fieldset>
-      <legend>Defense</legend>
-      <div class="group">
-        <label for="hp">HP</label>
-        <input
-          type="number"
-          name="hp"
-          bind:value={monster.hp}
-          min={abilities.hp}
-        />
-        <p>Increases HP by {hp}</p>
-      </div>
-      <div class="group">
-        <label for="armored">Armor</label>
-        <input type="number" name="armored" bind:value={monster.armored} />
-        <p>Increases AC by 1</p>
-      </div>
-
-      <Multiselect
-        bind:list={monster.resistance}
-        items={resistList}
-        legend="Resistances"
-        button="Add Resistance"
-      />
-      <Multiselect
-        bind:list={monster.vulnerable}
-        items={vulnList}
-        legend="Vulnerabilities"
-        button="Add Vulnerability"
-      />
-      <Multiselect
-        bind:list={monster.immunity}
-        items={immuneList}
-        legend="Elemental Immunities"
-        button="Add Immunity"
-      />
-      <Multiselect
-        bind:list={monster.conditions}
-        items={conditions}
-        legend="Condition Immunities"
-        button="Add Immunity"
-        filter={(c) => c.status === false}
-      />
-      <Multiselect
-        bind:list={monster.absorbent}
-        items={absList}
-        legend="Absorbs"
-        button="Add Absorption"
-      />
-    </fieldset>
-
-    <fieldset>
-      <legend>Actions</legend>
-      <div class="weapon-group">
-        <Repeater
-          bind:list={monster.attacks}
-          base={nwAtkBase}
-          empty="Add Action"
-          min={0}
-        >
-          {#snippet item(
-            l: typeof newAttackBase,
-            i: number,
-            actions: RepeaterActions,
-          )}
-            <div class="group full">
-              <label for="nwa-name-{i}">Name</label>
-              <input
-                type="text"
-                name="nwa-name-{i}"
-                id="nwa-name-{i}"
-                bind:value={l.name}
-                required
-              />
-            </div>
-            <div class="group">
-              <label for="nwa-type-{i}">Type</label>
-              <select
-                name="nwa-type-{i}"
-                id="nwa-type-{i}"
-                bind:value={l.type}
-                required
-              >
-                <option value="attack">Attack</option>
-                <option value="focus">Focus Save</option>
-                <option value="power">Power Save</option>
-                <option value="cunning">Cunning Save</option>
-                <option value="reaction">Reaction</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="group">
-              <label for="nwa-damage-{i}">Damage</label>
-              <!-- dieSizes -->
-              <select
-                name="nwa-damage-{i}"
-                id="nwa-damage-{i}"
-                bind:value={l.damage}
-                disabled={l.type === 'other'}
-              >
-                <option value="">-</option>
-                {#each dieSizes as e}
-                  <option value={e}>{e}</option>
-                {/each}
-              </select>
-            </div>
-            <div class="group">
-              <label for="nwa-element-{i}">Damage Type</label>
-              <select
-                name="nwa-element-{i}"
-                id="nwa-element-{i}"
-                bind:value={l.element}
-                disabled={l.type === 'other'}
-                required={l.damage !== ''}
-              >
-                <option value="">-</option>
-                {#each elements as e}
-                  <option value={e}>{capitalize(e)}</option>
-                {/each}
-              </select>
-            </div>
-            <div class="group">
-              <label for="nwa-condition-{i}">Condition or Status</label>
-              <select
-                name="nwa-condition-{i}"
-                id="nwa-condition-{i}"
-                bind:value={l.condition}
-              >
-                <option value="">-</option>
-                {#each conditions as e}
-                  <option value={e.title}>{capitalize(e.title)}</option>
-                {/each}
-              </select>
-            </div>
-
-            <div class="group">
-              <label for="nwa-ap-{i}">Action Points</label>
-              <input
-                type="number"
-                name="nwa-ap-{i}"
-                id="nwa-ap-{i}"
-                bind:value={l.ap}
-                min="1"
-                required
-                disabled={l.type === 'reaction'}
-              />
-            </div>
-
-            <div class="group">
-              <label for="nwa-fatigue-{i}">Fatigue</label>
-              <input
-                type="number"
-                name="nwa-fatigue-{i}"
-                id="nwa-fatigue-{i}"
-                bind:value={l.fatigue}
-                required
-                min="0"
-              />
-            </div>
-
-            <div class="group">
-              <label for="nwa-recharge-{i}">Recharge</label>
-              <select
-                name="nwa-recharge-{i}"
-                id="nwa-recharge-{i}"
-                bind:value={l.recharge}
-              >
-                <option value="">-</option>
-                {#each ['1d4', '1d6', '1d8', '1d10'] as e}
-                  <option value={e}>{e}</option>
-                {/each}
-              </select>
-            </div>
-            <div class="group">
-              <label for="nwa-thread-{i}" class="switch">
-                <span>Thread of Fate</span>
-                <input
-                  id="nwa-thread-{i}"
-                  name="nwa-thread-{i}"
-                  type="checkbox"
-                  bind:checked={l.thread}
-                />
-              </label>
-              <!-- <p>Requires a Thread of Fate to use</p> -->
-            </div>
-            {#if l.type === 'reaction'}
-              <div class="group full">
-                <label for="nwa-trigger-{i}">Trigger</label>
-                <input
-                  type="text"
-                  name="nwa-trigger-{i}"
-                  id="nwa-trigger-{i}"
-                  bind:value={l.trigger}
-                  required
-                />
-              </div>
-            {/if}
-            <div class="group full">
-              <label for="nwa-desc-{i}">Description</label>
-              <textarea
-                name="nwa-desc-{i}"
-                id="nwa-desc-{i}"
-                bind:value={l.description}
-                required
-              ></textarea>
-            </div>
-            <div class="attack-actions">
-              {@render actions.all(i)}
-            </div>
-          {/snippet}
-        </Repeater>
-      </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Traits</legend>
-      {#each Object.entries(tags).sort( (a, b) => a[0].localeCompare(b[0]), ) as [t, d]}
-        <div class="group">
-          <label for={t} class="switch">
-            <span>{d.tag || capitalize(t)}</span>
-            <input id={t} type="checkbox" bind:checked={monster[t]} />
-          </label>
-          <p>{d.short || d.full}</p>
+    <div class="container--sidebar">
+      <div class="sidebar">
+        {#each Object.entries(preview) as [k, v]}
+          {#if Array.isArray(v)}
+            <p>{k}: {v.join(', ')}</p>
+          {:else if typeof v === 'object'}
+            <p>{k}: {JSON.stringify(v)}</p>
+          {:else}
+            <p>{k}: {v}</p>
+          {/if}
+        {/each}
+        <div class="buttons">
+          <button type="submit" class="action-btn">
+            <Icon icon="download" /> Save Monster
+          </button>
+          <button onclick={loadMonster} class="action-btn">
+            <Icon icon="upload" /> Load Monster
+          </button>
+          <button onclick={resetMonster} class="reset-btn">Reset</button>
         </div>
-      {/each}
-    </fieldset>
-  </div>
-
-  <div class="container--sidebar">
-    <div class="sidebar">
-      {#each Object.entries(preview) as [k, v]}
-        {#if Array.isArray(v)}
-          <p>{k}: {v.join(', ')}</p>
-        {:else if typeof v === 'object'}
-          <p>{k}: {JSON.stringify(v)}</p>
-        {:else}
-          <p>{k}: {v}</p>
-        {/if}
-      {/each}
-      <div class="buttons">
-        <button type="submit" class="action-btn">
-          <Icon icon="download" /> Save Monster
-        </button>
-        <button onclick={loadMonster} class="action-btn">
-          <Icon icon="upload" /> Load Monster
-        </button>
-        <button onclick={resetMonster} class="reset-btn">Reset</button>
       </div>
     </div>
-  </div>
-</form>
+  </form>
+{/if}
 
 {#if message.length}
   <div class="messages">
@@ -1185,6 +1198,39 @@
 {/if}
 
 <style lang="scss">
+  .folder-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    gap: 1rem;
+    text-align: center;
+
+    .message {
+      max-width: 40ch;
+    }
+  }
+
+  .folder-btn {
+    background: var(--dark-red);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    :global(.icon) {
+      width: 1.25em;
+      height: 1.25em;
+      fill: currentColor;
+    }
+  }
+
   .messages {
     position: fixed;
     bottom: 1rem;

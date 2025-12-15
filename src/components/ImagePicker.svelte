@@ -272,7 +272,7 @@
         <label for="apikey">API Key</label>
         <input type="text" name="apikey" bind:value={keyInput} />
       </div>
-      <input type="submit" value="Add API Key" />
+      <input type="submit" class="action-btn" value="Add API Key" />
     {:else}
       <div class="generate--group">
         <label for="prompt">Describe your {type}</label>
@@ -391,7 +391,8 @@
       // margin-block-start: -0.5rem;
     }
 
-    button {
+    button,
+    [type='submit'] {
       font-size: 0.75rem;
       // background: var(--light-purple);
       padding: 0.25rem 0.5rem;
