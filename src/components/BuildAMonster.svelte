@@ -460,6 +460,8 @@
     } = await md.parse(f);
     if (bdy) {
       body = bdy;
+    } else {
+      body = '';
     }
     const { image: img } = attributes;
     delete attributes.image;
