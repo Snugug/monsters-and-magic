@@ -32,6 +32,7 @@
   import Icon from '$components/Icon.svelte';
   import { tick } from 'svelte';
   import { delMany, getMany, setMany } from 'idb-keyval';
+  import { addToast } from '$lib/toast.svelte';
 
   const lineages = await db.lineage.toArray();
   const armor = await db.armor.toArray();
@@ -61,19 +62,6 @@
   let body = $state('');
   let hp = $state(5);
   let loaded = $state(false);
-
-  let message = $state([]) as Array<{
-    type: 'success' | 'error' | 'warning';
-    message: string;
-  }>;
-
-  $effect(() => {
-    if (message.length) {
-      setTimeout(() => {
-        message.shift();
-      }, 5000);
-    }
-  });
 
   const abilities = $state({
     focus: {
@@ -417,10 +405,10 @@
           image,
         );
         pth = await getPath(f);
-        message.push({
-          type: 'success',
-          message: `Image for ${monster.title} saved to ${pth.join('/')}`,
-        });
+        addToast(
+          `Image for ${monster.title} saved to ${pth.join('/')}`,
+          'success',
+        );
       }
 
       if (pth) {
@@ -436,16 +424,13 @@
       const copy = await md.compile(body, m);
       const f = await writeFile(`src/content/monsters/${slug}.md`, copy);
       const output = await getPath(f);
-      message.push({
-        type: 'success',
-        message: `${monster.title} saved to ${output.join('/')}`,
-      });
+      addToast(`${monster.title} saved to ${output.join('/')}`, 'success');
       await resetMonster(e);
     } catch (e) {
-      message.push({
-        type: 'error',
-        message: `There was a problem saving ${monster.title}: ${e.message}`,
-      });
+      addToast(
+        `There was a problem saving ${monster.title}: ${e.message}`,
+        'failure',
+      );
       console.error(e);
     }
   }
@@ -1189,14 +1174,6 @@
   </form>
 {/if}
 
-{#if message.length}
-  <div class="messages">
-    {#each message as m}
-      <p class="message {m.type}">{m.message}</p>
-    {/each}
-  </div>
-{/if}
-
 <style lang="scss">
   .folder-picker {
     display: flex;
@@ -1229,14 +1206,6 @@
       height: 1.25em;
       fill: currentColor;
     }
-  }
-
-  .messages {
-    position: fixed;
-    bottom: 1rem;
-    left: 1rem;
-    display: grid;
-    gap: 0.5rem;
   }
 
   .sidebar {

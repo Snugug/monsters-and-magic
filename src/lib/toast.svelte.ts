@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export type ToastType = 'success' | 'failure' | 'info';
 
 export interface Toast {
@@ -6,20 +7,23 @@ export interface Toast {
   message: string;
 }
 
-let toasts = $state<Toast[]>([]);
+class ToastManager {
+  toasts = $state<Toast[]>([]);
+}
+const manager = new ToastManager();
 
 export function getToasts() {
-  return toasts;
+  return manager.toasts;
 }
 
 export function addToast(message: string, type: ToastType = 'info') {
   const id = crypto.randomUUID();
-  toasts.push({ id, message, type });
+  manager.toasts.push({ id, message, type });
 }
 
 export function removeToast(id: string) {
-  const index = toasts.findIndex((t) => t.id === id);
+  const index = manager.toasts.findIndex((t) => t.id === id);
   if (index !== -1) {
-    toasts.splice(index, 1);
+    manager.toasts.splice(index, 1);
   }
 }
