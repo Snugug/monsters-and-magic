@@ -401,7 +401,7 @@
         pth = await getPath(handler);
       } else if (image) {
         const f = await writeImage(
-          `public/images/monsters/${slug}-${uid}.png`,
+          `src/images/monsters/${slug}-${uid}.png`,
           image,
         );
         pth = await getPath(f);
@@ -412,7 +412,7 @@
       }
 
       if (pth) {
-        if (pth[0] === 'public') {
+        if (pth[0] === 'src') {
           pth.shift();
         }
         imagePath = pth.join('/');
@@ -466,7 +466,7 @@
     const { image: img } = attributes;
     delete attributes.image;
     if (img) {
-      handler = await getFileHandle(`public/${img}`);
+      handler = await getFileHandle(`src/${img}`);
       file = await handler.getFile();
       image = await fileToImage(file);
     } else {

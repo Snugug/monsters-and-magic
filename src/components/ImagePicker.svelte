@@ -112,7 +112,7 @@
 
     let startIn;
     try {
-      startIn = await getDir('public/images/monsters');
+      startIn = await getDir('src/images');
     } catch (e) {
       console.log('No starting directory, ignoring startIn');
       // console.error(e);
@@ -163,7 +163,7 @@
   async function chooseImage(e: Event) {
     e.preventDefault();
     [handler] = await window.showOpenFilePicker({
-      startIn: await getDir('public/images/monsters'),
+      startIn: await getDir('src/images'),
       types: [
         {
           description: 'PNG File',

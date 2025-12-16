@@ -20,7 +20,8 @@ const postprocess: MiddlewareResponseHandler = async (
 ) => {
   const url = new URL(request.url);
   const ext = extname(url.pathname);
-  if (ext === '' || ext === '.html') {
+
+  if ((ext === '' || ext === '.html') && url.pathname !== '/_image') {
     const response = await next();
 
     const html = await response.text();
