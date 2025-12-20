@@ -39,27 +39,27 @@ chapters.unshift({
 ---
 
 <!doctype html>
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='UTF-8' />
-    <meta name='viewport' content='width=device-width' />
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-    <meta name='generator' content={Astro.generator} />
-    <meta name='theme-color' content='#222' />
-    <link rel='stylesheet' href='https://use.typekit.net/hbi5qtc.css' />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#222" />
+    <link rel="stylesheet" href="https://use.typekit.net/hbi5qtc.css" />
     <title>{pageTitle}</title>
   </head>
   <body>
-    <div class='nav'>
+    <div class="nav">
       <Nav client:load rules={chapters}>
-        <slot name='header' />
+        <slot name="header" />
       </Nav>
     </div>
     <main>
       <slot />
     </main>
 
-    <div class='footer'>
+    <div class="footer">
       <Footer />
     </div>
 

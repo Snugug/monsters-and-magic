@@ -1,5 +1,6 @@
 module.exports = {
   singleQuote: true,
+  jsxSingleQuote: false,
   trailingComma: 'all',
   plugins: [
     require.resolve('prettier-plugin-astro'),
