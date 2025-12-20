@@ -158,8 +158,8 @@ export function calculatePoints(
       p.tags.push('savage');
     }
     if (monster.strong !== 0) {
-      p.bonus += monster.strong * 2;
-      p.points += points(monster.strong, 2);
+      p.bonus += monster.strong;
+      p.points += points(monster.strong);
       if (monster.strong > 0) {
         p.tags.push('strong');
       } else if (monster.strong < 0) {

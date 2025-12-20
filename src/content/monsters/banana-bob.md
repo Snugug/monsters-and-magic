@@ -4,9 +4,9 @@ size: gargantuan
 swarm: false
 type: humanoid
 image: images/monsters/banana-bob.png
-focus: 0
-power: 5
-cunning: 0
+focus: 5
+power: 3
+cunning: 4
 luck: 0
 lineage: elf
 traits: []
@@ -14,11 +14,16 @@ feats:
   - rage
 weapons:
   - greataxe
+  - hand-crossbow
+  - rapier
 armor:
   - half-plate-armor
   - shield
-vision: []
-blindsight: 10
+vision:
+  - low-light vision
+  - blindsight
+  - truesight
+blindsight: 20
 tremmorsense: 10
 truesight: 10
 speeds:
@@ -28,10 +33,10 @@ flying: 70
 climbing: 0
 swimming: 0
 burrowing: 0
-savage: 0
+savage: 1
 strong: 2
-energetic: 0
-conditioned: 0
+energetic: 1
+conditioned: 1
 spicy: fatigue
 radiates: radiant
 naturalWeapons:

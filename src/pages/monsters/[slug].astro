@@ -158,6 +158,142 @@ for (const [t, d] of Object.entries(tags)) {
 allTraits.sort((a, b) => a.name.localeCompare(b.name));
 
 const hasTraits = allTraits.length > 0;
+
+// Prepare weapons data (combine natural weapons and equipped weapons)
+interface WeaponDisplay {
+  name: string;
+  damage: string;
+  element: string;
+  properties?: string[];
+  isNatural: boolean;
+  toHit: number;
+  damageBonus: number;
+  piercing: number;
+}
+
+// Calculate attack stat based on weapon properties
+function getAttackStat(properties: string[] = []): number {
+  if (properties.includes('agile')) {
+    return Math.max(meta.cunning, meta.power);
+  } else if (properties.includes('precise')) {
+    return Math.max(meta.focus, meta.power);
+  }
+  return meta.power;
+}
+
+// Global piercing from the monster
+const globalPiercing = m.piercing;
+const globalDamageBonus = m.bonus;
+
+const allWeapons: WeaponDisplay[] = [
+  ...meta.naturalWeapons.map((w) => {
+    const attackStat = meta.power; // Natural weapons use power
+    return {
+      name: w.name,
+      damage: w.damage,
+      element: w.element,
+      isNatural: true,
+      toHit: attackStat,
+      damageBonus: attackStat + globalDamageBonus,
+      piercing: globalPiercing,
+    };
+  }),
+  ...(await Promise.all(
+    meta.weapons.map(async (w) => {
+      const weapon = await getEntry(w);
+      const attackStat = getAttackStat(weapon.data.properties);
+      return {
+        name: weapon.data.title,
+        damage: weapon.data.damage,
+        element: 'physical',
+        properties: weapon.data.properties,
+        isNatural: false,
+        toHit: attackStat,
+        damageBonus: attackStat + globalDamageBonus,
+        piercing: globalPiercing,
+      };
+    }),
+  )),
+];
+
+const hasWeapons = allWeapons.length > 0;
+
+// Group attacks by type
+type AttackType =
+  | 'attack'
+  | 'power'
+  | 'focus'
+  | 'cunning'
+  | 'reaction'
+  | 'other';
+const attackTypeLabels: Record<AttackType, string> = {
+  attack: 'Attacks',
+  power: 'Power Saves',
+  focus: 'Focus Saves',
+  cunning: 'Cunning Saves',
+  reaction: 'Reactions',
+  other: 'Other Actions',
+};
+
+const attackGroups: Record<AttackType, typeof meta.attacks> = {
+  attack: meta.attacks
+    .filter((a) => a.type === 'attack')
+    .sort((a, b) => a.ap - b.ap),
+  power: meta.attacks
+    .filter((a) => a.type === 'power')
+    .sort((a, b) => a.ap - b.ap),
+  focus: meta.attacks
+    .filter((a) => a.type === 'focus')
+    .sort((a, b) => a.ap - b.ap),
+  cunning: meta.attacks
+    .filter((a) => a.type === 'cunning')
+    .sort((a, b) => a.ap - b.ap),
+  reaction: meta.attacks
+    .filter((a) => a.type === 'reaction')
+    .sort((a, b) => a.ap - b.ap),
+  other: meta.attacks
+    .filter((a) => a.type === 'other')
+    .sort((a, b) => a.ap - b.ap),
+};
+
+const hasActions = meta.attacks.length > 0;
+
+// Fetch training references
+const techniqueEntries = await Promise.all(
+  meta.techniques.map(async (t) => {
+    const entry = await getEntry(t);
+    return { id: t, data: entry.data };
+  }),
+);
+const cantripEntries = await Promise.all(
+  meta.cantrips.map(async (c) => {
+    const entry = await getEntry(c);
+    return { id: c, data: entry.data };
+  }),
+);
+const charmEntries = await Promise.all(
+  meta.charms.map(async (c) => {
+    const entry = await getEntry(c);
+    return { id: c, data: entry.data };
+  }),
+);
+
+// Prepare feats with rendered content (like traits)
+const featDisplays: Array<{ name: string; html: string }> = [];
+for (const f of meta.feats) {
+  const feat = await getEntry(f);
+  const desc = (await md.render(`**${feat.data.title}:** ` + feat.body)).code;
+  featDisplays.push({ name: feat.data.title, html: desc });
+}
+
+const hasTraining =
+  techniqueEntries.length > 0 ||
+  cantripEntries.length > 0 ||
+  charmEntries.length > 0 ||
+  featDisplays.length > 0;
+
+// Check for damage/piercing modifiers
+const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
 ---
 
 <Layout>
@@ -189,10 +325,23 @@ const hasTraits = allTraits.length > 0;
             </button>
 
             <dialog id="monster-image-preview" class="image-preview">
-              <Image src={image} layout="constrained" alt={meta.title} />
-              <button commandfor="monster-image-preview" command="close">
-                <Icon icon="close" label="close" />
-              </button>
+              <div class="inner">
+                <a
+                  class="dialog-image-link"
+                  href={image.src}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <Image src={image} layout="constrained" alt={meta.title} />
+                </a>
+                <button
+                  class="close-btn"
+                  commandfor="monster-image-preview"
+                  command="close"
+                >
+                  <Icon icon="close" label="close" />
+                </button>
+              </div>
             </dialog>
           </>
         )
@@ -226,6 +375,24 @@ const hasTraits = allTraits.length > 0;
           <dt>Speed</dt>
           <dd>{speed(m.speed)}</dd>
         </div>
+        {
+          hasDamageModifiers && (
+            <div class="cgroup">
+              {meta.strong !== 0 && (
+                <div class="cgroup">
+                  <dt>Damage</dt>
+                  <dd>+{m.bonus}</dd>
+                </div>
+              )}
+              {meta.savage !== 0 && (
+                <div class="cgroup">
+                  <dt>Piercing</dt>
+                  <dd>+{m.piercing}</dd>
+                </div>
+              )}
+            </div>
+          )
+        }
         <div class="cgroup">
           <div class="cgroup">
             <dt>AP</dt>
@@ -313,6 +480,162 @@ const hasTraits = allTraits.length > 0;
 
     <div class="secondary">
       {
+        hasWeapons && (
+          <div class="tgroup">
+            <h2>Weapons</h2>
+            <ul class="weapons-list">
+              {allWeapons.map((w) => {
+                const damageBonusStr =
+                  w.damageBonus >= 0 ? `+${w.damageBonus}` : `${w.damageBonus}`;
+                const allProperties = [
+                  ...(w.properties?.map((p) => capitalize(p)) || []),
+                  `+${w.piercing} Piercing`,
+                ];
+                return (
+                  <li>
+                    <strong>{w.name}</strong>
+                    <span class="to-hit">To Hit +{w.toHit}</span>, {w.damage}
+                    {damageBonusStr} {w.element}
+                    <span class="properties">({allProperties.join(', ')})</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        hasActions && (
+          <div class="tgroup">
+            <h2>Actions</h2>
+            <div class="action-cards">
+              {meta.attacks.map((attack) => {
+                // Determine if this is a save type
+                const isSave = ['power', 'focus', 'cunning'].includes(
+                  attack.type,
+                );
+                const isReaction = attack.type === 'reaction';
+                const attackStat = meta.power;
+                const dc = 8 + attackStat + m.cr;
+                const damageBonus = attackStat + globalDamageBonus;
+                const damageBonusStr =
+                  damageBonus >= 0 ? `+${damageBonus}` : `${damageBonus}`;
+
+                return (
+                  <div class="action-card">
+                    <div class="action-header">
+                      <strong>{attack.name}</strong>
+                      <span class="action-cost">
+                        {attack.ap} AP
+                        {attack.fatigue > 0 && `, ${attack.fatigue} fatigue`}
+                      </span>
+                      {attack.recharge && (
+                        <span class="recharge">
+                          Recharge: {attack.recharge}
+                        </span>
+                      )}
+                      {attack.thread && <span class="thread">[Thread]</span>}
+                    </div>
+
+                    {isReaction && attack.trigger && (
+                      <p class="trigger">
+                        <em>Trigger:</em> {attack.trigger}
+                      </p>
+                    )}
+
+                    <div class="action-body">
+                      {isSave && (
+                        <p class="save-dc">
+                          DC {dc} {attack.type} save
+                        </p>
+                      )}
+
+                      {attack.damage && (
+                        <p class="action-damage">
+                          {attack.damage}
+                          {damageBonusStr} {attack.element || 'damage'}
+                          <span class="properties">
+                            {' '}
+                            (+{globalPiercing} Piercing)
+                          </span>
+                        </p>
+                      )}
+
+                      {attack.condition && (
+                        <p class="action-condition">
+                          →{' '}
+                          <ref- src={`conditions/${attack.condition.id}`}>
+                            {attack.condition.id}
+                          </ref->
+                        </p>
+                      )}
+
+                      {attack.description && (
+                        <p class="action-desc">{attack.description}</p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )
+      }
+
+      {
+        (techniqueEntries.length > 0 || featDisplays.length > 0) && (
+          <div class="tgroup">
+            <h2>Abilities</h2>
+            {techniqueEntries.length > 0 && (
+              <p>
+                <strong>Techniques:</strong>{' '}
+                {techniqueEntries.map((t, i) => (
+                  <>
+                    <ref- src={`techniques/${t.id}`}>{t.data.title}</ref->
+                    {i < techniqueEntries.length - 1 && ', '}
+                  </>
+                ))}
+              </p>
+            )}
+            {featDisplays.map((feat) => (
+              <div class="type trait" set:html={feat.html} />
+            ))}
+          </div>
+        )
+      }
+
+      {
+        (cantripEntries.length > 0 || charmEntries.length > 0) && (
+          <div class="tgroup">
+            <h2>Spellcasting</h2>
+            {cantripEntries.length > 0 && (
+              <p>
+                <strong>Cantrips:</strong>{' '}
+                {cantripEntries.map((c, i) => (
+                  <>
+                    <ref- src={`cantrips/${c.id}`}>{c.data.title}</ref->
+                    {i < cantripEntries.length - 1 && ', '}
+                  </>
+                ))}
+              </p>
+            )}
+            {charmEntries.length > 0 && (
+              <p>
+                <strong>Charms:</strong>{' '}
+                {charmEntries.map((c, i) => (
+                  <>
+                    <ref- src={`charms/${c.id}`}>{c.data.title}</ref->
+                    {i < charmEntries.length - 1 && ', '}
+                  </>
+                ))}
+              </p>
+            )}
+          </div>
+        )
+      }
+
+      {
         hasTraits && (
           <div class="tgroup">
             <h2>Traits</h2>
@@ -362,6 +685,76 @@ const hasTraits = allTraits.length > 0;
       border: 5px double var(--gold);
       border-radius: 5px;
       padding: 0;
+
+      :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .image-preview {
+      max-height: 80vh;
+      max-width: 80vw;
+      margin-inline: auto;
+      margin-block: auto;
+      position: fixed;
+      border: none;
+      background: transparent;
+      padding: 1rem;
+      overflow: visible;
+
+      &::backdrop {
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      .inner {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+
+        .dialog-image-link {
+          display: block;
+          cursor: zoom-in;
+        }
+
+        :global(img) {
+          max-width: 100%;
+          height: auto;
+          max-height: calc(80vh - 4rem);
+          object-fit: contain;
+          border: 1px solid black;
+          box-shadow: 0px 0px 5px 2.5px rgba(0, 0, 0, 0.5);
+          background-color: white;
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.25rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        padding: 0.25rem;
+        border-radius: 100%;
+        background: var(--light-grey);
+        border: 1px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+
+        :global(.icon) {
+          height: 1.5rem;
+          width: 1.5rem;
+          fill: currentColor;
+        }
+      }
     }
 
     .primary {
@@ -387,6 +780,8 @@ const hasTraits = allTraits.length > 0;
 
     .secondary {
       grid-column: 1 / -1;
+      display: grid;
+      gap: 1rem;
     }
 
     .type {
@@ -450,10 +845,124 @@ const hasTraits = allTraits.length > 0;
         border-bottom: 1px solid var(--gold);
       }
 
+      h3 {
+        font-size: 0.9rem;
+        color: var(--dark-red);
+        margin-block-start: 0.5rem;
+      }
+
       .type {
         width: 100%;
         font-size: 0.9rem;
       }
+    }
+
+    .weapons-list {
+      margin: 0;
+      padding: 0;
+      padding-inline-start: 1rem;
+      list-style: disc;
+
+      li {
+        margin-block: 0.25rem;
+      }
+
+      .to-hit {
+        font-weight: bold;
+        color: var(--dark-red);
+      }
+
+      .properties {
+        font-style: italic;
+        color: var(--dark-grey);
+      }
+    }
+
+    .inline-list {
+      margin: 0.25rem 0;
+    }
+
+    .action-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .action-card {
+      background: var(--white);
+      border: 1px solid var(--gold);
+      border-radius: 5px;
+      padding: 0.5rem;
+
+      .action-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--gold);
+        padding-bottom: 0.25rem;
+        margin-bottom: 0.25rem;
+
+        strong {
+          color: var(--dark-red);
+        }
+
+        .action-cost {
+          color: var(--dark-grey);
+          font-size: 0.85rem;
+        }
+
+        .recharge {
+          color: var(--dark-red);
+          font-style: italic;
+          font-size: 0.85rem;
+        }
+
+        .thread {
+          color: var(--dark-red);
+          font-weight: bold;
+          font-size: 0.85rem;
+        }
+      }
+
+      .trigger {
+        font-size: 0.85rem;
+        color: var(--dark-grey);
+        margin: 0.25rem 0;
+      }
+
+      .action-body {
+        p {
+          margin: 0.25rem 0;
+        }
+
+        .save-dc {
+          font-weight: bold;
+          color: var(--dark-red);
+          text-transform: capitalize;
+        }
+
+        .action-damage {
+          text-transform: capitalize;
+
+          .properties {
+            font-style: italic;
+            color: var(--dark-grey);
+          }
+        }
+
+        .action-condition {
+          text-transform: capitalize;
+        }
+
+        .action-desc {
+          margin-block-start: 0.25rem;
+        }
+      }
+    }
+
+    .training-group {
+      margin-block-end: 0.5rem;
     }
 
     .tags {

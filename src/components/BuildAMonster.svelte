@@ -765,12 +765,7 @@
         </div>
         <div class="group">
           <label for="vicious">Strength</label>
-          <input
-            type="number"
-            name="vicious"
-            bind:value={monster.strong}
-            min={abilities.strong}
-          />
+          <input type="number" name="vicious" bind:value={monster.strong} />
           <p>Increases or decreases damage bonus</p>
         </div>
 
@@ -953,12 +948,7 @@
         <legend>Defense</legend>
         <div class="group">
           <label for="hp">HP</label>
-          <input
-            type="number"
-            name="hp"
-            bind:value={monster.hp}
-            min={abilities.hp}
-          />
+          <input type="number" name="hp" bind:value={monster.hp} />
           <p>Increases HP by {hp}</p>
         </div>
         <div class="group">
