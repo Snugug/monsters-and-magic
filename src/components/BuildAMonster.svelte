@@ -58,7 +58,7 @@
   let lineage = $state('') as string | undefined;
   let type = $state('') as (typeof monsterTypes)[number];
   let size = $state('') as (typeof sizes)[number];
-  let swarm = $state('') as (typeof sizes)[number];
+  let swarm = $state(false) as false | (typeof sizes)[number];
 
   let body = $state('');
   let hp = $state(5);
@@ -93,7 +93,7 @@
 
   function calculateBaseSpeed(
     size: typeof monster.size,
-    swarm: typeof monster.size,
+    swarm: typeof monster.swarm,
   ) {
     if (swarm) {
       if (swarm === 'tiny') return 20;
@@ -328,7 +328,7 @@
     }
   });
 
-  function space(size: (typeof sizes)[number]) {
+  function space(size: false | (typeof sizes)[number]) {
     switch (size) {
       case 'tiny':
         return 2.5;
@@ -396,6 +396,8 @@
 
   async function saveMonster(e: SubmitEvent) {
     e.preventDefault();
+    // Track if this is a new monster (no existing file handler)
+    const isNewMonster = !handler;
     try {
       let imagePath = '';
       const slug = slugify(monster.title);
@@ -430,7 +432,6 @@
       const f = await writeFile(`src/content/monsters/${slug}.md`, copy);
       const output = await getPath(f);
       addToast(`${monster.title} saved to ${output.join('/')}`, 'success');
-      await resetMonster(e);
     } catch (e) {
       addToast(
         `There was a problem saving ${monster.title}: ${e.message}`,
@@ -543,7 +544,7 @@
           bind:value={monster.swarm}
           disabled={monster.size === 'tiny' ? true : null}
         >
-          <option value="">-</option>
+          <option value={false}>-</option>
           {#each swarmBase as s}
             <option value={s}>{capitalize(s)}</option>
           {/each}

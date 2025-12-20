@@ -301,7 +301,7 @@ export type elem = (typeof elements)[number];
 export const baseMonster = {
   title: '',
   size: 'medium' as (typeof sizes)[number],
-  swarm: '' as (typeof sizes)[number],
+  swarm: false as false | (typeof sizes)[number],
   // type: monsterTypes[0],
   type: 'beast' as (typeof monsterTypes)[number],
   image: '',
