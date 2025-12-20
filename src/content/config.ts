@@ -340,7 +340,7 @@ const monsters = defineCollection({
         damage: dieSizes.or(z.literal('')),
         element: elements.or(z.literal('')),
         condition: reference('conditions').or(z.literal('')),
-        ap: z.number().min(2),
+        ap: z.number().min(1),
         fatigue: z.number().min(0),
         trigger: z.string(),
         recharge: z.enum(['1d4', '1d6', '1d8', '1d10']).or(z.literal('')),

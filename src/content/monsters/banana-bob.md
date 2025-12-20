@@ -9,8 +9,7 @@ power: 5
 cunning: 0
 luck: 0
 lineage: elf
-traits:
-  - graceful
+traits: []
 feats:
   - rage
 weapons:
@@ -43,7 +42,73 @@ naturalWeapons:
   - name: Tail
     damage: 1d6
     element: physical
-attacks: []
+attacks:
+  - name: Test Attack Action
+    type: attack
+    damage: 1d6
+    element: acid
+    condition: Frightened
+    ap: 3
+    fatigue: 2
+    trigger: ""
+    recharge: 1d8
+    thread: true
+    description: Do A Thing
+  - name: And A Save
+    type: focus
+    damage: 1d6
+    element: physical
+    condition: Unconscious
+    ap: 1
+    fatigue: 0
+    trigger: ""
+    recharge: ""
+    thread: false
+    description: A Thing
+  - name: Shield
+    type: reaction
+    damage: ""
+    element: ""
+    condition: Protected
+    ap: 1
+    fatigue: 0
+    trigger: Hit by damage
+    recharge: ""
+    thread: false
+    description: Look at me now
+  - name: The Attack
+    type: attack
+    damage: 1d6
+    element: force
+    condition: ""
+    ap: 2
+    fatigue: 1
+    trigger: ""
+    recharge: ""
+    thread: true
+    description: Do a normal attack
+  - name: Oh No
+    type: cunning
+    damage: ""
+    element: ""
+    condition: Blinded
+    ap: 1
+    fatigue: 0
+    trigger: ""
+    recharge: ""
+    thread: false
+    description: Save or Suck
+  - name: Go Fast
+    type: other
+    damage: 1d6
+    element: ""
+    condition: Quickened
+    ap: 1
+    fatigue: 0
+    trigger: ""
+    recharge: 1d10
+    thread: false
+    description: Go Fast Go Far
 techniques:
   - brother-sister
 cantrips:
