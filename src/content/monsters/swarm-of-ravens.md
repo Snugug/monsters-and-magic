@@ -1,13 +1,14 @@
 ---
 title: Swarm of Ravens
 size: medium
+swarm: tiny
 type: beast
 image: images/monsters/swarm-of-ravens.png
 focus: 1
 power: 1
 cunning: 2
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -27,9 +28,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
-absorbent: []
+spicy: ""
+radiates: ""
 naturalWeapons:
   - name: Beaks
     damage: 1d6
@@ -37,16 +37,15 @@ naturalWeapons:
 attacks:
   - name: Cacophony
     type: focus
-    damage: ''
-    element: ''
-    condition: ''
+    damage: ""
+    element: ""
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
+    trigger: ""
     recharge: 1d6
     thread: false
-    description:
-      Choose one creature in the swarm’s space. They make a focus saving
+    description: Choose one creature in the swarm’s space. They make a focus saving
       throw. On a miss, The target has the Deafened condition until the start of
       the swarm’s next turn. While Deafened, the target also has Disadvantage on
       ability checks and attack rolls. On a weak hit, The target is not
@@ -55,28 +54,40 @@ techniques: []
 cantrips: []
 charms: []
 upcast: 0
-hp: 1
+hp: 2
 armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+absorbent: []
 conditions: []
+aggressive: false
+amorphous: false
 ancient: false
+amphibious: false
+aquatic: false
+bloodthirsty: false
+burden: false
+draining: false
+escape: false
+flyby: false
+grappler: false
+illuminated: false
 reach: false
+jumper: false
+lair: false
+legendary: false
+pack: false
 unrelenting: false
 undying: false
-legendary: false
-lair: false
-bloodthirsty: false
-draining: false
 bursting: false
+regeneration: false
 extraplanar: false
 occupier: false
 freediver: false
 icewalker: false
 immutable: false
 incorporeal: false
-regeneration: false
 matana: false
 webwalker: false
 climber: false
@@ -84,17 +95,6 @@ tunneler: false
 photophobic: false
 siege: false
 abduct: false
-amphibious: false
-flyby: false
-aquatic: false
-pack: false
-illuminated: false
-escape: false
-swarm: true
-jumper: false
-amorphous: false
-burden: false
-aggressive: false
-grappler: false
 ac: 0
 ---
+

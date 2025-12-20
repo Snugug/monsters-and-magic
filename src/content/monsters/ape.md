@@ -1,6 +1,7 @@
 ---
 title: Ape
 size: medium
+swarm: false
 type: beast
 image: images/monsters/ape.png
 focus: 1
@@ -29,7 +30,6 @@ energetic: 0
 conditioned: 0
 spicy: ''
 radiates: ''
-absorbent: []
 naturalWeapons:
   - name: Fist
     damage: 1d4
@@ -55,23 +55,35 @@ armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+absorbent: []
 conditions: []
+aggressive: true
+amorphous: false
 ancient: false
+amphibious: false
+aquatic: false
+bloodthirsty: false
+burden: false
+draining: false
+escape: false
+flyby: false
+grappler: false
+illuminated: false
 reach: false
+jumper: false
+lair: false
+legendary: false
+pack: false
 unrelenting: false
 undying: false
-legendary: false
-lair: false
-bloodthirsty: false
-draining: false
 bursting: false
+regeneration: false
 extraplanar: false
 occupier: false
 freediver: false
 icewalker: false
 immutable: false
 incorporeal: false
-regeneration: false
 matana: false
 webwalker: false
 climber: false
@@ -79,17 +91,5 @@ tunneler: false
 photophobic: false
 siege: false
 abduct: false
-amphibious: false
-flyby: false
-aquatic: false
-pack: false
-illuminated: false
-escape: false
-swarm: false
-jumper: false
-amorphous: false
-burden: false
-aggressive: true
-grappler: false
 ac: 0
 ---

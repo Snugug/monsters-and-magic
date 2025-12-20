@@ -1,13 +1,14 @@
 ---
 title: Swarm of Insects
 size: medium
+swarm: tiny
 type: beast
 image: images/monsters/swarm-of-insects.png
 focus: -2
 power: 2
 cunning: 1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,9 +29,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
-absorbent: []
+spicy: ""
+radiates: ""
 naturalWeapons:
   - name: Bites
     damage: 2d4
@@ -40,28 +40,40 @@ techniques: []
 cantrips: []
 charms: []
 upcast: 0
-hp: 2
+hp: 4
 armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+absorbent: []
 conditions: []
+aggressive: false
+amorphous: false
 ancient: false
+amphibious: false
+aquatic: false
+bloodthirsty: false
+burden: false
+draining: false
+escape: false
+flyby: false
+grappler: false
+illuminated: false
 reach: false
+jumper: false
+lair: false
+legendary: false
+pack: false
 unrelenting: false
 undying: false
-legendary: false
-lair: false
-bloodthirsty: false
-draining: false
 bursting: false
+regeneration: false
 extraplanar: false
 occupier: false
 freediver: false
 icewalker: false
 immutable: false
 incorporeal: false
-regeneration: false
 matana: false
 webwalker: false
 climber: false
@@ -69,17 +81,6 @@ tunneler: false
 photophobic: false
 siege: false
 abduct: false
-amphibious: false
-flyby: false
-aquatic: false
-pack: false
-illuminated: false
-escape: false
-swarm: true
-jumper: false
-amorphous: false
-burden: false
-aggressive: false
-grappler: false
 ac: 0
 ---
+

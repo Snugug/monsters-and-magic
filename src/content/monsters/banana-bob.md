@@ -1,18 +1,22 @@
 ---
 title: Banana Bob
 size: gargantuan
-type: monstrosity
+swarm: false
+type: humanoid
 image: images/monsters/banana-bob.png
 focus: 0
 power: 5
 cunning: 0
 luck: 0
-lineage: ''
+lineage: elf
 traits: []
 feats:
   - rage
-weapons: []
-armor: []
+weapons:
+  - greataxe
+armor:
+  - half-plate-armor
+  - shield
 vision: []
 blindsight: 10
 tremmorsense: 10
@@ -28,44 +32,63 @@ savage: 0
 strong: 2
 energetic: 0
 conditioned: 0
-grappler: false
-spicy: ''
-radiates: ''
-absorbent: []
+spicy: fatigue
+radiates: radiant
 naturalWeapons:
   - name: Fist
     damage: 2d8
     type: physical
     element: necrotic
+  - name: Tail
+    damage: 1d6
+    element: physical
 attacks: []
-techniques: []
-cantrips: []
-charms: []
+techniques:
+  - brother-sister
+cantrips:
+  - lightning-lasso
+charms:
+  - counterspell
 upcast: 0
 hp: 4
 armored: 3
 resistance:
   - physical
-immunity: []
+immunity:
+  - necrotic
 vulnerable:
   - fire
-conditions: []
-ancient: false
+absorbent:
+  - force
+conditions:
+  - doomed
+aggressive: false
+amorphous: false
+ancient: true
+amphibious: false
+aquatic: false
+bloodthirsty: true
+burden: false
+draining: false
+escape: false
+flyby: false
+grappler: false
+illuminated: false
 reach: false
+jumper: false
+lair: false
+legendary: true
+pack: false
 unrelenting: true
 undying: false
-legendary: true
-lair: false
-bloodthirsty: true
-draining: false
 bursting: false
+regeneration: false
 extraplanar: false
 occupier: false
 freediver: false
 icewalker: false
 immutable: false
 incorporeal: false
-regeneration: false
 matana: false
 webwalker: false
 climber: false
@@ -73,19 +96,8 @@ tunneler: false
 photophobic: false
 siege: false
 abduct: false
-amphibious: false
-flyby: false
-aquatic: false
-pack: false
-illuminated: false
-escape: false
-swarm: false
-jumper: false
-amorphous: false
-burden: false
-aggressive: false
 vicious: 0
-elemental: ''
+elemental: ""
 ---
 
 A Ranger's companion that takes the form of a medium sea creature

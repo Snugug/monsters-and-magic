@@ -1,6 +1,7 @@
 ---
 title: Swarm of Venomous Snakes
 size: medium
+swarm: tiny
 type: beast
 image: images/monsters/swarm-of-venomous-snakes.png
 focus: 0
@@ -19,10 +20,10 @@ tremmorsense: 10
 truesight: 10
 speeds:
   - swimming
-walking: 30
+walking: 20
 flying: 0
 climbing: 0
-swimming: 30
+swimming: 20
 burrowing: 0
 savage: 0
 strong: 0
@@ -30,7 +31,6 @@ energetic: 0
 conditioned: 0
 spicy: ''
 radiates: ''
-absorbent: []
 naturalWeapons:
   - name: Bites
     damage: 1d8
@@ -40,28 +40,40 @@ techniques: []
 cantrips: []
 charms: []
 upcast: 0
-hp: 7
+hp: 5
 armored: 0
 resistance: []
 immunity: []
 vulnerable: []
+absorbent: []
 conditions: []
+aggressive: false
+amorphous: false
 ancient: false
+amphibious: false
+aquatic: false
+bloodthirsty: true
+burden: false
+draining: false
+escape: false
+flyby: false
+grappler: false
+illuminated: false
 reach: false
+jumper: false
+lair: false
+legendary: false
+pack: false
 unrelenting: false
 undying: false
-legendary: false
-lair: false
-bloodthirsty: false
-draining: false
 bursting: false
+regeneration: false
 extraplanar: false
 occupier: false
 freediver: false
 icewalker: false
 immutable: false
 incorporeal: false
-regeneration: false
 matana: false
 webwalker: false
 climber: false
@@ -69,17 +81,5 @@ tunneler: false
 photophobic: false
 siege: false
 abduct: false
-amphibious: false
-flyby: false
-aquatic: false
-pack: false
-illuminated: false
-escape: false
-swarm: true
-jumper: false
-amorphous: false
-burden: false
-aggressive: false
-grappler: false
 ac: 0
 ---

@@ -1,13 +1,14 @@
 ---
 title: Swarm of Piranhas
 size: medium
+swarm: tiny
 type: beast
 image: images/monsters/swarm-of-piranhas.png
 focus: -2
 power: 1
 cunning: 3
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,9 +29,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
-absorbent: []
+spicy: ""
+radiates: ""
 naturalWeapons:
   - name: Bites
     damage: 2d4
@@ -46,23 +46,35 @@ resistance:
   - physical
 immunity: []
 vulnerable: []
+absorbent: []
 conditions: []
+aggressive: false
+amorphous: false
 ancient: false
+amphibious: false
+aquatic: true
+bloodthirsty: false
+burden: false
+draining: false
+escape: false
+flyby: false
+grappler: false
+illuminated: false
 reach: false
+jumper: false
+lair: false
+legendary: false
+pack: false
 unrelenting: false
 undying: false
-legendary: false
-lair: false
-bloodthirsty: false
-draining: false
 bursting: false
+regeneration: false
 extraplanar: false
 occupier: false
 freediver: false
 icewalker: false
 immutable: false
 incorporeal: false
-regeneration: false
 matana: false
 webwalker: false
 climber: false
@@ -70,17 +82,6 @@ tunneler: false
 photophobic: false
 siege: false
 abduct: false
-amphibious: false
-flyby: false
-aquatic: true
-pack: false
-illuminated: false
-escape: false
-swarm: true
-jumper: false
-amorphous: false
-burden: false
-aggressive: false
-grappler: false
 ac: 0
 ---
+
