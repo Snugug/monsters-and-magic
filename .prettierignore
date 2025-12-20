@@ -18,4 +18,4 @@ public/pagefind
 assets
 maps
 generated
-src/content/**/*.md
+src/images/**/*
