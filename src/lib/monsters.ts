@@ -21,7 +21,6 @@ export function calculatePoints(
     const p = structuredClone(monsterCalc);
     let baseSpeed = 30;
     let baseHP = 5;
-    let baseDamage = '1d6';
 
     const startingSize = monster.swarm || monster.size;
 
@@ -31,7 +30,8 @@ export function calculatePoints(
         baseSpeed = 20;
         baseHP = 3;
         p.points -= 1;
-        baseDamage = '1d4';
+        p.baseDamage = '1d4';
+        p.space = 2.5;
         break;
       case 'small':
         baseHP = 4;
@@ -41,28 +41,31 @@ export function calculatePoints(
         baseSpeed = 40;
         baseHP = 6;
         p.points += 1;
-        baseDamage = '1d8';
+        p.baseDamage = '1d8';
+        p.space = 10;
         break;
       case 'huge':
         p.reach += 5;
         baseSpeed = 40;
         baseHP = 7;
         p.points += 2;
-        baseDamage = '1d10';
+        p.baseDamage = '1d10';
+        p.space = 15;
         break;
       case 'gargantuan':
         p.reach += 5;
         baseSpeed = 40;
         baseHP = 10;
         p.points += 3;
-        baseDamage = '1d12';
+        p.baseDamage = '1d12';
+        p.space = 20;
         break;
     }
 
     p.hp = baseHP + baseHP * monster.power;
 
     if (monster.swarm) {
-      p.points -= 2;
+      p.points += 5;
       p.tags.push('Swarm');
     }
 
@@ -215,8 +218,8 @@ export function calculatePoints(
       }
     }
 
-    const damageOffset = damageStep(baseDamage);
-    // const damageOffset = dieSizes.findIndex((e) => e === baseDamage);
+    const damageOffset = damageStep(p.baseDamage);
+    // const damageOffset = dieSizes.findIndex((e) => e === p.baseDamage);
 
     if (monster.attacks?.length) {
       for (const w of monster.attacks) {
@@ -302,7 +305,7 @@ export function calculatePoints(
 
     // Armor
     if (monster.armor?.length) {
-      const a0 = monster.armor.map((w) => armor.find((f) => f.id === w));
+      const a0 = monster.armor.map((w) => armor.find((f) => f.id === w.id));
       const a = a0.map((b) => b?.ac || 0).reduce((acc, cur) => acc + cur, 0);
       const t = a0.map((b) => b?.type);
 

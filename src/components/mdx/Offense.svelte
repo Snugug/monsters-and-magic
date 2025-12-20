@@ -22,12 +22,12 @@
     },
     {
       name: 'Spicy',
-      desc: 'The first time a creature touches this monster in a turn, it takes 1d6 damage of chosen type.',
+      desc: `The first time a creature touches this monster each turn, it takes damage equal to the monster's base damage of the chosen type (¼ if fatigue, minimum 1).`,
       points: 3,
     },
     {
       name: 'Radiates',
-      desc: 'The first time a creature comes within 5’ of this monster in a turn, it takes 1d6 damage of chosen type.',
+      desc: `Once each turn when a creature is within twice the monster's space, it takes damage equal to the monster's base damage of the chosen type (¼ if fatigue, minimum 1).`,
       points: 4,
     },
   ];

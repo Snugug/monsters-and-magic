@@ -11,12 +11,13 @@
     newWeaponBase,
     newAttackBase,
     tags,
+    swarmImmunities,
     type allTags,
   } from '$lib/shared';
   import { calculatePoints, types as monsterTypes } from '$js/monsters';
   import { md } from '$js/md';
   import { fileToImage } from '$js/images';
-  import { slugify } from '$lib/helpers';
+  import { slugify, capitalize } from '$lib/helpers';
   import {
     getPath,
     writeFile,
@@ -122,12 +123,16 @@
     title: capitalize(e),
   }));
   const resistList = $derived(
-    elemList.filter(
-      (a) =>
+    elemList.filter((a) => {
+      const filter =
         !monster.immunity.includes(a.id) &&
         !monster.vulnerable.includes(a.id) &&
-        !monster.absorbent.includes(a.id),
-    ),
+        !monster.absorbent.includes(a.id);
+
+      if (monster.swarm && a.id === 'physical') return false;
+
+      return filter;
+    }),
   );
   const immuneList = $derived(
     elemList.filter(
@@ -138,12 +143,16 @@
     ),
   );
   const vulnList = $derived(
-    elemList.filter(
-      (a) =>
+    elemList.filter((a) => {
+      const filter =
         !monster.resistance.includes(a.id) &&
         !monster.immunity.includes(a.id) &&
-        !monster.absorbent.includes(a.id),
-    ),
+        !monster.absorbent.includes(a.id);
+
+      if (monster.swarm && a.id === 'physical') return false;
+
+      return filter;
+    }),
   );
 
   const absList = $derived(
@@ -384,10 +393,6 @@
 
   // $inspect(monster);
   // $inspect(preview);
-
-  function capitalize(str: string) {
-    return str.charAt(0).toLocaleUpperCase() + str.slice(1);
-  }
 
   async function saveMonster(e: SubmitEvent) {
     e.preventDefault();
@@ -785,7 +790,11 @@
             {/each}
           </select>
           <p>
-            The first time a creature touches this monster in a turn, it takes {nwBase.damage}
+            The first time a creature touches this monster in a turn, it takes{monster.spicy ===
+            'fatigue'
+              ? ' ¼ of '
+              : ''}
+            {preview.baseDamage}
             damage of this type.
           </p>
         </div>
@@ -798,9 +807,11 @@
             {/each}
           </select>
           <p>
-            The first time a creature comes within {preview.cr * 5 + 5}' of this
-            monster in a turn, it takes
-            {nwBase.damage} damage of this type.
+            The first time a creature comes within {preview.space * 2}' of this
+            monster in a turn, it takes{monster.radiates === 'fatigue'
+              ? ' ¼ of '
+              : ''}
+            {preview.baseDamage} damage of this type.
           </p>
         </div>
       </fieldset>
@@ -956,7 +967,7 @@
         <Multiselect
           bind:list={monster.immunity}
           items={immuneList}
-          legend="Elemental Immunities"
+          legend="Damage Immunities"
           button="Add Immunity"
         />
         <Multiselect
@@ -964,7 +975,19 @@
           items={conditions}
           legend="Condition Immunities"
           button="Add Immunity"
-          filter={(c) => c.status === false}
+          filter={(c) => {
+            let include = true;
+            if (c.status === true) {
+              include = false;
+            }
+
+            if (include === true && monster.swarm) {
+              if (swarmImmunities.includes(c.id)) {
+                include = false;
+              }
+            }
+            return include;
+          }}
         />
         <Multiselect
           bind:list={monster.absorbent}

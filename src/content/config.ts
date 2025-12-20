@@ -288,6 +288,7 @@ const monsters = defineCollection({
   schema: z.object({
     title: z.string(),
     size: sizes,
+    swarm: sizes.or(z.literal(false)),
     type: monsterTypes,
     image: z.string(),
     focus: z.number(),

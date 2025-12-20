@@ -34,3 +34,7 @@ export function slugify(s: string) {
     strict: true,
   });
 }
+
+export function capitalize(str: string) {
+  return str.charAt(0).toLocaleUpperCase() + str.slice(1);
+}

@@ -56,6 +56,15 @@ export const vision = [
 
 export const speeds = ['flying', 'climbing', 'swimming', 'burrowing'] as const;
 
+export const swarmImmunities = [
+  'frightened',
+  'prone',
+  'restrained',
+  'stunned',
+  'paralyzed',
+  'charmed',
+];
+
 export const monsterTypes = [
   'beast',
   'humanoid',
@@ -374,4 +383,6 @@ export const monsterCalc = {
   piercing: 0,
   reach: 5,
   ap: 3,
+  baseDamage: '1d6',
+  space: 5,
 };
