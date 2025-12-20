@@ -103,23 +103,61 @@ function immuneStr(i) {
   return output.slice(2);
 }
 
-let hasTraits = !!(
-  meta.swarm ||
-  meta.spicy ||
-  meta.radiates ||
-  meta.traits.length > 0
-);
+// Collect all traits into a single array with { name, html } structure
+const allTraits: Array<{ name: string; html: string }> = [];
 
-for (const tag of Object.keys(tags)) {
-  if (hasTraits === true) break;
+// 1. Lineage traits
+for (const t of meta.traits) {
+  const tr = await getEntry(t);
+  const desc = (await md.render(`**${tr.data.title}:** ` + tr.body)).code;
+  allTraits.push({ name: tr.data.title, html: desc });
+}
 
-  if (meta[tag]) {
-    hasTraits = true;
-    break;
+// 2. Swarm
+if (meta.swarm !== false) {
+  allTraits.push({
+    name: 'Swarm',
+    html: '<p><strong>Swarm:</strong> Cannot gain temporary HP, cannot regain HP, deal ½ damage when bloodied.</p>',
+  });
+}
+
+// 3. Spicy
+if (meta.spicy !== '') {
+  const spicyText =
+    meta.spicy === 'fatigue'
+      ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.spicy}`
+      : `takes ${m.baseDamage} ${meta.spicy} damage`;
+  allTraits.push({
+    name: 'Spicy',
+    html: `<p><strong>Spicy:</strong> The first time a creature touches this monster each turn, it ${spicyText}.</p>`,
+  });
+}
+
+// 4. Radiates
+if (meta.radiates !== '') {
+  const radiatesText =
+    meta.radiates === 'fatigue'
+      ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.radiates}`
+      : `takes ${m.baseDamage} ${meta.radiates} damage`;
+  allTraits.push({
+    name: 'Radiates',
+    html: `<p><strong>Radiates:</strong> Once each turn when a creature is within ${m.space * 2} ft. of the monster, it ${radiatesText}.</p>`,
+  });
+}
+
+// 5. Tags
+for (const [t, d] of Object.entries(tags)) {
+  if (meta[t]) {
+    const tagName = (d as { tag?: string }).tag || capitalize(t);
+    const desc = (await md.render(`**${tagName}:** ` + d.full)).code;
+    allTraits.push({ name: tagName, html: desc });
   }
 }
 
-// console.log(Content);
+// Sort alphabetically by name
+allTraits.sort((a, b) => a.name.localeCompare(b.name));
+
+const hasTraits = allTraits.length > 0;
 ---
 
 <Layout>
@@ -278,48 +316,9 @@ for (const tag of Object.keys(tags)) {
         hasTraits && (
           <div class="tgroup">
             <h2>Traits</h2>
-            {meta.traits.map(async (t) => {
-              const tr = await getEntry(t);
-              const desc = (await md.render(`**${tr.data.title}:** ` + tr.body))
-                .code;
-
-              return <div class="type" set:html={desc} />;
-            })}
-            {meta.swarm !== false && (
-              <p>
-                <strong>Swarm:</strong> Cannot gain temporary HP, cannot regain
-                HP, deal ½ damage when bloodied.
-              </p>
-            )}
-            {meta.spicy !== '' && (
-              <p>
-                <strong>Spicy:</strong> The first time a creature touches this
-                monster each turn, it{' '}
-                {meta.spicy === 'fatigue'
-                  ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.spicy}`
-                  : `takes ${m.baseDamage} ${meta.spicy} damage`}
-                .
-              </p>
-            )}
-            {meta.radiates !== '' && (
-              <p>
-                <strong>Radiates:</strong> Once each turn when a creature is
-                within {m.space * 2} ft. of the monster, it{' '}
-                {meta.spicy === 'fatigue'
-                  ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.spicy}`
-                  : `takes ${m.baseDamage} ${meta.spicy} damage`}
-                .
-              </p>
-            )}
-            {await Promise.all(
-              Object.entries(tags).map(async ([t, d]) => {
-                if (meta[t]) {
-                  const tr = d.tag || capitalize(t);
-                  const desc = (await md.render(`**${tr}:** ` + d.full)).code;
-                  return <div class="type" set:html={desc} />;
-                }
-              }),
-            )}
+            {allTraits.map((trait) => (
+              <div class="type trait" set:html={trait.html} />
+            ))}
           </div>
         )
       }
@@ -477,6 +476,12 @@ for (const tag of Object.keys(tags)) {
         border-radius: 5px;
         border: 1px solid var(--gold);
         line-height: 1;
+      }
+    }
+
+    .trait {
+      :global(> :not(:first-child)) {
+        margin-inline-start: 1rem;
       }
     }
   </style>

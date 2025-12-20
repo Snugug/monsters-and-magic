@@ -359,7 +359,10 @@
 
     dl dd {
       padding: 0 1em;
-      margin-block-end: 1em;
+
+      &:not(:last-child) {
+        margin-block-end: 1em;
+      }
     }
   }
 
