@@ -59,7 +59,7 @@
       font-size: 3lh;
       float: left;
       line-height: 1;
-      margin-inline-end: 0.5rem;
+      margin-inline-end: 0.5em;
       position: relative;
       text-transform: uppercase;
       // border: 1px solid transparent;
@@ -139,7 +139,7 @@
     }
 
     figure {
-      margin: 1em 2.5rem;
+      margin: 1em 2.5em;
     }
 
     hr {
@@ -149,7 +149,7 @@
       border-bottom: 1px solid var(--border-muted);
       height: 0.25em;
       padding: 0;
-      margin: 1.5rem 0;
+      margin: 1.5em 0;
       background-color: var(--border);
       border: 0;
     }
@@ -290,8 +290,8 @@
 
     blockquote {
       margin: 0;
-      margin-block: 1rem;
-      padding: 0.25rem 1em;
+      margin-block: 1em;
+      padding: 0.25em 1em;
       color: var(--muted);
       background: var(--white);
       border-left: 0.25em solid var(--dark-yellow);
@@ -364,7 +364,7 @@
   }
 
   .message {
-    padding: 0.5rem 1rem;
+    padding: 0.5em 1em;
     background: var(--white);
     border: 1px solid var(--dark-yellow);
 

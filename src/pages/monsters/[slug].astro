@@ -1,0 +1,453 @@
+---
+import Layout from '$layouts/Layout.astro';
+import type { GetStaticPaths } from 'astro';
+import { getCollection, getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { calculatePoints } from '$lib/astro/monsters';
+import { swarmImmunities, tags } from '$lib/shared';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { markdown } from '$$lib/markdown';
+import { slugify, capitalize } from '$lib/helpers';
+import Icon from '$components/Icon.svelte';
+
+export const getStaticPaths = (async () => {
+  return await Promise.all(
+    (await getCollection('monsters')).map(async (term) => {
+      const { Content } = await term.render();
+      let image;
+
+      if (term.data.image) {
+        const { default: fi } = await import(
+          /* @vite-ignore */ `../../${term.data.image}`
+        );
+        image = fi;
+      }
+      return {
+        params: {
+          slug: term.slug,
+        },
+        props: {
+          meta: term.data,
+          image,
+          Content,
+        },
+      };
+    }),
+  );
+}) satisfies GetStaticPaths;
+
+const { meta, Content, image } = Astro.props;
+
+const m = calculatePoints(meta);
+
+// console.log(meta);
+// console.log(m);
+
+const md = await createMarkdownProcessor(markdown);
+
+const resist = meta.resistance;
+const vuln = meta.vulnerable;
+const absorb = meta.absorbent;
+const immune = [...meta.immunity, ...meta.conditions];
+
+if (meta.swarm) {
+  if (!meta.immunity.includes('physical')) {
+    resist.push('physical');
+  }
+
+  for (const s of swarmImmunities) {
+    immune.push({ id: s, collection: 'conditions' });
+  }
+  // meta.conditions = [...swarmImmunities, ...meta.conditions];
+}
+
+function speed(s) {
+  let output = '';
+  for (const [t, sp] of Object.entries(s)) {
+    if (t === 'walking') {
+      output += sp + ' ft.';
+    } else {
+      output += `, ${t.replace(/((m?)ing)$/, '')} ${sp} ft.`;
+    }
+  }
+
+  return output;
+}
+
+function vision(v) {
+  let output = '';
+  for (const t of v) {
+    if (meta[t]) {
+      output += `, ${t} ${meta[t]} ft.`;
+    } else {
+      output += `, ${t}`;
+    }
+  }
+
+  return output.slice(2);
+}
+
+function immuneStr(i) {
+  let output = '';
+  for (const im of i) {
+    if (im.id) {
+      output += `, <ref- src="${im.collection}/${im.id}">${im.id}</ref->`;
+    } else {
+      output += `, ${im}`;
+    }
+  }
+
+  return output.slice(2);
+}
+
+let hasTraits = !!(meta.swarm || meta.spicy || meta.radiates);
+for (const tag of Object.keys(tags)) {
+  if (hasTraits === true) break;
+
+  if (meta[tag]) {
+    hasTraits = true;
+    break;
+  }
+}
+---
+
+<Layout>
+  <div id="content" class="monster">
+    <header>
+      <h1 class="title modesto">{meta.title}</h1>
+      <p class="size-type">
+        {meta.ancient && 'Ancient '}
+        {meta.legendary && 'Legendary '}
+        {meta.size}
+        {meta.swarm ? ` swarm of ${meta.swarm} ${meta.type}s` : meta.type}{
+          meta.lineage.id
+            ? ` (${(await getEntry(meta.lineage)).data.title})`
+            : ''
+        }
+      </p>
+    </header>
+
+    <div class="primary">
+      {
+        image && (
+          <>
+            <button
+              class="image"
+              commandfor="monster-image-preview"
+              command="show-modal"
+            >
+              <Image src={image} layout="constrained" alt={meta.title} />
+            </button>
+
+            <dialog id="monster-image-preview" class="image-preview">
+              <Image src={image} layout="constrained" alt={meta.title} />
+              <button commandfor="monster-image-preview" command="close">
+                <Icon icon="close" label="close" />
+              </button>
+            </dialog>
+          </>
+        )
+      }
+
+      <dl class="critical ahs">
+        <div class="cgroup">
+          <dt>AC</dt>
+          <dd>
+            {m.ac}{
+              meta.armor.length > 0 &&
+                ' (' +
+                  (
+                    await Promise.all(
+                      meta.armor.map(
+                        async (a) => (await getEntry(a)).data.title,
+                      ),
+                    )
+                  ).join(', ') +
+                  ')'
+            }
+          </dd>
+        </div>
+
+        <div class="cgroup">
+          <dt>HP</dt>
+          <dd>{m.hp}</dd>
+        </div>
+
+        <div class="cgroup">
+          <dt>Speed</dt>
+          <dd>{speed(m.speed)}</dd>
+        </div>
+        <div class="cgroup">
+          <div class="cgroup">
+            <dt>AP</dt>
+            <dd>{m.ap}</dd>
+          </div>
+          <div class="cgroup">
+            <dt>Fatigue</dt>
+            <dd>{m.fatigue}</dd>
+          </div>
+          <div class="cgroup">
+            <dt>Exhaustion</dt>
+            <dd>{m.exhaustion}</dd>
+          </div>
+        </div>
+
+        <div class="cgroup">
+          <div class="cgroup">
+            <dt>FCS</dt>
+            <dd>{meta.focus}</dd>
+          </div>
+          <div class="cgroup">
+            <dt>PWR</dt>
+            <dd>{meta.power}</dd>
+          </div>
+          <div class="cgroup">
+            <dt>CNG</dt>
+            <dd>{meta.cunning}</dd>
+          </div>
+          <div class="cgroup">
+            <dt>LCK</dt>
+            <dd>{meta.luck}</dd>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="critical rvi">
+        {
+          resist.length > 0 && (
+            <div class="cgroup">
+              <dt>Resistances</dt>
+              <dd class="cap">{resist.join(', ')}</dd>
+            </div>
+          )
+        }
+        {
+          vuln.length > 0 && (
+            <div class="cgroup">
+              <dt>Vulnerabilities</dt>
+              <dd class="cap">{vuln.join(', ')}</dd>
+            </div>
+          )
+        }
+        {
+          immune.length > 0 && (
+            <div class="cgroup">
+              <dt>Immunities</dt>
+              <dd class="cap" set:html={immuneStr(immune)} />
+            </div>
+          )
+        }
+        {
+          absorb.length > 0 && (
+            <div class="cgroup">
+              <dt>Absorbs</dt>
+              <dd class="cap">{absorb.join(', ')}</dd>
+            </div>
+          )
+        }
+        {
+          meta.vision.length > 0 && (
+            <div class="cgroup">
+              <dt>Senses</dt>
+              <dd class="cap">{vision(meta.vision)}</dd>
+            </div>
+          )
+        }
+        <div class="cgroup">
+          <dt>CR</dt>
+          <dd>{m.cr} ({m.points} points)</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="secondary">
+      {
+        hasTraits && (
+          <div class="tgroup">
+            <h2>Traits</h2>
+            {meta.swarm !== false && (
+              <p>
+                <strong>Swarm:</strong> Cannot gain temporary HP, cannot regain
+                HP, deal ½ damage when bloodied.
+              </p>
+            )}
+            {meta.spicy !== '' && (
+              <p>
+                <strong>Spicy:</strong> The first time a creature touches this
+                monster each turn, it{' '}
+                {meta.spicy === 'fatigue'
+                  ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.spicy}`
+                  : `takes ${m.baseDamage} ${meta.spicy} damage`}
+                .
+              </p>
+            )}
+            {meta.radiates !== '' && (
+              <p>
+                <strong>Radiates:</strong> Once each turn when a creature is
+                within {m.space * 2} ft. of the monster, it{' '}
+                {meta.spicy === 'fatigue'
+                  ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.spicy}`
+                  : `takes ${m.baseDamage} ${meta.spicy} damage`}
+                .
+              </p>
+            )}
+            {await Promise.all(
+              Object.entries(tags).map(async ([t, d]) => {
+                if (meta[t]) {
+                  const tr = d.tag || capitalize(t);
+                  const desc = (await md.render(`**${tr}:** ` + d.full)).code;
+                  return <div class="type" set:html={desc} />;
+                }
+              }),
+            )}
+          </div>
+        )
+      }
+    </div>
+
+    {
+      m.tags.length > 0 && (
+        <div class="tgroup tags">
+          <h2>Tags</h2>
+          <ul>
+            {m.tags.sort().map((t) => (
+              <li class="tag">{t}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+
+  <style lang="scss">
+    .monster {
+      --gold: #afa47a;
+      display: grid;
+      gap: 0.5rem;
+      grid-template-columns: 1fr 1fr;
+      background: var(--parchment);
+      outline: 1px solid var(--gold);
+      border-radius: 5px;
+      border: 2px double var(--gold);
+      box-shadow: 0 0 0.5rem rgba(black, 0.5);
+      padding: 0.5rem;
+      width: 100%;
+      container-type: inline-size;
+
+      header {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .image {
+      border: 5px double var(--gold);
+      border-radius: 5px;
+      padding: 0;
+    }
+
+    .primary {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1rem;
+
+      &:has(.image) {
+        grid-template-columns: 150px 1fr 2fr;
+
+        @container (max-width: 600px) {
+          grid-template-columns: 150px 1fr;
+        }
+      }
+    }
+
+    .rvi {
+      @container (max-width: 600px) {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .secondary {
+      grid-column: 1 / -1;
+    }
+
+    .type {
+      margin-inline: 0;
+    }
+
+    .title {
+      grid-column: 1 / -1;
+      font-size: 2rem;
+      color: var(--dark-red);
+      line-height: 1;
+      border-bottom: 1px solid var(--gold);
+    }
+
+    .size-type {
+      font-size: 0.9rem;
+      text-transform: capitalize;
+      font-style: italic;
+      color: var(--dark-grey);
+    }
+
+    .cap {
+      text-transform: capitalize;
+    }
+
+    .cgroup {
+      display: flex;
+      gap: 0.25rem;
+
+      &:has(.cgroup) {
+        gap: 0.5rem;
+      }
+
+      dt {
+        font-weight: bold;
+        color: var(--dark-red);
+      }
+    }
+
+    .abilities {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    .tgroup {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-size: 0.9rem;
+      h2 {
+        font-size: 1rem;
+        border-bottom: 1px solid var(--gold);
+      }
+
+      .type {
+        width: 100%;
+        font-size: 0.9rem;
+      }
+    }
+
+    .tags {
+      grid-column: 1 / -1;
+      // border-top: 1px solid var(--gold);
+      // padding-block-start: 0.5rem;
+
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0;
+        padding: 0;
+        padding-block-start: 0.5rem;
+      }
+
+      .tag {
+        // background: var(--white);
+        padding: 0.05rem 0.15rem;
+        border-radius: 5px;
+        border: 1px solid var(--gold);
+      }
+    }
+  </style>
+</Layout>
