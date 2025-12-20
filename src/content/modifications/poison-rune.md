@@ -4,7 +4,7 @@ type: rune
 rare: false
 weapon: Deals poison damage instead of physical damage.
 armor: Gains resistance to poison damage
-focus: ''
+focus: ""
 crafting:
   textile: 0
   wood: 0

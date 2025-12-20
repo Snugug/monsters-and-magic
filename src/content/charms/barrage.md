@@ -20,4 +20,5 @@ rare: false
 tags:
   - targeting
 ---
+
 Target an additional 2 creatures or objects within the range of your spell, or target the same creature an additional 2 times. Increase the number of targets by 1 for each level this spell has been upcast.

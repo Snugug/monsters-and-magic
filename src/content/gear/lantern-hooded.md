@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 Oil burning lantern that illuminates bright light in a 30' area and dim light in an 80'. Hood can be lowered to shed dim light only in a 10' area.

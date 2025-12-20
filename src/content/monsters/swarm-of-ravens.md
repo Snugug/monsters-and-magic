@@ -45,7 +45,8 @@ attacks:
     trigger: ""
     recharge: 1d6
     thread: false
-    description: Choose one creature in the swarm’s space. They make a focus saving
+    description:
+      Choose one creature in the swarm’s space. They make a focus saving
       throw. On a miss, The target has the Deafened condition until the start of
       the swarm’s next turn. While Deafened, the target also has Disadvantage on
       ability checks and attack rolls. On a weak hit, The target is not
@@ -97,4 +98,3 @@ siege: false
 abduct: false
 ac: 0
 ---
-

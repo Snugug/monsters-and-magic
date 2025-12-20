@@ -5,10 +5,11 @@ spellcasting: false
 rare: false
 class: rogue
 ---
-When you deal Sneak Attack damage, you can add one of the following Cunning Strike effects, paying its cost from the number of d6s you roll. If an effect requires a saving throw, the DC is equal to 10  +CUNNING.
+
+When you deal Sneak Attack damage, you can add one of the following Cunning Strike effects, paying its cost from the number of d6s you roll. If an effect requires a saving throw, the DC is equal to 10 +CUNNING.
 
 Trip (1d6)
-:  If the target is Large or smaller, your target makes a cunning saving throw; on a weak hit they become slowed until the end of their next turn, on a miss, they become prone.
+: If the target is Large or smaller, your target makes a cunning saving throw; on a weak hit they become slowed until the end of their next turn, on a miss, they become prone.
 
 Withdraw (1d6)
 : Immediately after the attack, move up to half your Speed without provoking an Opportunity Attack.

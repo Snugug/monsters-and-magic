@@ -5,6 +5,7 @@ spellcasting: false
 rare: false
 class: fighter
 ---
+
 You are a master of all things fighting. Choose a number of weapons up to your +POWER with which you're proficient: you gain mastery with them, and you can change your selection as part of your daily preparations. You can also choose a fighting style, which you can also change as part of your daily preparations:
 
 Armored

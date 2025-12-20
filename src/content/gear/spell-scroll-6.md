@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 7
 ---
+
 A spell scroll scribed with a spell that costs 1 exhaustion or more to cast

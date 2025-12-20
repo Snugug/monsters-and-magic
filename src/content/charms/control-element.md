@@ -7,8 +7,8 @@ spells:
   - thunderclap
   - lightning-lasso
 ap: null
-reaction: ''
-duration: ''
+reaction: ""
+duration: ""
 fatigue: null
 concentration: false
 rare: false

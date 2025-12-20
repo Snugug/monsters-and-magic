@@ -7,7 +7,7 @@ focus: 1
 power: 3
 cunning: 0
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,12 +28,12 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Bite
-    damage: '1'
+    damage: "1"
     element: physical
 attacks: []
 techniques: []

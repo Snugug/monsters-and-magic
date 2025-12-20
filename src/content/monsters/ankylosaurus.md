@@ -7,7 +7,7 @@ focus: -2
 power: 4
 cunning: -1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -26,8 +26,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Bite
@@ -41,8 +41,8 @@ attacks:
     condition: Prone
     ap: 2
     fatigue: 1
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: If the target is the size of the Ankylosaurus or smaller, it is
       knocked prone on a hit.

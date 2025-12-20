@@ -14,4 +14,5 @@ rare: false
 tags:
   - effect
 ---
+
 As a reaction to getting hit before you take damage, become protected until the end of your next turn. For each level upcast, add +1 to your AC for each fatigue spent to upcast (ignore additional AP cost) while you are protected by this spell.

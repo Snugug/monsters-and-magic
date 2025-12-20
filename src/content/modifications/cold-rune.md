@@ -4,7 +4,7 @@ type: rune
 rare: false
 weapon: Deals cold damage instead of physical damage.
 armor: Gains resistance to cold damage
-focus: ''
+focus: ""
 crafting:
   textile: 0
   wood: 0

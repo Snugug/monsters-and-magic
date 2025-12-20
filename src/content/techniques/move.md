@@ -3,7 +3,7 @@ title: Move
 type: basic
 rare: false
 ap: 1
-reaction: ''
+reaction: ""
 ---
 
 Move up to your speed. You can use this multiple times per turn, each time you do so, its AP cost is increased by 1.

@@ -12,4 +12,5 @@ rare: false
 tags:
   - effect
 ---
+
 Channel your power to apply slowed to your target while you concentrate on this spell. Upcast to level 2 or higher to also apply impaired.

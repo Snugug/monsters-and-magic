@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 6
 ---
+
 A potion infused with a spell that costs 5 fatigue to cast

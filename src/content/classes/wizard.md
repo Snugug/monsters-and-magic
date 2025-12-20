@@ -1,8 +1,8 @@
 ---
 title: Wizard
 proficiencies:
-  weapons: ''
-  armor: ''
+  weapons: ""
+  armor: ""
   techniques: 0
 hp: 20
 ---

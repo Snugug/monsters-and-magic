@@ -7,7 +7,7 @@ focus: -1
 power: 0
 cunning: 3
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -29,8 +29,8 @@ strong: 0
 energetic: 1
 conditioned: 0
 grappler: false
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Claw
@@ -84,7 +84,7 @@ amorphous: false
 burden: false
 aggressive: false
 vicious: -1
-elemental: ''
+elemental: ""
 ---
 
 A Ranger's companion that takes the form of a small flying creature

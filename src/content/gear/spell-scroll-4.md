@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 5
 ---
+
 A spell scroll scribed with a spell that costs 4 fatigue to cast

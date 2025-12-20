@@ -3,7 +3,7 @@ title: Seeking Seal
 type: seal
 rare: false
 weapon: +1 to attack rolls
-armor: ''
+armor: ""
 focus: +1 to attack rolls and spell save DCs
 crafting:
   textile: 0
@@ -14,4 +14,3 @@ crafting:
   mithril: 2
   fadeite: 3
 ---
-

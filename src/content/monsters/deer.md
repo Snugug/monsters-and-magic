@@ -7,7 +7,7 @@ focus: 2
 power: 0
 cunning: 3
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -27,8 +27,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Ram

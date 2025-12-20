@@ -7,7 +7,7 @@ focus: 0
 power: 3
 cunning: 0
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -27,8 +27,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Horns
@@ -42,8 +42,8 @@ attacks:
     condition: Prone
     ap: 2
     fatigue: 2
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description:
       Move, then strike a creature with the elk's horns. If the elk moved

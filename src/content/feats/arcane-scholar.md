@@ -5,9 +5,10 @@ spellcasting: true
 rare: false
 class: wizard
 ---
+
 You're a magical academic, studying the mechanical minutia of spellcasting, breaking down arcane magic into its constituent parts and building it back up again. Your **spellcasting ability** is +FOCUS.
 
-When you gain this feat, you gain a spellbook if you don't already have one. Your spellbook is your repository of knowledge of all things spellcasting. Choose a total number of non-rare charms and cantrips equal to twice your FOCUS (with a minimum of 1 cantrip). When choosing your cantrips, pick from ones  with the "arcane" tag.
+When you gain this feat, you gain a spellbook if you don't already have one. Your spellbook is your repository of knowledge of all things spellcasting. Choose a total number of non-rare charms and cantrips equal to twice your FOCUS (with a minimum of 1 cantrip). When choosing your cantrips, pick from ones with the "arcane" tag.
 
 As part of your daily preparations, you can prepare a total number of cantrips and charms from your spellbook equal to your +FOCUS + your Proficiency Bonus.
 

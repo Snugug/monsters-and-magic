@@ -5,6 +5,7 @@ spellcasting: false
 rare: true
 class: bard
 ---
+
 You've learned how to bend the luck of others. You can now choose one of the following when spending a thread of fate:
 
 - Reroll an ability check you've made with a bonus equal to +LUCK. Choose which result to use.

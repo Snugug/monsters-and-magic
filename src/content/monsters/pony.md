@@ -2,12 +2,12 @@
 title: Pony
 size: medium
 type: beast
-image: ''
+image: ""
 focus: 0
 power: 2
 cunning: 0
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -26,8 +26,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Hooves

@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 Mirror, makeup, wigs, small rubbery prosthetic pieces, and costumes to make you look like someone else. While disguised, gain +2 ongoing to impersonate a person, or type of person.

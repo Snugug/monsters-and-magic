@@ -3,7 +3,7 @@ title: Mount or Dismount
 type: basic
 rare: false
 ap: 1
-reaction: ''
+reaction: ""
 ---
 
 Spend half of your total speed to mount or dismount a creature at least one size category larger than you.

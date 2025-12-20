@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 One flask of flammable oil, often used for lighting a lantern, enough for 5 uses.

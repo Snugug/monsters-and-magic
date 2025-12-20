@@ -5,7 +5,8 @@ spellcasting: false
 rare: false
 class: ranger
 ---
-Set your sights on a target. You can spend 1 AP and mark 1-fatigue on your turn to mark a creature you can see as your quarry for 1 minute. Once per turn while marked, you deal an additional 1d6 damage to it when you hit it with a weapon attack and gain +2 ongoing when trying to sense it. If your quarry drops to 0 hit points before the duration ends, you can immediately spend 1-fatigue to mark a new creature as your query. When initially marking a creature, you can mark 3-fatigue instead of 1 to extend the duration to 10 minutes, or 5-fatigue to extend it to 1 day. 
+
+Set your sights on a target. You can spend 1 AP and mark 1-fatigue on your turn to mark a creature you can see as your quarry for 1 minute. Once per turn while marked, you deal an additional 1d6 damage to it when you hit it with a weapon attack and gain +2 ongoing when trying to sense it. If your quarry drops to 0 hit points before the duration ends, you can immediately spend 1-fatigue to mark a new creature as your query. When initially marking a creature, you can mark 3-fatigue instead of 1 to extend the duration to 10 minutes, or 5-fatigue to extend it to 1 day.
 
 While you’re a capable hunter no matter where you find yourself, where you’ve honed your skills is where you feel the most at home. Choose two of the following areas as your **favored terrain**:
 

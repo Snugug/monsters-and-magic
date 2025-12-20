@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 Heals 2d4 HP

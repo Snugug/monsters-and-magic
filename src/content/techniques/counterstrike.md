@@ -4,7 +4,7 @@ type: advanced
 rare: false
 ap: null
 reaction: A creature within your reach hits you with an attack
-duration: ''
+duration: ""
 ---
 
 Strike the triggering creature.

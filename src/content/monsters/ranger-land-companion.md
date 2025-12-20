@@ -7,7 +7,7 @@ focus: -1
 power: 2
 cunning: 1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -29,8 +29,8 @@ strong: 0
 energetic: 0
 conditioned: 0
 grappler: false
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Claw
@@ -84,7 +84,7 @@ amorphous: false
 burden: false
 aggressive: false
 vicious: 1
-elemental: ''
+elemental: ""
 ---
 
 A Ranger's companion that takes the form of a medium land creature

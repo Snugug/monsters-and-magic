@@ -2,9 +2,9 @@
 title: Seal of the Fox
 type: seal
 rare: true
-weapon: ''
+weapon: ""
 armor: +1 +CUNNING to a maximum of +6
-focus: ''
+focus: ""
 crafting:
   textile: 0
   wood: 0
@@ -14,4 +14,3 @@ crafting:
   mithril: 2
   fadeite: 8
 ---
-

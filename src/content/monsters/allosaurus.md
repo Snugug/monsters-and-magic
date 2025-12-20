@@ -7,7 +7,7 @@ focus: 1
 power: 4
 cunning: 1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -26,8 +26,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Bite
@@ -39,12 +39,12 @@ naturalWeapons:
 attacks:
   - name: Rush
     type: attack
-    damage: ''
-    element: ''
+    damage: ""
+    element: ""
     condition: Prone
     ap: 2
     fatigue: 1
-    trigger: ''
+    trigger: ""
     recharge: 1d8
     thread: false
     description:

@@ -5,6 +5,7 @@ spellcasting: false
 rare: true
 class: barbarian
 ---
+
 When you enter your rage, you become an avatar of a primal force. When selecting this feat, choose one of the following:
 
 The Spreading Fire

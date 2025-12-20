@@ -2,12 +2,12 @@
 title: Goat
 size: medium
 type: beast
-image: ''
+image: ""
 focus: 0
 power: 0
 cunning: 0
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,8 +28,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Claw
@@ -38,13 +38,13 @@ naturalWeapons:
 attacks:
   - name: Ram
     type: attack
-    damage: '1'
+    damage: "1"
     element: physical
-    condition: ''
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: >-
       or 2 (1d4) Bludgeoning damage if the goat moved 20+ feet straight toward

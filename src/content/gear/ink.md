@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 1-ounce bottle which provides enough ink to write about 500 pages

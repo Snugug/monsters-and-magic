@@ -7,7 +7,7 @@ focus: 1
 power: 3
 cunning: 2
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -27,8 +27,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Rend
@@ -37,13 +37,13 @@ naturalWeapons:
 attacks:
   - name: Roar
     type: focus
-    damage: ''
-    element: ''
-    condition: ''
+    damage: ""
+    element: ""
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: >-
       Choose one creature within 15 feet. They make a focus saving throw. On a

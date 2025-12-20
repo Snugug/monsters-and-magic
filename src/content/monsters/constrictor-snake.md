@@ -7,7 +7,7 @@ focus: 0
 power: 2
 cunning: 2
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,8 +28,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Bite
@@ -39,12 +39,12 @@ attacks:
   - name: Constrict
     type: power
     damage: 3d4
-    element: ''
-    condition: ''
+    element: ""
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: >-
       Choose one Medium or smaller creature the snake can see within 5 feet.

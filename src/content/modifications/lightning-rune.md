@@ -4,7 +4,7 @@ type: rune
 rare: false
 weapon: Deals lightning damage instead of physical damage.
 armor: Gains resistance to lightning damage
-focus: ''
+focus: ""
 crafting:
   textile: 0
   wood: 0

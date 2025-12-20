@@ -7,7 +7,7 @@ focus: 0
 power: -1
 cunning: 1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -27,8 +27,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Claw
@@ -37,13 +37,13 @@ naturalWeapons:
 attacks:
   - name: Bubble Dash
     type: other
-    damage: ''
-    element: ''
-    condition: ''
+    damage: ""
+    element: ""
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: >-
       While underwater, the seahorse moves up to its Swim Speed without

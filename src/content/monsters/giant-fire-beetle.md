@@ -2,12 +2,12 @@
 title: Giant Fire Beetle
 size: small
 type: beast
-image: ''
+image: ""
 focus: -2
 power: 1
 cunning: 0
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,12 +28,12 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Bite
-    damage: '1'
+    damage: "1"
     element: fire
 attacks: []
 techniques: []

@@ -11,4 +11,5 @@ rare: false
 tags:
   - effect
 ---
+
 Channel your power to apply invigorated to your target as long as you concentrate on it.

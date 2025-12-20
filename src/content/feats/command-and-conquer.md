@@ -5,6 +5,7 @@ spellcasting: false
 rare: false
 class: fighter
 ---
+
 You command the battlefield, directing your allies to victory. Once per short rest, you can spend 1 AP to survey all enemies you can see—you learn their CR, vulnerabilities, and resistances, if any. You also gain additional ways to use your Adrenaline Surge:
 
 Bait & Switch

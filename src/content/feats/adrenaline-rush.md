@@ -5,6 +5,7 @@ spellcasting: false
 rare: false
 class: fighter
 ---
+
 In the heat of battle, you can push yourself further than other combatants. You gain a number of adrenaline points you can use to power extraordinary feats in combat equal to your proficiency bonus. You can spend your adrenaline points to do one of the following:
 
 Bulk Up

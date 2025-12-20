@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 Oil burning lantern that shed bright light in a 30' long, 5' wide line directly in front of you and dim light for a another 100' further.

@@ -11,4 +11,5 @@ contents:
   - item: lock
     count: 1
 ---
+
 A set of fine clothes, perfume, a chest, and a lock

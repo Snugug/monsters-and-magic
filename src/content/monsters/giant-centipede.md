@@ -7,7 +7,7 @@ focus: -2
 power: 1
 cunning: 2
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,8 +28,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Claw
@@ -40,11 +40,11 @@ attacks:
     type: attack
     damage: 1d4
     element: poison
-    condition: ''
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: >-
       and the target has the Poisoned condition until the start of the

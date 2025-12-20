@@ -15,4 +15,5 @@ contents:
   - item: supplies
     count: 10
 ---
+
 A backpack, bedroll, tinderbox, waterskin, 5 torches, and a tent for basic shelter while traveling, and 10 supplies.

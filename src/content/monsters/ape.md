@@ -8,7 +8,7 @@ focus: 1
 power: 3
 cunning: 2
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,8 +28,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 naturalWeapons:
   - name: Fist
     damage: 1d4
@@ -39,13 +39,13 @@ attacks:
     type: attack
     damage: 2d6
     element: physical
-    condition: ''
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
+    trigger: ""
     recharge: 1d6
     thread: false
-    description: ' range: 25'
+    description: " range: 25"
 techniques: []
 cantrips: []
 charms: []

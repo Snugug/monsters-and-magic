@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 A potion infused with a spell that costs 0 fatigue to cast

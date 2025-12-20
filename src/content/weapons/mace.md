@@ -18,4 +18,3 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
-

@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 A portable set of tools for brewing alcohol and checking a liquid's contents.

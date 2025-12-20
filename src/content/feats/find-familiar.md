@@ -5,6 +5,7 @@ spellcasting: false
 rare: false
 class: wizard
 ---
+
 You gain the service of a familiar, a spirit that takes an animal form of your choice in the form of a CR0 tiny creature. It acts independently of you, but obeys your commands.
 
 You can telepathically communicate with your familiar from up to 100 feet away and can spend 1 AP on your turn to see and hear through them, gaining the benefits of any special senses it has.

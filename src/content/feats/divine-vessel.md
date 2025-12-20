@@ -5,6 +5,7 @@ spellcasting: true
 rare: false
 class: cleric
 ---
+
 Choose a deity; you are a vessel for their will on the material plane, granting you the ability to cast spells as a manifestation of their will. Your **spellcasting ability** is +FOCUS.
 
 When you gain this feat, you gain the **healing word** cantrip and a number of additional cantrips equal to your Proficiency Bonus from the **divine** spell list. Whenever your Proficiency Bonus increases, gain another cantrip.

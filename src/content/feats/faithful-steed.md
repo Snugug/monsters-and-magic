@@ -5,6 +5,7 @@ spellcasting: false
 rare: false
 class: paladin
 ---
+
 You gain the service of an otherworldly **faithful steed.** The steed is loyal to you and can act as a controlled mount for you. In combat, it acts on your turn. While **oathbound**, choose a manifestation for your steed: celestial, fiend, or fey. While **oathbroken**, your steed reverts to a normal beast 
 
 Your **faithful steed** dies if it drops to 0 HP. If it has died within the last hour, you can spend 2 AP and mark 3-fatigue to touch it and restore it to life with full hit points after 1 minute. If it has been longer than an hour, you can concentrate over it for 10 minutes and mark 1-exhaustion to immediately bring it back to life with full hit points. Otherwise, whenever you tend to wounds or clear fatigue, for every 1 supply you spend to heal yourself, heal your **faithful steed**, too, and recover the appropriate amount of fatigue.

@@ -5,6 +5,7 @@ spellcasting: true
 rare: false
 class: druid
 ---
+
 Your deep connection with nature has drawn you to a druidic circle where you have learned how to tap into the energy of living things to cast spells. Your **spellcasting ability** is +FOCUS.
 
 When you gain this feat, choose a number of cantrips from the **primal** spell list equal to your proficiency bonus +1. Whenever your proficiency bonus increases, gain another cantrip.

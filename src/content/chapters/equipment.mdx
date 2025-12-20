@@ -3,7 +3,7 @@ title: Equipment
 chapter: 7
 ---
 
-import Icon from '$components/Icon.svelte';
+import Icon from "$components/Icon.svelte";
 
 <table>
   <caption style="background-color: var(--dark-red); color: var(--white); padding: .5rem; font-weight: bold;">
@@ -59,7 +59,7 @@ If playing in story mode, you deal half the weapon's damage die instead of rolli
 
 Some weapons have special weapon properties—every property always applies to the weapon when wielded. All weapons also have a mastery property—if you gain weapon mastery of that weapon, you can use the mastery property.
 
-import Weapons from '$components/mdx/Weapons.svelte';
+import Weapons from "$components/mdx/Weapons.svelte";
 
 <Weapons simple={true} />
 
@@ -127,7 +127,7 @@ Because you don't need an empty hand to cast spells as long as you're wielding a
 
 :::
 
-import Foci from '$components/mdx/Foci.svelte';
+import Foci from "$components/mdx/Foci.svelte";
 
 <Foci />
 
@@ -150,7 +150,7 @@ Some armor is bulky enough that you need a minimum amount of +POWER to wear it. 
 
 You can also equip a shield. Shields provide a bonus to your AC while wielding it. Unlike armor, shields are part of your loadout.
 
-import Armor from '$components/mdx/Armor.svelte';
+import Armor from "$components/mdx/Armor.svelte";
 
 <Armor />
 
@@ -169,7 +169,7 @@ Tools
 
 Packs are specially priced collections of predefined adventuring gear (presented weights are approximates). When you start your adventure, you get 50 gold to spend on gear and packs.
 
-import Gear from '$components/mdx/Gear.svelte';
+import Gear from "$components/mdx/Gear.svelte";
 
 ### Packs
 
@@ -315,7 +315,7 @@ The attention to detail required to create masterwork equipment requires a signi
 
 Runes and seals are magical enhancements to weapons and armor. Runes generally modify existing properties of an item, whereas seals generally add new properties to an item. Runes and seals are not permanent—if you have a talent that lets you craft the kind of item it's attached to, you can remove them intact and replace them as a 1 count project per item. Some items you find in the wild may have runes or seals on them and aren't mithril or masterwork equipment—while you can remove the runes and seals from these items, you can't replace them once you do.
 
-import RunesSeals from '$components/mdx/RunesSeals.svelte';
+import RunesSeals from "$components/mdx/RunesSeals.svelte";
 
 #### Runes
 
@@ -422,6 +422,6 @@ With those prerequisites met, you craft an item by taking the **work on a projec
 
 Multiple people can work on the same item—they all must meet the crafting prerequisites in order to do so, and share the countdown for the item.
 
-import Crafting from '$components/mdx/Crafting.svelte';
+import Crafting from "$components/mdx/Crafting.svelte";
 
 <Crafting />

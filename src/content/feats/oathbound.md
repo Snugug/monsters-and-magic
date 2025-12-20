@@ -5,6 +5,7 @@ spellcasting: false
 rare: false
 class: paladin
 ---
+
 You have sworn an **oath**, an overall driving motivator for yourself, something like "I will protect the innocent from those who would do them harm" or "I will bring the crown to heel for what it's done to me". Your **oath** includes a **vow** related to how you will accomplish that in the form of a +BOND with yourself. Your **oath** starts at 0 and can never be more than your proficiency bonus. When you resolve a **vow**, gain experience as normal, and if it's resolved positively, increase your oath.
 
 If you break your **oath**, either by acting against it or by failing a **vow** (it resolves either negatively or neutrally), you become **oathbroken** and are no longer **oathbound**. In order to become oathbound again, you must take a day of extended downtime to focus solely on recentering yourself and spend 100g on a tithing for each point of your **oath**, after which you can either restore your **oath** at -1, or you can swear a new **oath** starting at 0 and write new **vows**.

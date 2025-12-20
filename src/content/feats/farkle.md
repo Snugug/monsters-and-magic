@@ -5,13 +5,14 @@ spellcasting: false
 rare: true
 class: bard
 ---
+
 Whenever you deal damage to a creature with an attack roll, you can mark up to your +LUCK in fatigue to potentially do extra damage to it. For each fatigue you marked, roll 1d6.
 
 - Set aside dice that you've rolled if:
-    - You roll triples or better
-    - A die face equals your +LUCK or 1
-    - You roll a straight using all of your die (minimum 3 die)
-    - You roll a full house  (only two numbers rolled, minimum 2 of each number) using all of your die
+  - You roll triples or better
+  - A die face equals your +LUCK or 1
+  - You roll a straight using all of your die (minimum 3 die)
+  - You roll a full house  (only two numbers rolled, minimum 2 of each number) using all of your die
 - If you have dice you haven't set aside, you can choose to reroll them
 - If you have set aside all of your dice, you can mark the total number rolled, then reroll all of the dice. You can do this a maximum number of times equal to your proficiency bonus. Hold 1-farkle.
 

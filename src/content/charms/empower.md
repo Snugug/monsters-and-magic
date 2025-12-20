@@ -12,4 +12,5 @@ rare: false
 tags:
   - effect
 ---
+
 Channel your power to apply empowered to your target. Mark an additional 2-fatigue when casting this spell to extend the duration until you stop concentrating on it.

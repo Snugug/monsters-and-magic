@@ -5,6 +5,7 @@ spellcasting: false
 rare: false
 class: barbarian
 ---
+
 You know how to hit an enemy where it hurts. Whenever you attack a creature with an unarmed attack or melee weapon, you can apply sundered to yourself (if you don't already have it) to increase your success by **+1 step**, and can choose to do so after you've seen the results.
 
 Additionally, while raging, you can mark 1-fatigue and choose one of the following brutal strike options on a hit with a melee weapon or unarmed attack:

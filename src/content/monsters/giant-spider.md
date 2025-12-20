@@ -2,12 +2,12 @@
 title: Giant Spider
 size: large
 type: beast
-image: ''
+image: ""
 focus: 0
 power: 2
 cunning: 3
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,8 +28,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Bite
@@ -38,12 +38,12 @@ naturalWeapons:
 attacks:
   - name: Web
     type: cunning
-    damage: ''
-    element: ''
-    condition: ''
+    damage: ""
+    element: ""
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
+    trigger: ""
     recharge: 1d4
     thread: false
     description: >-

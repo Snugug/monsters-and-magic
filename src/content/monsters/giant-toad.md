@@ -2,12 +2,12 @@
 title: Giant Toad
 size: large
 type: beast
-image: ''
+image: ""
 focus: 0
 power: 2
 cunning: 1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -28,8 +28,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Claw
@@ -40,11 +40,11 @@ attacks:
     type: attack
     damage: 1d6
     element: poison
-    condition: ''
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: >-
       If the target is a Medium or smaller creature, it has the Grappled

@@ -2,7 +2,7 @@
 title: Monk
 proficiencies:
   weapons: shortswords and longswords
-  armor: ''
+  armor: ""
   techniques: 2
 hp: 25
 ---

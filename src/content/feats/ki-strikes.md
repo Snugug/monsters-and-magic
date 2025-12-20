@@ -5,7 +5,8 @@ spellcasting: false
 rare: false
 class: monk
 ---
-Whenever you use  Flurry of Blows, on a strong hit, you can add one effect to an attack. Each attack can only have one effect applied, and some effects require you to spend stored ki to use:
+
+Whenever you use Flurry of Blows, on a strong hit, you can add one effect to an attack. Each attack can only have one effect applied, and some effects require you to spend stored ki to use:
 
 Push
 : Push the target 15 feet

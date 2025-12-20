@@ -2,12 +2,12 @@
 title: Giant Scorpion
 size: large
 type: beast
-image: ''
+image: ""
 focus: -1
 power: 3
 cunning: 1
 luck: 0
-lineage: ''
+lineage: ""
 traits: []
 feats: []
 weapons: []
@@ -27,8 +27,8 @@ savage: 0
 strong: 0
 energetic: 0
 conditioned: 0
-spicy: ''
-radiates: ''
+spicy: ""
+radiates: ""
 absorbent: []
 naturalWeapons:
   - name: Sting
@@ -39,11 +39,11 @@ attacks:
     type: attack
     damage: 1d6
     element: physical
-    condition: ''
+    condition: ""
     ap: 2
     fatigue: 0
-    trigger: ''
-    recharge: ''
+    trigger: ""
+    recharge: ""
     thread: false
     description: >-
       If the target is a Large or smaller creature, it has the Grappled

@@ -14,4 +14,3 @@ crafting:
   mithril: 2
   fadeite: 3
 ---
-

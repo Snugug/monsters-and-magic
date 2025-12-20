@@ -15,4 +15,5 @@ crafting:
   mithril: 0
   fadeite: 0
 ---
+
 Oil burning lamp that illuminates bright light within 10; and dim light within 30'
