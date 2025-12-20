@@ -9,7 +9,8 @@ power: 5
 cunning: 0
 luck: 0
 lineage: elf
-traits: []
+traits:
+  - graceful
 feats:
   - rage
 weapons:

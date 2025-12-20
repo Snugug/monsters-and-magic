@@ -12,22 +12,23 @@ import Icon from '$components/Icon.svelte';
 
 export const getStaticPaths = (async () => {
   return await Promise.all(
-    (await getCollection('monsters')).map(async (term) => {
-      const { Content } = await term.render();
+    (await getCollection('monsters')).map(async (monster) => {
+      console.log(monster);
+      const { Content } = await monster.render();
       let image;
 
-      if (term.data.image) {
+      if (monster.data.image) {
         const { default: fi } = await import(
-          /* @vite-ignore */ `../../${term.data.image}`
+          /* @vite-ignore */ `../../${monster.data.image}`
         );
         image = fi;
       }
       return {
         params: {
-          slug: term.slug,
+          slug: monster.slug,
         },
         props: {
-          meta: term.data,
+          meta: monster.data,
           image,
           Content,
         },
@@ -39,6 +40,8 @@ export const getStaticPaths = (async () => {
 const { meta, Content, image } = Astro.props;
 
 const m = calculatePoints(meta);
+
+// console.log(meta);
 
 // console.log(meta);
 // console.log(m);
@@ -100,7 +103,13 @@ function immuneStr(i) {
   return output.slice(2);
 }
 
-let hasTraits = !!(meta.swarm || meta.spicy || meta.radiates);
+let hasTraits = !!(
+  meta.swarm ||
+  meta.spicy ||
+  meta.radiates ||
+  meta.traits.length > 0
+);
+
 for (const tag of Object.keys(tags)) {
   if (hasTraits === true) break;
 
@@ -109,6 +118,8 @@ for (const tag of Object.keys(tags)) {
     break;
   }
 }
+
+// console.log(Content);
 ---
 
 <Layout>
@@ -258,6 +269,8 @@ for (const tag of Object.keys(tags)) {
           <dd>{m.cr} ({m.points} points)</dd>
         </div>
       </dl>
+
+      <div class="desc type"><Content /></div>
     </div>
 
     <div class="secondary">
@@ -265,6 +278,13 @@ for (const tag of Object.keys(tags)) {
         hasTraits && (
           <div class="tgroup">
             <h2>Traits</h2>
+            {meta.traits.map(async (t) => {
+              const tr = await getEntry(t);
+              const desc = (await md.render(`**${tr.data.title}:** ` + tr.body))
+                .code;
+
+              return <div class="type" set:html={desc} />;
+            })}
             {meta.swarm !== false && (
               <p>
                 <strong>Swarm:</strong> Cannot gain temporary HP, cannot regain
@@ -372,6 +392,7 @@ for (const tag of Object.keys(tags)) {
 
     .type {
       margin-inline: 0;
+      max-width: unset;
     }
 
     .title {
@@ -404,6 +425,14 @@ for (const tag of Object.keys(tags)) {
       dt {
         font-weight: bold;
         color: var(--dark-red);
+      }
+    }
+
+    .desc {
+      grid-column: 1 / -1;
+
+      &:empty {
+        display: none;
       }
     }
 
