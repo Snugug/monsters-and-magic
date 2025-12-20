@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { ImageGenerator } from '$lib/image-generator';
+  import {
+    ImageGenerator,
+    MODELS,
+    getDefaultModelId,
+  } from '$lib/image-generator';
   import { CREATURE_PROMPT } from '$lib/prompts';
   import { stringToImage } from '$js/images';
   import { slugify } from '$lib/helpers';
@@ -25,6 +29,7 @@
   let keyInput = $state('');
   let generator: ImageGenerator | null = $state(null);
 
+  let selectedModel = $state(getDefaultModelId(true));
   let selectedPromptKey = $state('creature');
   let promptsInput = $state('');
   let batchNameInput = $state(''); // New batch name field
@@ -72,6 +77,17 @@
     batchJobs.some((job) => !TERMINAL_STATES.has(job.status)),
   );
 
+  // Filter models that support batch processing
+  const batchModels = MODELS.filter((m) => m.supportsBatch);
+  const showModelDropdown = batchModels.length > 1;
+
+  // If only one model, set it as default
+  $effect(() => {
+    if (batchModels.length === 1 && selectedModel !== batchModels[0].id) {
+      selectedModel = batchModels[0].id;
+    }
+  });
+
   // Load API Key from LocalStorage
   $effect(() => {
     apiKey = window.localStorage.getItem('apikey');
@@ -81,17 +97,19 @@
   $effect(() => {
     (async () => {
       if (loaded === false) {
-        const [p, k, jobs, bn] = await getMany([
+        const [p, k, jobs, bn, m] = await getMany([
           'batch-promptsInput',
           'batch-selectedPromptKey',
           'batch-jobs',
           'batch-batchNameInput',
+          'batch-selectedModel',
         ]);
 
         if (p) promptsInput = p;
         if (k) selectedPromptKey = k;
         if (jobs) batchJobs = jobs;
         if (bn) batchNameInput = bn;
+        if (m) selectedModel = m;
 
         loaded = true;
 
@@ -107,6 +125,7 @@
           ['batch-selectedPromptKey', $state.snapshot(selectedPromptKey)],
           ['batch-jobs', $state.snapshot(batchJobs)],
           ['batch-batchNameInput', $state.snapshot(batchNameInput)],
+          ['batch-selectedModel', $state.snapshot(selectedModel)],
         ]);
       }
     })();
@@ -117,7 +136,7 @@
     if (apiKey) {
       const systemPrompt =
         prompts[selectedPromptKey as keyof typeof prompts].prompt;
-      generator = new ImageGenerator(apiKey, systemPrompt);
+      generator = new ImageGenerator(apiKey, systemPrompt, selectedModel);
       // Trigger update if we just got the generator and have jobs
       untrack(() => {
         if (loaded && batchJobs.length > 0) {
@@ -261,12 +280,14 @@
     promptsInput = '';
     batchNameInput = '';
     selectedPromptKey = 'creature';
+    selectedModel = getDefaultModelId(true);
     error = '';
 
     await delMany([
       'batch-promptsInput',
       'batch-selectedPromptKey',
       'batch-batchNameInput',
+      'batch-selectedModel',
     ]);
   }
 
@@ -430,7 +451,11 @@
     </div>
 
     <!-- Generation Form -->
-    <form class="generator-form" onsubmit={queueGeneration}>
+    <form
+      class="generator-form"
+      class:three-cols={showModelDropdown}
+      onsubmit={queueGeneration}
+    >
       <div class="group">
         <label for="batch-name">Batch Name (Optional)</label>
         <input
@@ -449,6 +474,19 @@
           {/each}
         </select>
       </div>
+
+      {#if showModelDropdown}
+        <div class="group">
+          <label for="model-select">Model</label>
+          <select id="model-select" bind:value={selectedModel}>
+            {#each batchModels as model}
+              <option value={model.id}>
+                {model.label}
+              </option>
+            {/each}
+          </select>
+        </div>
+      {/if}
 
       <div class="group prompts">
         <label for="prompts-input">Prompt Values (One per line)</label>
@@ -601,6 +639,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+
+    &.three-cols {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
   }
 
   .prompts,

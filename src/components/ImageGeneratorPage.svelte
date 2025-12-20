@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { ImageGenerator, type InputImage } from '$lib/image-generator';
+  import {
+    ImageGenerator,
+    type InputImage,
+    MODELS,
+    getDefaultModelId,
+  } from '$lib/image-generator';
   import { CREATURE_PROMPT } from '$lib/prompts';
   import { stringToImage } from '$js/images';
   import { getMany, setMany, delMany } from 'idb-keyval';
@@ -16,6 +21,7 @@
   let keyInput = $state('');
   let generator: ImageGenerator | null = $state(null);
 
+  let selectedModel = $state(getDefaultModelId());
   let selectedPromptKey = $state('creature');
   let userPrompt = $state('');
   let generatedImages = $state<string[]>([]);
@@ -49,12 +55,13 @@
   $effect(() => {
     (async () => {
       if (loaded === false) {
-        const [p, k, c, u, g] = await getMany([
+        const [p, k, c, u, g, m] = await getMany([
           'gen-userPrompt',
           'gen-selectedPromptKey',
           'gen-imageCount',
           'gen-uploadedImages',
           'gen-generatedImages',
+          'gen-selectedModel',
         ]);
 
         if (p) userPrompt = p;
@@ -62,6 +69,7 @@
         if (c) imageCount = c;
         if (u) uploadedImages = u;
         if (g) generatedImages = g;
+        if (m) selectedModel = m;
 
         loaded = true;
       } else {
@@ -71,6 +79,7 @@
           ['gen-imageCount', $state.snapshot(imageCount)],
           ['gen-uploadedImages', $state.snapshot(uploadedImages)],
           ['gen-generatedImages', $state.snapshot(generatedImages)],
+          ['gen-selectedModel', $state.snapshot(selectedModel)],
         ]);
       }
     })();
@@ -81,7 +90,7 @@
     if (apiKey) {
       const systemPrompt =
         prompts[selectedPromptKey as keyof typeof prompts].prompt;
-      generator = new ImageGenerator(apiKey, systemPrompt);
+      generator = new ImageGenerator(apiKey, systemPrompt, selectedModel);
     } else {
       generator = null;
     }
@@ -139,6 +148,7 @@
     e.preventDefault();
     userPrompt = '';
     selectedPromptKey = 'creature';
+    selectedModel = getDefaultModelId();
     imageCount = 4;
     uploadedImages = [];
     generatedImages = [];
@@ -150,6 +160,7 @@
       'gen-imageCount',
       'gen-uploadedImages',
       'gen-generatedImages',
+      'gen-selectedModel',
     ]);
   }
 
@@ -299,6 +310,17 @@
         </div>
 
         <div class="group">
+          <label for="model-select">Model</label>
+          <select id="model-select" bind:value={selectedModel}>
+            {#each MODELS as model}
+              <option value={model.id}>
+                {model.label}
+              </option>
+            {/each}
+          </select>
+        </div>
+
+        <div class="group">
           <label for="image-count">Number of Images</label>
           <input
             type="number"
@@ -443,7 +465,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
   }
 

@@ -5,16 +5,61 @@ export interface InputImage {
   mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
 }
 
+// Model configurations based on Google AI documentation research
+// - Only includes models that support image generation
+// - Gemini image models use generateContent with responseModalities: ['IMAGE']
+// - Imagen uses a separate generateImages method
+// - supportsBatch indicates if the model can be used with batch processing
+export const MODELS = [
+  {
+    id: 'gemini-3-pro-image-preview',
+    label: 'Gemini 3 Pro',
+    type: 'gemini',
+    supportsBatch: true,
+    default: true,
+  },
+  {
+    id: 'imagen-4.0-generate-001',
+    label: 'Imagen 4',
+    type: 'imagen',
+    supportsBatch: false,
+  },
+] as const;
+
+export type ModelId = (typeof MODELS)[number]['id'];
+export type ModelType = (typeof MODELS)[number]['type'];
+
+/**
+ * Returns the default model ID for a given context.
+ * @param batchOnly If true, only considers models that support batch processing.
+ * @returns The ID of the model marked as default, or the first supported model.
+ */
+export function getDefaultModelId(batchOnly = false): string {
+  const models = batchOnly ? MODELS.filter((m) => m.supportsBatch) : MODELS;
+  const defaultModel = models.find((m) => 'default' in m && m.default);
+  return defaultModel?.id ?? models[0]?.id ?? 'gemini-3-pro-image-preview';
+}
+
 export class ImageGenerator {
   private ai: GoogleGenAI;
   private apiKey: string;
   private systemPrompt: string;
-  private model = 'nano-banana-pro-preview';
+  private model: string;
+  private modelType: ModelType;
 
-  constructor(apiKey: string, systemPrompt: string) {
+  constructor(
+    apiKey: string,
+    systemPrompt: string,
+    model: string = 'gemini-3-pro-image-preview',
+  ) {
     this.ai = new GoogleGenAI({ apiKey });
     this.apiKey = apiKey;
     this.systemPrompt = systemPrompt;
+    this.model = model;
+
+    // Determine model type
+    const modelConfig = MODELS.find((m) => m.id === model);
+    this.modelType = modelConfig?.type ?? 'gemini';
   }
 
   async generate(
@@ -22,65 +67,105 @@ export class ImageGenerator {
     images?: InputImage[],
   ): Promise<string | null> {
     try {
-      // Build content parts
-      const parts: Part[] = [];
-
-      // Add the text prompt
-      parts.push({ text: this.systemPrompt + userPrompt });
-
-      // Add all images if provided
-      if (images && images.length > 0) {
-        for (const image of images) {
-          parts.push({
-            inlineData: {
-              data: image.base64,
-              mimeType: image.mimeType,
-            },
-          });
-        }
-      }
-
-      const response = await this.ai.models.generateContent({
-        model: this.model,
-        contents: parts,
-        config: {
-          responseModalities: ['IMAGE'],
-          imageConfig: {
-            aspectRatio: '1:1',
-            personGeneration: 'allow_all',
-          } as any,
-        },
-      });
-
-      const reason = response.candidates?.[0]?.finishReason;
-
-      if (reason !== 'STOP') {
-        throw new Error(reason);
-      }
-
-      if (!response.candidates?.[0]?.content?.parts) {
-        throw new Error('No response');
-      }
-
-      for (const part of response.candidates[0].content.parts) {
-        if (part.inlineData && part.inlineData.data) {
-          return `data:image/png;base64, ${part.inlineData.data}`;
-        }
+      if (this.modelType === 'imagen') {
+        return await this.generateWithImagen(userPrompt);
+      } else {
+        return await this.generateWithGemini(userPrompt, images);
       }
     } catch (error: any) {
       throw new Error(`Error generating image: ${error.message}`);
     }
+  }
 
-    return null;
+  private async generateWithGemini(
+    userPrompt: string,
+    images?: InputImage[],
+  ): Promise<string | null> {
+    // Build content parts
+    const parts: Part[] = [];
+
+    // Add the text prompt
+    parts.push({ text: this.systemPrompt + userPrompt });
+
+    // Add all images if provided
+    if (images && images.length > 0) {
+      for (const image of images) {
+        parts.push({
+          inlineData: {
+            data: image.base64,
+            mimeType: image.mimeType,
+          },
+        });
+      }
+    }
+
+    const response = await this.ai.models.generateContent({
+      model: this.model,
+      contents: parts,
+      config: {
+        responseModalities: ['IMAGE'],
+      },
+    });
+
+    const reason = response.candidates?.[0]?.finishReason;
+
+    if (!response.candidates) {
+      throw new Error('No candidates in response');
+    }
+
+    if (reason !== 'STOP') {
+      throw new Error(reason || 'Generation stopped for unknown reason');
+    }
+
+    if (!response.candidates?.[0]?.content?.parts) {
+      throw new Error('No response content');
+    }
+
+    for (const part of response.candidates[0].content.parts) {
+      if (part.inlineData && part.inlineData.data) {
+        return `data:image/png;base64, ${part.inlineData.data}`;
+      }
+    }
+
+    throw new Error('No image data in response content');
+  }
+
+  private async generateWithImagen(userPrompt: string): Promise<string | null> {
+    // Imagen uses a different API method: generateImages
+    // The @google/genai SDK provides this via ai.models.generateImages
+    const response = await this.ai.models.generateImages({
+      model: this.model,
+      prompt: this.systemPrompt + userPrompt,
+      config: {
+        numberOfImages: 1,
+        aspectRatio: '1:1',
+        personGeneration: 'ALLOW_ALL' as any,
+      },
+    });
+
+    // Imagen response format: { generatedImages: [{ image: { imageBytes: base64 } }] }
+    if (response.generatedImages && response.generatedImages.length > 0) {
+      const img = response.generatedImages[0].image;
+      if (img && img.imageBytes) {
+        return `data:image/png;base64, ${img.imageBytes}`;
+      }
+    }
+
+    throw new Error('No image generated by Imagen');
   }
 
   /**
    * Enqueues a batch generation job.
+   * Note: Batch generation only supports Gemini models, not Imagen.
    * @param prompts List of text prompts.
    * @param name Optional display name for the batch job.
    * @returns The created batch job object.
    */
   async enqueue(prompts: string[], name?: string): Promise<any> {
+    if (this.modelType === 'imagen') {
+      throw new Error('Batch generation is not supported for Imagen models');
+    }
+
     const lines = prompts.map((prompt) => {
       return JSON.stringify({
         request: {
