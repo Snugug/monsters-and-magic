@@ -35,15 +35,29 @@
   import { delMany, getMany, setMany } from 'idb-keyval';
   import { addToast } from '$lib/toast.svelte';
 
-  const lineages = await db.lineage.toArray();
-  const armor = await db.armor.toArray();
-  const techniques = await db.techniques.toArray();
-  const traits = await db.traits.toArray();
-  const weapons = await db.weapons.toArray();
-  const feats = await db.feats.toArray();
-  const cantrips = await db.cantrips.toArray();
-  const charms = await db.charms.toArray();
-  const conditions = (await db.conditions.toArray()).sort((a, b) => {
+  const [
+    lineages,
+    armor,
+    techniques,
+    traits,
+    weapons,
+    feats,
+    cantrips,
+    charms,
+    conditionsRaw,
+  ] = await Promise.all([
+    db.lineage.toArray(),
+    db.armor.toArray(),
+    db.techniques.toArray(),
+    db.traits.toArray(),
+    db.weapons.toArray(),
+    db.feats.toArray(),
+    db.cantrips.toArray(),
+    db.charms.toArray(),
+    db.conditions.toArray(),
+  ]);
+
+  const conditions = conditionsRaw.sort((a, b) => {
     if (a.status && !b.status) return 1;
     if (!a.status && b.status) return -1;
     return 0;
