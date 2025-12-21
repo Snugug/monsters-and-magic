@@ -49,13 +49,13 @@
 
   {#if hasDamageModifiers}
     <div class="cgroup">
-      {#if meta.strong !== 0}
+      {#if m.bonus !== 0}
         <div class="cgroup">
           <dt>Damage</dt>
           <dd>+{m.bonus}</dd>
         </div>
       {/if}
-      {#if meta.savage !== 0}
+      {#if m.piercing !== 0}
         <div class="cgroup">
           <dt>Piercing</dt>
           <dd>+{m.piercing}</dd>
