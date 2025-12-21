@@ -43,7 +43,7 @@ spicy: fatigue
 radiates: radiant
 naturalWeapons:
   - name: Fist
-    damage: 2d8
+    damage: 4d12
     type: physical
     element: necrotic
     ranged: true
@@ -182,6 +182,8 @@ vulnerable:
   - fire
 absorbent:
   - force
+  - fatigue
+  - lightning
 conditions:
   - doomed
 aggressive: false

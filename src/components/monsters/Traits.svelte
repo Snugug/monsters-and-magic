@@ -52,6 +52,48 @@
     });
   }
 
+  // 4. Absorbent trait
+  // Builds a grammatically correct sentence listing absorbed damage types
+  // and conditionally adds fatigue recovery text.
+  if (monster.absorbent.length > 0) {
+    const hasFatigue = monster.absorbent.includes('fatigue');
+    const elements = monster.absorbent.filter((a) => a !== 'fatigue');
+
+    /**
+     * Formats an array of elements into a grammatically correct comma-separated
+     * list with "or" before the final item:
+     * - 1 item: "fire"
+     * - 2 items: "fire or cold"
+     * - 3+ items: "fire, cold, or lightning"
+     */
+    let elementList = '';
+    if (elements.length === 1) {
+      elementList = elements[0];
+    } else if (elements.length === 2) {
+      elementList = `${elements[0]} or ${elements[1]}`;
+    } else if (elements.length > 2) {
+      const last = elements.pop();
+      elementList = `${elements.join(', ')}, or ${last}`;
+    }
+
+    let absorbText = '<p><strong>Absorbent:</strong> ';
+    if (elements.length > 0) {
+      absorbText += `When hit with ${elementList} damage, heal for that amount instead.`;
+    }
+    if (hasFatigue) {
+      if (elements.length > 0) {
+        absorbText += ' ';
+      }
+      absorbText += 'If forced to mark fatigue, recover that instead.';
+    }
+    absorbText += '</p>';
+
+    allTraits.push({
+      name: 'Absorbent',
+      html: absorbText,
+    });
+  }
+
   // 4. Radiates trait
   if (monster.radiates !== '') {
     const radiatesText =
