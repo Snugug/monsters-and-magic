@@ -224,6 +224,7 @@ type AttackType =
   | 'power'
   | 'focus'
   | 'cunning'
+  | 'luck'
   | 'reaction'
   | 'other';
 const attackTypeLabels: Record<AttackType, string> = {
@@ -231,6 +232,7 @@ const attackTypeLabels: Record<AttackType, string> = {
   power: 'Power Saves',
   focus: 'Focus Saves',
   cunning: 'Cunning Saves',
+  luck: 'Luck Saves',
   reaction: 'Reactions',
   other: 'Other Actions',
 };
@@ -247,6 +249,9 @@ const attackGroups: Record<AttackType, typeof meta.attacks> = {
     .sort((a, b) => a.ap - b.ap),
   cunning: meta.attacks
     .filter((a) => a.type === 'cunning')
+    .sort((a, b) => a.ap - b.ap),
+  luck: meta.attacks
+    .filter((a) => a.type === 'luck')
     .sort((a, b) => a.ap - b.ap),
   reaction: meta.attacks
     .filter((a) => a.type === 'reaction')
@@ -512,11 +517,15 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
             <div class="action-cards">
               {meta.attacks.map((attack) => {
                 // Determine if this is a save type
-                const isSave = ['power', 'focus', 'cunning'].includes(
+                const isSave = ['power', 'focus', 'cunning', 'luck'].includes(
                   attack.type,
                 );
                 const isReaction = attack.type === 'reaction';
-                const attackStat = meta.power;
+                // Use ability field for stat, default to power
+                const abilityKey = attack.ability || 'power';
+                const attackStat = meta[
+                  abilityKey as keyof typeof meta
+                ] as number;
                 const dc = 8 + attackStat + m.cr;
                 const damageBonus = attackStat + globalDamageBonus;
                 const damageBonusStr =
@@ -547,7 +556,7 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
                     <div class="action-body">
                       {isSave && (
                         <p class="save-dc">
-                          DC {dc} {attack.type} save
+                          DC {dc} {abilityKey} save
                         </p>
                       )}
 
@@ -569,6 +578,10 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
                             {attack.condition.id}
                           </ref->
                         </p>
+                      )}
+
+                      {attack.range && (
+                        <p class="action-range">Range: {attack.range} ft</p>
                       )}
 
                       {attack.description && (

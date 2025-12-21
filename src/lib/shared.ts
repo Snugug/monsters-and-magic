@@ -93,8 +93,11 @@ export const newAttackBase = {
     | 'power'
     | 'focus'
     | 'cunning'
+    | 'luck'
     | 'reaction'
     | 'other',
+  ability: 'power' as 'power' | 'focus' | 'cunning' | 'luck',
+  range: undefined as number | undefined,
   damage: '1d6' as (typeof dieSizes)[number] | '',
   element: '' as (typeof elements)[number] | '',
   condition: '',

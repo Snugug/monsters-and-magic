@@ -1038,8 +1038,24 @@
                   <option value="focus">Focus Save</option>
                   <option value="power">Power Save</option>
                   <option value="cunning">Cunning Save</option>
+                  <option value="luck">Luck Save</option>
                   <option value="reaction">Reaction</option>
                   <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="group">
+                <label for="nwa-ability-{i}">Ability</label>
+                <select
+                  name="nwa-ability-{i}"
+                  id="nwa-ability-{i}"
+                  bind:value={l.ability}
+                  disabled={l.type === 'other'}
+                  required={l.type !== 'other'}
+                >
+                  <option value="power">Power</option>
+                  <option value="focus">Focus</option>
+                  <option value="cunning">Cunning</option>
+                  <option value="luck">Luck</option>
                 </select>
               </div>
               <div class="group">
@@ -1084,6 +1100,17 @@
                     <option value={e.title}>{capitalize(e.title)}</option>
                   {/each}
                 </select>
+              </div>
+              <div class="group">
+                <label for="nwa-range-{i}">Range (ft)</label>
+                <input
+                  type="number"
+                  name="nwa-range-{i}"
+                  id="nwa-range-{i}"
+                  bind:value={l.range}
+                  min="5"
+                  step="5"
+                />
               </div>
 
               <div class="group">

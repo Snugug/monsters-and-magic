@@ -334,9 +334,15 @@ const monsters = defineCollection({
           'power',
           'focus',
           'cunning',
+          'luck',
           'reaction',
           'other',
         ]),
+        ability: z
+          .enum(['power', 'focus', 'cunning', 'luck'])
+          .default('power')
+          .optional(),
+        range: z.number().min(5).optional(),
         damage: dieSizes.or(z.literal('')),
         element: elements.or(z.literal('')),
         condition: reference('conditions').or(z.literal('')),

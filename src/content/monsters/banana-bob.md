@@ -59,6 +59,8 @@ attacks:
     recharge: 1d8
     thread: true
     description: Do A Thing
+    ability: power
+    range: 30
   - name: And A Save
     type: focus
     damage: 1d6
@@ -70,6 +72,7 @@ attacks:
     recharge: ""
     thread: false
     description: A Thing
+    ability: focus
   - name: Shield
     type: reaction
     damage: ""
@@ -81,6 +84,7 @@ attacks:
     recharge: ""
     thread: false
     description: Look at me now
+    ability: cunning
   - name: The Attack
     type: attack
     damage: 1d6
@@ -92,6 +96,7 @@ attacks:
     recharge: ""
     thread: true
     description: Do a normal attack
+    ability: luck
   - name: Oh No
     type: cunning
     damage: ""
@@ -103,6 +108,7 @@ attacks:
     recharge: ""
     thread: false
     description: Save or Suck
+    ability: power
   - name: Go Fast
     type: other
     damage: 1d6
@@ -114,6 +120,7 @@ attacks:
     recharge: 1d10
     thread: false
     description: Go Fast Go Far
+    ability: power
 techniques:
   - brother-sister
 cantrips:
