@@ -97,4 +97,5 @@ photophobic: false
 siege: false
 abduct: false
 ac: 0
+mastery: false
 ---

@@ -81,4 +81,5 @@ burden: false
 aggressive: true
 grappler: false
 ac: 6
+mastery: false
 ---

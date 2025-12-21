@@ -310,8 +310,16 @@
 
   // Reset monster traits if lineage changes
   $effect(() => {
-    if (monster.lineage !== lineage) {
-      monster.traits = [];
+    if (lineage && monster.lineage !== lineage) {
+      monster.traits = monster.traits.filter((t) => {
+        const f = traits.find((tr) => tr.id === t);
+        if (f) {
+          return f.lineage.id === lineage;
+        }
+
+        return false;
+      });
+      // monster.traits = [];
       lineage = monster.lineage;
     }
   });
@@ -830,7 +838,7 @@
         <legend>{equipment ? 'Equipment & ' : 'Weapons & '}Training</legend>
         <fieldset>
           <legend>Natural Weapons</legend>
-          <div class="weapon-group">
+          <div class="natural-weapon-group">
             <Repeater bind:list={monster.naturalWeapons} base={nwBase} min="1">
               {#snippet item(
                 l: typeof nwBase,
@@ -870,6 +878,41 @@
                   >
                     {#each elements as e}
                       <option value={e}>{capitalize(e)}</option>
+                    {/each}
+                  </select>
+                </div>
+                <div class="group">
+                  <label for="base-nw-range-{i}">Range (ft)</label>
+                  <input
+                    type="number"
+                    id="base-nw-range-{i}"
+                    bind:value={l.range}
+                    min="5"
+                    step="5"
+                  />
+                </div>
+                <div class="group">
+                  <label for="base-nw-properties-{i}">Properties</label>
+                  <select
+                    id="base-nw-properties-{i}"
+                    multiple
+                    bind:value={l.properties}
+                  >
+                    {#each ['agile', 'precise', 'reload', 'two-handed', 'thrown', 'versatile', 'piercing', 'reach'] as p}
+                      <option
+                        value={p}
+                        disabled={l.range && (p === 'thrown' || p === 'reach')}
+                        >{capitalize(p)}</option
+                      >
+                    {/each}
+                  </select>
+                </div>
+                <div class="group">
+                  <label for="base-nw-mastery-{i}">Mastery</label>
+                  <select id="base-nw-mastery-{i}" bind:value={l.mastery}>
+                    <option value="">-</option>
+                    {#each ['nick', 'graze', 'ring', 'cleave', 'sap', 'pinpoint'] as m}
+                      <option value={m}>{capitalize(m)}</option>
                     {/each}
                   </select>
                 </div>
@@ -1416,6 +1459,31 @@
     grid-column: 1 / -1;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
+    // grid-template-columns: repeat(3, 1fr);
+  }
+
+  .natural-weapon-group {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+
+    select[multiple] {
+      height: 2rem;
+    }
+
+    :global(.actions) {
+      grid-column: 1 / -1;
+    }
+
+    :global(.actions button) {
+      height: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-inline: auto;
+    }
+    // grid-template-columns: repeat(3, 1fr);
   }
 
   .full {

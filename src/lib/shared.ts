@@ -84,6 +84,9 @@ export const newWeaponBase = {
   name: 'Fist' as string,
   damage: '1d6' as (typeof dieSizes)[number],
   element: 'physical' as (typeof elements)[number],
+  range: undefined as number | undefined,
+  properties: [] as string[],
+  mastery: '' as string,
 };
 
 export const newAttackBase = {
@@ -290,6 +293,11 @@ Legendary Resistance
     points: 1,
     full: `Doesn't need to spend extra movement to move a grappled creature`,
     short: 'Can move a grappled creature at normal speed',
+  },
+  mastery: {
+    points: 1,
+    full: 'Can use weapon mastery properties',
+    hidden: true,
   },
 } as const;
 

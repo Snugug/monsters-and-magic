@@ -9,7 +9,8 @@ power: 3
 cunning: 4
 luck: 0
 lineage: elf
-traits: []
+traits:
+  - fey-touched
 feats:
   - rage
 weapons:
@@ -34,7 +35,7 @@ climbing: 0
 swimming: 0
 burrowing: 0
 savage: 1
-strong: 2
+strong: 1
 energetic: 1
 conditioned: 1
 spicy: fatigue
@@ -44,9 +45,16 @@ naturalWeapons:
     damage: 2d8
     type: physical
     element: necrotic
+    ranged: true
+    range: 30
   - name: Tail
     damage: 1d6
     element: physical
+    ranged: false
+    properties:
+      - agile
+      - reach
+    mastery: graze
 attacks:
   - name: Test Attack Action
     type: attack
@@ -174,6 +182,7 @@ tunneler: false
 photophobic: false
 siege: false
 abduct: false
+mastery: true
 vicious: 0
 elemental: ""
 ---

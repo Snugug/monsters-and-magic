@@ -323,6 +323,24 @@ const monsters = defineCollection({
           name: z.string(),
           damage: dieSizes,
           element: elements,
+          range: z.number().min(5).optional(),
+          properties: z
+            .array(
+              z.enum([
+                'agile',
+                'precise',
+                'reload',
+                'two-handed',
+                'thrown',
+                'versatile',
+                'piercing',
+                'reach',
+              ]),
+            )
+            .optional(),
+          mastery: z
+            .enum(['nick', 'graze', 'ring', 'cleave', 'sap', 'pinpoint'])
+            .optional(),
         }),
       )
       .min(1),

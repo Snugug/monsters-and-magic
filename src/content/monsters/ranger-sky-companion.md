@@ -85,6 +85,7 @@ burden: false
 aggressive: false
 vicious: -1
 elemental: ""
+mastery: false
 ---
 
 A Ranger's companion that takes the form of a small flying creature

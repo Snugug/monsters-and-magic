@@ -91,4 +91,5 @@ amorphous: false
 burden: false
 aggressive: true
 grappler: false
+mastery: false
 ---
