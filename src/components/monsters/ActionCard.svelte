@@ -81,7 +81,10 @@
         {damageBonusStr}
         {attack.element || 'damage'}
         {#if piercingStr}
-          <span class="properties">({piercingStr} Piercing)</span>
+          <span class="properties"
+            >(<s-ref src="properties/piercing">{piercingStr} Piercing</s-ref
+            >)</span
+          >
         {/if}
       </p>
     {/if}

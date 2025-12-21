@@ -75,7 +75,7 @@ export const modified = {
   forward: 'glossary/forward',
   fatigue: 'glossary/fatigue',
   exhaustion: 'glossary/exhaustion',
-  piercing: 'glossary/piercing',
+  piercing: 'properties/piercing',
   ac: 'glossary/armor-class',
   ap: 'glossary/action-points',
   hp: 'glossary/hit-points',

@@ -148,8 +148,10 @@
             {w.element}
             {#if propsArray.length > 0}
               <span class="properties">
-                ({#each propsArray as p, i}{#if p.includes('Piercing')}{p}{:else}<s-ref
-                      src={`properties/${p}`}>{capitalize(p)}</s-ref
+                ({#each propsArray as p, i}{#if p.includes('Piercing')}<s-ref
+                      src="properties/piercing">{p}</s-ref
+                    >{:else}<s-ref src={`properties/${p}`}
+                      >{capitalize(p)}</s-ref
                     >{/if}{#if i < propsArray.length - 1},
                   {/if}{/each})
               </span>
@@ -174,8 +176,10 @@
             {w.element}
             {#if propsArray.length > 0}
               <span class="properties">
-                ({#each propsArray as p, i}{#if p.includes('Piercing')}{p}{:else}<s-ref
-                      src={`glossary/${p}`}>{capitalize(p)}</s-ref
+                ({#each propsArray as p, i}{#if p.includes('Piercing')}<s-ref
+                      src="properties/piercing">{p}</s-ref
+                    >{:else}<s-ref src={`properties/${p}`}
+                      >{capitalize(p)}</s-ref
                     >{/if}{#if i < propsArray.length - 1},
                   {/if}{/each})
               </span>
