@@ -4,7 +4,7 @@ import type {
   APIContext,
 } from 'astro';
 
-import { posthtml } from '$lib/posthtml';
+import { posthtml } from '$$lib/posthtml';
 import { sequence } from 'astro/middleware';
 import { extname } from 'path';
 

@@ -33,7 +33,7 @@
   import Icon from '$components/Icon.svelte';
   import { tick } from 'svelte';
   import { delMany, getMany, setMany } from 'idb-keyval';
-  import { addToast } from '$lib/toast.svelte';
+  import { addToast } from '$js/toast.svelte';
 
   const [
     lineages,

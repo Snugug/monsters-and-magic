@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 export type ToastType = 'success' | 'failure' | 'info';
 
 export interface Toast {

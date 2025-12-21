@@ -9,7 +9,7 @@
   import { slugify } from '$lib/helpers';
   import { untrack } from 'svelte';
   import { getMany, setMany, delMany } from 'idb-keyval';
-  import { addToast } from '$lib/toast.svelte';
+  import { addToast } from '$js/toast.svelte';
   import ImageDialog from '$components/ImageDialog.svelte';
   import Icon from '$components/Icon.svelte';
   import Loader from '$components/Loader.svelte';

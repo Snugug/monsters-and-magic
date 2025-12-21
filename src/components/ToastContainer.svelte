@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getToasts, removeToast } from '$lib/toast.svelte';
+  import { getToasts, removeToast } from '$js/toast.svelte';
   import Icon from '$components/Icon.svelte';
   import { flip } from 'svelte/animate';
   import { fade, fly } from 'svelte/transition';
