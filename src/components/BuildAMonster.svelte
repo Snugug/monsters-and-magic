@@ -1468,21 +1468,25 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
 
+    .group:has([for^='base-nw-properties']) {
+      grid-row: span 2;
+    }
+
     select[multiple] {
-      height: 2rem;
+      height: 4rem;
     }
 
     :global(.actions) {
-      grid-column: 1 / -1;
+      grid-column: -2;
     }
 
-    :global(.actions button) {
-      height: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-inline: auto;
-    }
+    // :global(.actions button) {
+    //   height: 1rem;
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+    //   margin-inline: auto;
+    // }
     // grid-template-columns: repeat(3, 1fr);
   }
 
