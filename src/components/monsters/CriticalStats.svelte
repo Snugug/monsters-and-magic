@@ -43,12 +43,6 @@
           monster.armor.map(async (a) => (await getEntry(a)).data.title),
         )
       : [];
-
-  /**
-   * Check if damage modifiers should be displayed:
-   * only show section if bonus OR piercing is non-zero
-   */
-  const hasDamageModifiers = m.bonus !== 0 || m.piercing !== 0;
 </script>
 
 <dl class="critical ahs">
@@ -68,23 +62,6 @@
     <dt>Speed</dt>
     <dd>{getSpeed(m.speed)}</dd>
   </div>
-
-  {#if hasDamageModifiers}
-    <div class="cgroup">
-      {#if m.bonus !== 0}
-        <div class="cgroup">
-          <dt>Damage</dt>
-          <dd>{formatBonus(m.bonus)}</dd>
-        </div>
-      {/if}
-      {#if m.piercing !== 0}
-        <div class="cgroup">
-          <dt>Piercing</dt>
-          <dd>{formatBonus(m.piercing)}</dd>
-        </div>
-      {/if}
-    </div>
-  {/if}
 
   <div class="cgroup">
     <div class="cgroup">
