@@ -351,6 +351,7 @@ const monsters = defineCollection({
             .optional(),
           mastery: z
             .enum(['nick', 'graze', 'ring', 'cleave', 'sap', 'pinpoint'])
+            .or(z.literal(''))
             .optional(),
         }),
       )
