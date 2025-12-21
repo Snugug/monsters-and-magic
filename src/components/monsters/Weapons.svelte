@@ -149,7 +149,7 @@
             {#if propsArray.length > 0}
               <span class="properties">
                 ({#each propsArray as p, i}{#if p.includes('Piercing')}{p}{:else}<s-ref
-                      src={`glossary/${p}`}>{capitalize(p)}</s-ref
+                      src={`properties/${p}`}>{capitalize(p)}</s-ref
                     >{/if}{#if i < propsArray.length - 1},
                   {/if}{/each})
               </span>

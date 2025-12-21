@@ -1,0 +1,31 @@
+---
+import Layout from '$layouts/Layout.astro';
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+
+export const getStaticPaths = (async () => {
+  return await Promise.all(
+    (await getCollection('properties')).map(async (term) => {
+      const { Content } = await term.render();
+      return {
+        params: {
+          slug: term.slug,
+        },
+        props: {
+          meta: term.data,
+          Content,
+        },
+      };
+    }),
+  );
+}) satisfies GetStaticPaths;
+
+const { meta, Content } = Astro.props;
+---
+
+<Layout>
+  <h1 id="title">{meta.title}</h1>
+  <div id="content" class="type">
+    <Content />
+  </div>
+</Layout>
