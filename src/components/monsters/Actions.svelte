@@ -1,12 +1,20 @@
-<script>
+<script lang="ts">
   import ActionCard from './ActionCard.svelte';
+  import type { Monster } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
 
-  const meta = monster;
-  const hasActions = meta.attacks.length > 0;
+  const { monster, m }: Props = $props();
 
-  // Global piercing from the monster
+  const hasActions = monster.attacks.length > 0;
+
+  /**
+   * Global piercing and damage bonus values from calculated monster stats
+   */
   const globalPiercing = m.piercing;
   const globalDamageBonus = m.bonus;
 </script>
@@ -15,8 +23,14 @@
   <div class="tgroup">
     <h2>Actions</h2>
     <div class="action-cards">
-      {#each meta.attacks as attack}
-        <ActionCard {attack} {meta} {m} {globalDamageBonus} {globalPiercing} />
+      {#each monster.attacks as attack}
+        <ActionCard
+          {attack}
+          meta={monster}
+          {m}
+          {globalDamageBonus}
+          {globalPiercing}
+        />
       {/each}
     </div>
   </div>

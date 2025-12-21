@@ -1,21 +1,30 @@
-<script>
+<script lang="ts">
   import { getEntry } from 'astro:content';
+  import type { Monster } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
 
-  const meta = monster;
+  const { monster, m }: Props = $props();
 
-  // Fetch cantrip entries
+  /**
+   * Fetch cantrip entries with their data for display
+   */
   const cantripEntries = await Promise.all(
-    meta.cantrips.map(async (c) => {
+    monster.cantrips.map(async (c) => {
       const entry = await getEntry(c);
       return { id: c, data: entry.data };
     }),
   );
 
-  // Fetch charm entries
+  /**
+   * Fetch charm entries with their data for display
+   */
   const charmEntries = await Promise.all(
-    meta.charms.map(async (c) => {
+    monster.charms.map(async (c) => {
       const entry = await getEntry(c);
       return { id: c, data: entry.data };
     }),
@@ -23,16 +32,36 @@
 
   const hasSpellcasting = cantripEntries.length > 0 || charmEntries.length > 0;
 
-  const dc = 8 + m.cr + monster[monster.spellcasting];
+  /**
+   * Calculate spellcasting DC using the monster's spellcasting ability
+   */
+  const spellcastingAbility = monster.spellcasting as
+    | 'power'
+    | 'focus'
+    | 'cunning'
+    | 'luck';
+  const dc = 8 + m.cr + (monster[spellcastingAbility] || 0);
+
+  /**
+   * Format bonus with proper sign: +N for positive, -N for negative, empty for 0
+   */
+  function formatBonus(value: number): string {
+    if (value > 0) return `+${value}`;
+    if (value < 0) return `${value}`;
+    return '';
+  }
+
+  const bonusStr = formatBonus(m.bonus);
+  const piercingStr = formatBonus(m.piercing);
 </script>
 
 {#if hasSpellcasting}
   <div class="tgroup">
     <h2>Spellcasting</h2>
     <p>
-      DC: {dc} Attack: +{dc - 8}{m.bonus !== 0
-        ? ` ${m.bonus}`
-        : ''}{m.piercing !== 0 ? `, ${m.piercing} piercing` : ''}
+      DC: {dc} Attack: +{dc - 8}{bonusStr ? ` ${bonusStr}` : ''}{piercingStr
+        ? `, ${piercingStr} piercing`
+        : ''}
     </p>
     {#if cantripEntries.length > 0}
       <p>

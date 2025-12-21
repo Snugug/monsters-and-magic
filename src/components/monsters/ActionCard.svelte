@@ -1,17 +1,51 @@
-<script>
-  const { attack, meta, m, globalDamageBonus, globalPiercing } = $props();
+<script lang="ts">
+  import type { Monster, newAttackBase } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  // Determine if this is a save type
+  interface Props {
+    attack: typeof newAttackBase;
+    meta: Monster;
+    m: CalculatedMonster;
+    globalDamageBonus: number;
+    globalPiercing: number;
+  }
+
+  const { attack, meta, m, globalDamageBonus, globalPiercing }: Props =
+    $props();
+
+  /**
+   * Determines if the attack is a save-based attack (uses ability save DC)
+   */
   const isSave = ['power', 'focus', 'cunning', 'luck'].includes(attack.type);
   const isReaction = attack.type === 'reaction';
 
-  // Use ability field for stat, default to power
+  /**
+   * Calculate attack stats using the ability field, defaulting to power
+   */
   const abilityKey = attack.ability || 'power';
   const attackStat = meta[abilityKey];
   const dc = 8 + attackStat + m.cr;
   const damageBonus = attackStat + globalDamageBonus;
+
+  /**
+   * Format damage bonus with proper sign: +N for positive, -N for negative, empty for 0
+   */
   const damageBonusStr =
-    damageBonus >= 0 ? `+${damageBonus}` : `${damageBonus}`;
+    damageBonus > 0
+      ? `+${damageBonus}`
+      : damageBonus < 0
+        ? `${damageBonus}`
+        : '';
+
+  /**
+   * Format piercing with proper sign: +N for positive, -N for negative, empty for 0
+   */
+  const piercingStr =
+    globalPiercing > 0
+      ? `+${globalPiercing}`
+      : globalPiercing < 0
+        ? `${globalPiercing}`
+        : '';
 </script>
 
 <div class="action-card">
@@ -46,7 +80,9 @@
         {attack.damage}
         {damageBonusStr}
         {attack.element || 'damage'}
-        <span class="properties"> (+{globalPiercing} Piercing)</span>
+        {#if piercingStr}
+          <span class="properties">({piercingStr} Piercing)</span>
+        {/if}
       </p>
     {/if}
 

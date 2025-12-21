@@ -1,23 +1,32 @@
-<script>
+<script lang="ts">
   import { getEntry } from 'astro:content';
+  import type { Monster } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
 
-  const meta = monster;
-  const lineageTitle = meta.lineage.id
-    ? (await getEntry(meta.lineage)).data.title
+  const { monster, m }: Props = $props();
+
+  /**
+   * Resolve lineage reference to get its display title
+   */
+  const lineageTitle = monster.lineage.id
+    ? (await getEntry(monster.lineage)).data.title
     : '';
 </script>
 
 <header>
-  <h1 class="title modesto">{meta.title}</h1>
+  <h1 class="title modesto">{monster.title}</h1>
   <p class="size-type">
-    {meta.ancient && 'Ancient '}
-    {meta.legendary && 'Legendary '}
-    {meta.size}
-    {meta.swarm
-      ? ` swarm of ${meta.swarm} ${meta.type}s`
-      : meta.type}{lineageTitle ? ` (${lineageTitle})` : ''}
+    {#if monster.ancient}Ancient
+    {/if}{#if monster.legendary}Legendary
+    {/if}{monster.size}
+    {monster.swarm
+      ? ` swarm of ${monster.swarm} ${monster.type}s`
+      : monster.type}{lineageTitle ? ` (${lineageTitle})` : ''}
   </p>
 </header>
 

@@ -1,12 +1,19 @@
-<script>
+<script lang="ts">
   import { getEntry } from 'astro:content';
+  import type { Monster } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
 
-  const meta = monster;
+  const { monster, m }: Props = $props();
 
-  // Calculate attack stat based on weapon properties
-  function getSpeed(s) {
+  /**
+   * Format speed output string from speed object
+   */
+  function getSpeed(s: Record<string, number>): string {
     let output = '';
     for (const [t, sp] of Object.entries(s)) {
       if (t === 'walking') {
@@ -18,22 +25,37 @@
     return output;
   }
 
-  // Resolve armor titles
+  /**
+   * Format bonus/piercing with proper sign: +N for positive, -N for negative, empty for 0
+   */
+  function formatBonus(value: number): string {
+    if (value > 0) return `+${value}`;
+    if (value < 0) return `${value}`;
+    return '';
+  }
+
+  /**
+   * Resolve armor entries to get their display titles
+   */
   const armorTitles =
-    meta.armor.length > 0
+    monster.armor.length > 0
       ? await Promise.all(
-          meta.armor.map(async (a) => (await getEntry(a)).data.title),
+          monster.armor.map(async (a) => (await getEntry(a)).data.title),
         )
       : [];
 
-  const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
+  /**
+   * Check if damage modifiers should be displayed:
+   * only show section if bonus OR piercing is non-zero
+   */
+  const hasDamageModifiers = m.bonus !== 0 || m.piercing !== 0;
 </script>
 
 <dl class="critical ahs">
   <div class="cgroup">
     <dt>AC</dt>
     <dd>
-      {m.ac}{armorTitles.length > 0 && ` (${armorTitles.join(', ')})`}
+      {m.ac}{armorTitles.length > 0 ? ` (${armorTitles.join(', ')})` : ''}
     </dd>
   </div>
 
@@ -52,13 +74,13 @@
       {#if m.bonus !== 0}
         <div class="cgroup">
           <dt>Damage</dt>
-          <dd>+{m.bonus}</dd>
+          <dd>{formatBonus(m.bonus)}</dd>
         </div>
       {/if}
       {#if m.piercing !== 0}
         <div class="cgroup">
           <dt>Piercing</dt>
-          <dd>+{m.piercing}</dd>
+          <dd>{formatBonus(m.piercing)}</dd>
         </div>
       {/if}
     </div>
@@ -82,19 +104,19 @@
   <div class="cgroup">
     <div class="cgroup">
       <dt>FCS</dt>
-      <dd>{meta.focus}</dd>
+      <dd>{monster.focus}</dd>
     </div>
     <div class="cgroup">
       <dt>PWR</dt>
-      <dd>{meta.power}</dd>
+      <dd>{monster.power}</dd>
     </div>
     <div class="cgroup">
       <dt>CNG</dt>
-      <dd>{meta.cunning}</dd>
+      <dd>{monster.cunning}</dd>
     </div>
     <div class="cgroup">
       <dt>LCK</dt>
-      <dd>{meta.luck}</dd>
+      <dd>{monster.luck}</dd>
     </div>
   </div>
 </dl>

@@ -1,17 +1,32 @@
-<script>
+<script lang="ts">
   import { swarmImmunities } from '$lib/shared';
+  import type { Monster, elem } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
 
-  const meta = monster;
+  const { monster, m }: Props = $props();
 
-  const resist = [...meta.resistance];
-  const vuln = meta.vulnerable;
-  const absorb = meta.absorbent;
-  const immune = [...meta.immunity, ...meta.conditions];
+  /**
+   * Build resistance list, adding physical resistance for swarms
+   */
+  const resist = [...monster.resistance] as string[];
+  const vuln = monster.vulnerable;
+  const absorb = monster.absorbent;
 
-  if (meta.swarm) {
-    if (!meta.immunity.includes('physical')) {
+  /**
+   * Build immunity list, combining elemental immunities and conditions,
+   * plus swarm-specific condition immunities
+   */
+  const immune = [...monster.immunity, ...monster.conditions] as Array<
+    string | { id: string; collection: string }
+  >;
+
+  if (monster.swarm) {
+    if (!monster.immunity.includes('physical')) {
       resist.push('physical');
     }
 
@@ -20,11 +35,15 @@
     }
   }
 
-  function vision(v) {
+  /**
+   * Format vision types into a readable string
+   */
+  function vision(v: string[]): string {
     let output = '';
     for (const t of v) {
-      if (meta[t]) {
-        output += `, ${t} ${meta[t]} ft.`;
+      const key = t as keyof Monster;
+      if (monster[key]) {
+        output += `, ${t} ${monster[key]} ft.`;
       } else {
         output += `, ${t}`;
       }
@@ -32,10 +51,15 @@
     return output.slice(2);
   }
 
-  function immuneStr(i) {
+  /**
+   * Format immunities list, rendering references as s-ref elements
+   */
+  function immuneStr(
+    i: Array<string | { id: string; collection: string }>,
+  ): string {
     let output = '';
     for (const im of i) {
-      if (im.id) {
+      if (typeof im === 'object' && im.id) {
         output += `, <s-ref src="${im.collection}/${im.id}">${im.id}</s-ref>`;
       } else {
         output += `, ${im}`;
@@ -74,10 +98,10 @@
     </div>
   {/if}
 
-  {#if meta.vision.length > 0}
+  {#if monster.vision.length > 0}
     <div class="cgroup">
       <dt>Senses</dt>
-      <dd class="cap">{vision(meta.vision)}</dd>
+      <dd class="cap">{vision(monster.vision)}</dd>
     </div>
   {/if}
 

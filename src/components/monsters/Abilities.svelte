@@ -1,24 +1,34 @@
-<script>
+<script lang="ts">
   import { getEntry } from 'astro:content';
   import { createMarkdownProcessor } from '@astrojs/markdown-remark';
   import { markdown } from '$$lib/markdown';
+  import type { Monster } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
 
-  const meta = monster;
+  const { monster, m }: Props = $props();
+
   const md = await createMarkdownProcessor(markdown);
 
-  // Fetch technique entries
+  /**
+   * Fetch technique entries with their data for display
+   */
   const techniqueEntries = await Promise.all(
-    meta.techniques.map(async (t) => {
+    monster.techniques.map(async (t) => {
       const entry = await getEntry(t);
       return { id: t, data: entry.data };
     }),
   );
 
-  // Prepare feats with rendered content
-  const featDisplays = [];
-  for (const f of meta.feats) {
+  /**
+   * Prepare feats with rendered markdown content
+   */
+  const featDisplays: Array<{ name: string; html: string }> = [];
+  for (const f of monster.feats) {
     const feat = await getEntry(f);
     const desc = (await md.render(`**${feat.data.title}:** ` + feat.body)).code;
     featDisplays.push({ name: feat.data.title, html: desc });

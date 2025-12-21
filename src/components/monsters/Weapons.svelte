@@ -1,36 +1,75 @@
-<script>
+<script lang="ts">
   import { getEntry } from 'astro:content';
   import { capitalize } from '$lib/helpers';
+  import type { Monster } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
-
-  const meta = monster;
-
-  // Check if monster has mastery tag
-  const hasMastery = meta.mastery === true;
-
-  // Calculate attack stat based on weapon properties
-  function getAttackStat(properties = []) {
-    if (properties.includes('agile')) {
-      return Math.max(meta.cunning, meta.power);
-    } else if (properties.includes('precise')) {
-      return Math.max(meta.focus, meta.power);
-    }
-    return meta.power;
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
   }
 
-  // Global piercing from the monster
+  interface WeaponDisplay {
+    name: string;
+    damage: string;
+    element: string;
+    properties: string[];
+    mastery?: string;
+    range?: number;
+    isNatural: boolean;
+    toHit: number;
+    damageBonus: number;
+    piercing: number;
+  }
+
+  const { monster, m }: Props = $props();
+
+  /**
+   * Check if monster has mastery tag for displaying weapon mastery
+   */
+  const hasMastery = monster.mastery === true;
+
+  /**
+   * Calculate attack stat based on weapon properties:
+   * - agile: max(cunning, power)
+   * - precise: max(focus, power)
+   * - default: power
+   */
+  function getAttackStat(properties: string[] = []): number {
+    if (properties.includes('agile')) {
+      return Math.max(monster.cunning, monster.power);
+    } else if (properties.includes('precise')) {
+      return Math.max(monster.focus, monster.power);
+    }
+    return monster.power;
+  }
+
+  /**
+   * Format bonus/piercing with proper sign: +N for positive, -N for negative, empty for 0
+   */
+  function formatBonus(value: number): string {
+    if (value > 0) return `+${value}`;
+    if (value < 0) return `${value}`;
+    return '';
+  }
+
+  /**
+   * Global piercing and damage bonus from calculated monster stats
+   */
   const globalPiercing = m.piercing;
   const globalDamageBonus = m.bonus;
 
-  const allWeapons = [
-    ...meta.naturalWeapons.map((w) => {
+  /**
+   * Build combined list of all weapons (natural + equipped)
+   */
+  const allWeapons: WeaponDisplay[] = [
+    ...monster.naturalWeapons.map((w) => {
       const attackStat = getAttackStat(w.properties || []);
       return {
         name: w.name,
         damage: w.damage,
         element: w.element,
-        properties: w.properties,
+        properties: w.properties || [],
         mastery: hasMastery ? w.mastery : undefined,
         range: w.range,
         isNatural: true,
@@ -40,7 +79,7 @@
       };
     }),
     ...(await Promise.all(
-      meta.weapons.map(async (w) => {
+      monster.weapons.map(async (w) => {
         const weapon = await getEntry(w);
         const attackStat = getAttackStat(weapon.data.properties);
         const weaponRange =
@@ -49,7 +88,7 @@
           name: weapon.data.title,
           damage: weapon.data.damage,
           element: 'physical',
-          properties: weapon.data.properties,
+          properties: weapon.data.properties || [],
           range: weaponRange,
           isNatural: false,
           toHit: attackStat,
@@ -65,6 +104,30 @@
   const rangedWeapons = allWeapons.filter((w) => w.range);
   const hasBothWeaponTypes =
     meleeWeapons.length > 0 && rangedWeapons.length > 0;
+
+  /**
+   * Build properties string for weapon display, handling empty parentheses
+   */
+  function buildPropertiesArray(w: WeaponDisplay): string[] {
+    const parts: string[] = [];
+
+    // Add weapon properties
+    if (w.properties.length > 0) {
+      parts.push(...w.properties);
+    }
+
+    // Add piercing if non-zero
+    if (w.piercing !== 0) {
+      parts.push(`${formatBonus(w.piercing)} Piercing`);
+    }
+
+    // Add mastery if present
+    if (w.mastery) {
+      parts.push(w.mastery);
+    }
+
+    return parts;
+  }
 </script>
 
 {#if hasWeapons}
@@ -76,23 +139,21 @@
     {#if meleeWeapons.length > 0}
       <ul class="weapons-list">
         {#each meleeWeapons as w}
-          {@const damageBonusStr =
-            w.damageBonus >= 0 ? `+${w.damageBonus}` : `${w.damageBonus}`}
+          {@const damageBonusStr = formatBonus(w.damageBonus)}
+          {@const propsArray = buildPropertiesArray(w)}
           <li>
             <strong>{w.name}</strong>
             <span class="to-hit">To Hit +{w.toHit}</span>, {w.damage}
             {damageBonusStr}
             {w.element}
-            <span class="properties">
-              ({#each w.properties || [] as p, i}<s-ref src={`glossary/${p}`}
-                  >{capitalize(p)}</s-ref
-                >{#if i < (w.properties?.length || 0) - 1},
-                {/if}{/each}{#if w.piercing > 0}{w.properties?.length
-                  ? ', '
-                  : ''}+{w.piercing} Piercing{/if}{#if w.mastery}, <s-ref
-                  src={`glossary/${w.mastery}`}>{capitalize(w.mastery)}</s-ref
-                >{/if})
-            </span>
+            {#if propsArray.length > 0}
+              <span class="properties">
+                ({#each propsArray as p, i}{#if p.includes('Piercing')}{p}{:else}<s-ref
+                      src={`glossary/${p}`}>{capitalize(p)}</s-ref
+                    >{/if}{#if i < propsArray.length - 1},
+                  {/if}{/each})
+              </span>
+            {/if}
           </li>
         {/each}
       </ul>
@@ -103,24 +164,22 @@
     {#if rangedWeapons.length > 0}
       <ul class="weapons-list">
         {#each rangedWeapons as w}
-          {@const damageBonusStr =
-            w.damageBonus >= 0 ? `+${w.damageBonus}` : `${w.damageBonus}`}
+          {@const damageBonusStr = formatBonus(w.damageBonus)}
+          {@const propsArray = buildPropertiesArray(w)}
           <li>
             <strong>{w.name}</strong>
             <span class="range">(Range: {w.range} ft)</span>
             <span class="to-hit">To Hit +{w.toHit}</span>, {w.damage}
             {damageBonusStr}
             {w.element}
-            <span class="properties">
-              ({#each w.properties || [] as p, i}<s-ref src={`glossary/${p}`}
-                  >{capitalize(p)}</s-ref
-                >{#if i < (w.properties?.length || 0) - 1},
-                {/if}{/each}{#if w.piercing > 0}{w.properties?.length
-                  ? ', '
-                  : ''}+{w.piercing} Piercing{/if}{#if w.mastery}, <s-ref
-                  src={`glossary/${w.mastery}`}>{capitalize(w.mastery)}</s-ref
-                >{/if})
-            </span>
+            {#if propsArray.length > 0}
+              <span class="properties">
+                ({#each propsArray as p, i}{#if p.includes('Piercing')}{p}{:else}<s-ref
+                      src={`glossary/${p}`}>{capitalize(p)}</s-ref
+                    >{/if}{#if i < propsArray.length - 1},
+                  {/if}{/each})
+              </span>
+            {/if}
           </li>
         {/each}
       </ul>

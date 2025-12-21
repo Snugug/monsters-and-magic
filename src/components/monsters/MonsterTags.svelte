@@ -1,6 +1,17 @@
-<script>
-  const { monster, m } = $props();
+<script lang="ts">
+  import type { Monster } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
+
+  const { monster, m }: Props = $props();
+
+  /**
+   * Filter out the 'mastery' tag as it's handled separately
+   */
   const filteredTags = m.tags.filter((t) => t !== 'mastery');
   const hasTags = filteredTags.length > 0;
 </script>

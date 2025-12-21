@@ -1,60 +1,73 @@
-<script>
+<script lang="ts">
   import { getEntry } from 'astro:content';
   import { createMarkdownProcessor } from '@astrojs/markdown-remark';
   import { markdown } from '$$lib/markdown';
   import { tags } from '$lib/shared';
   import { capitalize } from '$lib/helpers';
+  import type { Monster, allTags } from '$lib/shared';
+  import type { CalculatedMonster } from '$lib/monsters';
 
-  const { monster, m } = $props();
+  interface Props {
+    monster: Monster;
+    m: CalculatedMonster;
+  }
 
-  const meta = monster;
+  interface TraitDisplay {
+    name: string;
+    html: string;
+  }
+
+  const { monster, m }: Props = $props();
   const md = await createMarkdownProcessor(markdown);
 
-  // Collect all traits into a single array with { name, html } structure
-  const allTraits = [];
+  /**
+   * Collect all traits into a single array with { name, html } structure
+   */
+  const allTraits: TraitDisplay[] = [];
 
   // 1. Lineage traits
-  for (const t of meta.traits) {
+  for (const t of monster.traits) {
     const tr = await getEntry(t);
     const desc = (await md.render(`**${tr.data.title}:** ` + tr.body)).code;
     allTraits.push({ name: tr.data.title, html: desc });
   }
 
-  // 2. Swarm
-  if (meta.swarm !== false) {
+  // 2. Swarm trait
+  if (monster.swarm !== false) {
     allTraits.push({
       name: 'Swarm',
       html: '<p><strong>Swarm:</strong> Cannot gain temporary HP, cannot regain HP, deal ½ damage when bloodied.</p>',
     });
   }
 
-  // 3. Spicy
-  if (meta.spicy !== '') {
+  // 3. Spicy trait
+  if (monster.spicy !== '') {
     const spicyText =
-      meta.spicy === 'fatigue'
-        ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.spicy}`
-        : `takes ${m.baseDamage} ${meta.spicy} damage`;
+      monster.spicy === 'fatigue'
+        ? `marks ¼ of ${m.baseDamage} (minimum 1) ${monster.spicy}`
+        : `takes ${m.baseDamage} ${monster.spicy} damage`;
     allTraits.push({
       name: 'Spicy',
       html: `<p><strong>Spicy:</strong> The first time a creature touches this monster each turn, it ${spicyText}.</p>`,
     });
   }
 
-  // 4. Radiates
-  if (meta.radiates !== '') {
+  // 4. Radiates trait
+  if (monster.radiates !== '') {
     const radiatesText =
-      meta.radiates === 'fatigue'
-        ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.radiates}`
-        : `takes ${m.baseDamage} ${meta.radiates} damage`;
+      monster.radiates === 'fatigue'
+        ? `marks ¼ of ${m.baseDamage} (minimum 1) ${monster.radiates}`
+        : `takes ${m.baseDamage} ${monster.radiates} damage`;
     allTraits.push({
       name: 'Radiates',
       html: `<p><strong>Radiates:</strong> Once each turn when a creature is within ${m.space * 2} ft. of the monster, it ${radiatesText}.</p>`,
     });
   }
 
-  // 5. Tags
+  // 5. Tags that generate traits
   for (const [t, d] of Object.entries(tags)) {
-    if (meta[t]) {
+    const tagKey = t as allTags;
+    if (monster[tagKey]) {
       const tagName = d.tag || capitalize(t);
       const desc = (await md.render(`**${tagName}:** ` + d.full)).code;
       allTraits.push({ name: tagName, html: desc });
