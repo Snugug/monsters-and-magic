@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import { get, set } from 'idb-keyval';
 
 let innerFolder = $state<FileSystemDirectoryHandle | undefined>();
