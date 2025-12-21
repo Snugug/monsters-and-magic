@@ -3,6 +3,7 @@
   import { capitalize } from '$lib/helpers';
   import type { Monster } from '$lib/shared';
   import type { CalculatedMonster } from '$lib/monsters';
+  import Icon from '$components/Icon.svelte';
 
   interface Props {
     monster: Monster;
@@ -102,8 +103,6 @@
   const hasWeapons = allWeapons.length > 0;
   const meleeWeapons = allWeapons.filter((w) => !w.range);
   const rangedWeapons = allWeapons.filter((w) => w.range);
-  const hasBothWeaponTypes =
-    meleeWeapons.length > 0 && rangedWeapons.length > 0;
 
   /**
    * Build properties string for weapon display, handling empty parentheses
@@ -128,66 +127,85 @@
 
     return parts;
   }
+
+  function buildPropertiesList(props: string[]): string {
+    let output = '';
+    output += props
+      .map((p) => {
+        if (p.includes('Piercing')) {
+          return `<s-ref src="properties/piercing">${p}</s-ref>`;
+        }
+        return `<s-ref src="properties/${p}">${capitalize(p)}</s-ref>`;
+      })
+      .join(', ');
+
+    output = output.trimEnd();
+    return output;
+  }
 </script>
 
 {#if hasWeapons}
   <div class="tgroup">
     <h2>Weapons</h2>
-    {#if hasBothWeaponTypes && meleeWeapons.length > 0}
-      <h3>Melee</h3>
-    {/if}
-    {#if meleeWeapons.length > 0}
-      <ul class="weapons-list">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 30%;">Weapon</th>
+          <th style="width: 7ch;">Range</th>
+          <th style="width: 4ch;">Hit</th>
+          <th style="width: 10ch;">Damage</th>
+          <th style="width: 70%;">Properties</th>
+        </tr>
+      </thead>
+      <tbody>
         {#each meleeWeapons as w}
           {@const damageBonusStr = formatBonus(w.damageBonus)}
           {@const propsArray = buildPropertiesArray(w)}
-          <li>
-            <strong>{w.name}</strong>
-            <span class="to-hit">To Hit +{w.toHit}</span>, {w.damage}
-            {damageBonusStr}
-            {w.element}
-            {#if propsArray.length > 0}
-              <span class="properties">
-                ({#each propsArray as p, i}{#if p.includes('Piercing')}<s-ref
-                      src="properties/piercing">{p}</s-ref
-                    >{:else}<s-ref src={`properties/${p}`}
-                      >{capitalize(p)}</s-ref
-                    >{/if}{#if i < propsArray.length - 1},
-                  {/if}{/each})
+          <tr>
+            <td class="name">
+              <strong>{w.name}</strong>
+              <p>Melee Weapon</p>
+            </td>
+            <td>
+              <strong
+                >{propsArray.includes('reach') ? m.reach + 5 : m.reach} ft.</strong
+              >
+              <p>Reach</p>
+            </td>
+            <td>+{w.toHit}</td>
+            <td>
+              <span class="damage">
+                {w.damage}{damageBonusStr}
+                <Icon icon={w.element} label={w.element}></Icon>
               </span>
-            {/if}
-          </li>
+            </td>
+            <td>{@html buildPropertiesList(propsArray)}</td>
+          </tr>
         {/each}
-      </ul>
-    {/if}
-    {#if hasBothWeaponTypes && rangedWeapons.length > 0}
-      <h3>Ranged</h3>
-    {/if}
-    {#if rangedWeapons.length > 0}
-      <ul class="weapons-list">
         {#each rangedWeapons as w}
           {@const damageBonusStr = formatBonus(w.damageBonus)}
           {@const propsArray = buildPropertiesArray(w)}
-          <li>
-            <strong>{w.name}</strong>
-            <span class="range">(Range: {w.range} ft)</span>
-            <span class="to-hit">To Hit +{w.toHit}</span>, {w.damage}
-            {damageBonusStr}
-            {w.element}
-            {#if propsArray.length > 0}
-              <span class="properties">
-                ({#each propsArray as p, i}{#if p.includes('Piercing')}<s-ref
-                      src="properties/piercing">{p}</s-ref
-                    >{:else}<s-ref src={`properties/${p}`}
-                      >{capitalize(p)}</s-ref
-                    >{/if}{#if i < propsArray.length - 1},
-                  {/if}{/each})
+          <tr>
+            <td class="name">
+              <strong>{w.name}</strong>
+              <p>Ranged Weapon</p>
+            </td>
+            <td>
+              <strong>{w.range} ft.</strong>
+              <p>Range</p>
+            </td>
+            <td>+{w.toHit}</td>
+            <td>
+              <span class="damage">
+                {w.damage}{damageBonusStr}
+                <Icon icon={w.element} label={w.element}></Icon>
               </span>
-            {/if}
-          </li>
+            </td>
+            <td>{@html buildPropertiesList(propsArray)}</td>
+          </tr>
         {/each}
-      </ul>
-    {/if}
+      </tbody>
+    </table>
   </div>
 {/if}
 
@@ -207,6 +225,18 @@
       font-size: 0.9rem;
       color: var(--dark-red);
       margin-block-start: 0.5rem;
+    }
+  }
+
+  .damage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+
+    :global(.icon) {
+      width: 1em;
+      height: 1em;
     }
   }
 

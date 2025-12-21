@@ -50,12 +50,47 @@ naturalWeapons:
     range: 30
   - name: Tail
     damage: 1d6
-    element: physical
+    element: fatigue
     ranged: false
     properties:
       - agile
       - reach
     mastery: graze
+  - name: Fist
+    damage: 1d6
+    element: fire
+    properties: []
+    mastery: ""
+  - name: Fist
+    damage: 1d6
+    element: cold
+    properties: []
+    mastery: ""
+  - name: Fist
+    damage: 1d6
+    element: force
+    properties: []
+    mastery: ""
+  - name: Fist
+    damage: 1d6
+    element: lightning
+    properties: []
+    mastery: ""
+  - name: Fist
+    damage: 1d6
+    element: poison
+    properties: []
+    mastery: ""
+  - name: Fist
+    damage: 1d6
+    element: acid
+    properties: []
+    mastery: ""
+  - name: Fist
+    damage: 1d6
+    element: radiant
+    properties: []
+    mastery: ""
 attacks:
   - name: Test Attack Action
     type: attack
