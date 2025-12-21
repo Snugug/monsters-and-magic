@@ -42,11 +42,10 @@ const glossary = defineCollection({
     title: z.string(),
     type: z
       .enum([
-        'Condition',
-        'Status',
         'Weapon Mastery',
         'Armor Mastery',
         'Weapon Property',
+        'Focus Property',
         'Armor Property',
         'Damage Type',
       ])

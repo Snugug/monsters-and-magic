@@ -60,6 +60,7 @@ If playing in story mode, you deal half the weapon's damage die instead of rolli
 Some weapons have special weapon properties—every property always applies to the weapon when wielded. All weapons also have a mastery property—if you gain weapon mastery of that weapon, you can use the mastery property.
 
 import Weapons from "$components/mdx/Weapons.svelte";
+import GlossaryDefinitions from "$components/mdx/GlossaryDefinitions.svelte";
 
 <Weapons simple={true} />
 
@@ -67,55 +68,11 @@ import Weapons from "$components/mdx/Weapons.svelte";
 
 ### Weapon Properties
 
-Agile
-: Can use +CUNNING instead of +POWER for attack and damage rolls. If wielding two agile weapons and deal damage or fatigue to a creature with your primary weapon, you can spend 1-fatigue to attack it with your secondary weapon; this damage does not include your ability score.
-
-Heavy
-: Requires +POWER of 1 or greater to wield.
-
-Piercing
-: Ignore an amount of AC equal to the piercing amount when dealing weapon damage, or deal additional fatigue equal to ½ the piercing amount (minimum 1) when dealing fatigue.
-
-Precise
-: Rewards careful strikes over brute force, can use +FOCUS instead of +POWER for attack and damage rolls.
-
-Reach
-: Melee weapons only. Your reach with this weapon is 10' instead of the normal 5'.
-
-Reload
-: Takes extra effort to reload-it can only be fired once per turn
-
-Simple
-: Basic weapons anyone can use.
-
-Thrown
-: Can be thrown. If thrown, it's treated as a ranged weapon (but cannot use ammunition) and has a range of 30'.
-
-Two-handed
-: Unwieldy and must be used with two hands
-
-Versatile
-: Can wield with one hand or two; if wielding with two, add +1 damage to damage rolls when used as a melee weapon. Can swap between one handed and two handed by using Use Item
+<GlossaryDefinitions type="Weapon Property" />
 
 ### Weapon Mastery
 
-Nick
-: When you strike with this weapon, mark 1-fatigue on a strong hit to apply sundered
-
-Graze
-: When you strike with this weapon and miss, deal damage equal to your +POWER.
-
-Ring
-: When you strike with this weapon, mark 2-fatigue on a hit to apply impaired
-
-Cleave
-: When you strike with this weapon, mark 1-fatigue to deal half the damage you dealt to your target to another creature within the weapon's reach.
-
-Sap
-: When you strike with this weapon, mark 1-fatigue on a hit to apply weakened
-
-Pinpoint
-: When you strike with this weapon, mark 1-fatigue on a hit to become prepared for your next attack roll against your target.
+<GlossaryDefinitions type="Weapon Mastery" />
 
 ## Foci
 
@@ -133,14 +90,7 @@ import Foci from "$components/mdx/Foci.svelte";
 
 ### Foci Properties
 
-Assail
-: Can be used as the normal weapon, or can Use Item and channel one of your cantrips. While channeled, the weapon takes on a magical appearance in line with the cantrip being used, you can cast spells with that cantrip at melee range, and you can substitute a base level cantrip for a weapon attack taking reactions. You can Use Item again to change your weapon back to its normal form or to another cantrip.
-
-Extend
-: When you apply a condition or status with a spell through this focus, you can mark 1-fatigue per target to extend its duration by 1 round. You can choose how many targets to extend.
-
-Span
-: When you attack a creature at range through this focus, increase the maximum distance by 10'.
+<GlossaryDefinitions type="Focus Property" />
 
 ## Armor
 
