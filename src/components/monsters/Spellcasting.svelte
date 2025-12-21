@@ -22,11 +22,18 @@
   );
 
   const hasSpellcasting = cantripEntries.length > 0 || charmEntries.length > 0;
+
+  const dc = 8 + m.cr + monster[monster.spellcasting];
 </script>
 
 {#if hasSpellcasting}
   <div class="tgroup">
     <h2>Spellcasting</h2>
+    <p>
+      DC: {dc} Attack: +{dc - 8}{m.bonus !== 0
+        ? ` ${m.bonus}`
+        : ''}{m.piercing !== 0 ? `, ${m.piercing} piercing` : ''}
+    </p>
     {#if cantripEntries.length > 0}
       <p>
         <strong>Cantrips:</strong>{' '}

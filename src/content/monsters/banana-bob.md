@@ -8,6 +8,7 @@ focus: 5
 power: 3
 cunning: 4
 luck: 0
+spellcasting: luck
 lineage: elf
 traits:
   - fey-touched

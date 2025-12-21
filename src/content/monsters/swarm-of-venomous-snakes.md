@@ -8,6 +8,7 @@ focus: 0
 power: 0
 cunning: 4
 luck: 0
+spellcasting: ""
 lineage: ""
 traits: []
 feats: []

@@ -320,6 +320,7 @@ export const baseMonster = {
   power: 1,
   cunning: 1,
   luck: 0,
+  spellcasting: '' as 'power' | 'focus' | 'cunning' | 'luck' | '',
 
   // Humanoids get Lineage, Traits, and Class
   lineage: '',

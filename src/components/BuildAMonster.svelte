@@ -984,6 +984,21 @@
               return false;
             }}
           />
+
+          <div class="group">
+            <label for="spellcasting">Spellcasting Ability</label>
+            <select
+              name="spellcasting"
+              bind:value={monster.spellcasting}
+              required
+            >
+              <option value="power">Power</option>
+              <option value="focus">Focus</option>
+              <option value="cunning">Cunning</option>
+              <option value="luck">Luck</option>
+            </select>
+            <p>The ability used for spell attacks and save DCs</p>
+          </div>
         {/if}
       </fieldset>
 

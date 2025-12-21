@@ -295,6 +295,10 @@ const monsters = defineCollection({
     power: z.number(),
     cunning: z.number(),
     luck: z.number(),
+    spellcasting: z
+      .enum(['power', 'focus', 'cunning', 'luck'])
+      .or(z.literal(''))
+      .optional(),
     lineage: reference('lineage'),
     traits: z.array(reference('traits')),
     feats: z.array(reference('feats')),
