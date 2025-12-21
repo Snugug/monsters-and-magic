@@ -17,10 +17,7 @@
 
   const { type }: Props = $props();
 
-  const items = await getCollection('glossary');
-  console.log(type);
-
-  const entries = items
+  const entries = (await getCollection('glossary'))
     .filter((e) => e.data.type?.includes(type))
     .sort((a, b) => a.data.title.localeCompare(b.data.title));
 
