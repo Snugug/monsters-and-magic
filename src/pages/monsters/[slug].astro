@@ -1,9 +1,10 @@
 ---
 import Layout from '$layouts/Layout.astro';
-import type { GetStaticPaths } from 'astro';
+import type { GetStaticPaths, ImageMetadata } from 'astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import { calculatePoints } from '$lib/astro/monsters';
+import { join } from 'path';
 import Icon from '$components/Icon.svelte';
 
 // Monster Svelte components
@@ -18,24 +19,25 @@ import Traits from '$components/monsters/Traits.svelte';
 import MonsterTags from '$components/monsters/MonsterTags.svelte';
 
 export const getStaticPaths = (async () => {
+  const images = import.meta.glob<{ default: ImageMetadata }>(
+    '/src/images/**/*.{jpeg,jpg,png,gif}',
+  );
+
   return await Promise.all(
     (await getCollection('monsters')).map(async (monster) => {
       const { Content } = await monster.render();
-      let image;
 
-      if (monster.data.image) {
-        const { default: fi } = await import(
-          /* @vite-ignore */ `../../${monster.data.image}`
-        );
-        image = fi;
-      }
+      const ip = join('/src', monster.data.image);
+
+      let image = images[ip] || false;
+
       return {
         params: {
           slug: monster.slug,
         },
         props: {
           meta: monster.data,
-          image,
+          image: image,
           Content,
         },
       };
@@ -54,25 +56,25 @@ const m = calculatePoints(meta);
 
     <div class="primary">
       {
-        image && (
+        image !== false && (
           <>
             <button
               class="image"
               commandfor="monster-image-preview"
               command="show-modal"
             >
-              <Image src={image} layout="constrained" alt={meta.title} />
+              <Image src={image()} layout="constrained" alt={meta.title} />
             </button>
 
             <dialog id="monster-image-preview" class="image-preview">
               <div class="inner">
                 <a
                   class="dialog-image-link"
-                  href={image.src}
+                  href={(await image()).default.src}
                   target="_blank"
                   rel="noopener"
                 >
-                  <Image src={image} layout="constrained" alt={meta.title} />
+                  <Image src={image()} layout="constrained" alt={meta.title} />
                 </a>
                 <button
                   class="close-btn"
