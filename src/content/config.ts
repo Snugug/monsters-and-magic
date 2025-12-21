@@ -40,17 +40,25 @@ const glossary = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    type: z
-      .enum([
-        'Weapon Mastery',
-        'Armor Mastery',
-        'Weapon Property',
-        'Focus Property',
-        'Armor Property',
-        'Damage Type',
-      ])
-      .array()
-      .optional(),
+    type: z.enum(['Damage Type']).array().optional(),
+  }),
+});
+
+/**
+ * Equipment properties and weapon masteries collection.
+ * Separate from glossary to enable dedicated filtering and database storage.
+ */
+const properties = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    type: z.enum([
+      'Weapon Property',
+      'Focus Property',
+      'Weapon Mastery',
+      'Armor Mastery',
+      'Armor Property',
+    ]),
   }),
 });
 
@@ -401,6 +409,7 @@ export const collections = {
   standalone,
   chapters,
   glossary,
+  properties,
   techniques,
   lineage,
   traits,

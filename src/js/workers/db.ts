@@ -2,7 +2,7 @@ import * as Comlink from 'comlink';
 import { Dexie, type EntityTable } from 'dexie';
 import type { CollectionEntry } from 'astro:content';
 
-const version = 2;
+const version = 3;
 
 const tables = [
   'activities',
@@ -19,6 +19,7 @@ const tables = [
   'modifications',
   'monster',
   'packs',
+  'properties',
   'techniques',
   'traits',
   'weapons',
