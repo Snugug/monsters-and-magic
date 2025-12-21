@@ -1,14 +1,21 @@
 ---
 import Layout from '$layouts/Layout.astro';
 import type { GetStaticPaths } from 'astro';
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import { calculatePoints } from '$lib/astro/monsters';
-import { swarmImmunities, tags } from '$lib/shared';
-import { createMarkdownProcessor } from '@astrojs/markdown-remark';
-import { markdown } from '$$lib/markdown';
-import { slugify, capitalize } from '$lib/helpers';
 import Icon from '$components/Icon.svelte';
+
+// Monster Svelte components
+import Header from '$components/monsters/Header.svelte';
+import CriticalStats from '$components/monsters/CriticalStats.svelte';
+import Defenses from '$components/monsters/Defenses.svelte';
+import Weapons from '$components/monsters/Weapons.svelte';
+import Actions from '$components/monsters/Actions.svelte';
+import Abilities from '$components/monsters/Abilities.svelte';
+import Spellcasting from '$components/monsters/Spellcasting.svelte';
+import Traits from '$components/monsters/Traits.svelte';
+import MonsterTags from '$components/monsters/MonsterTags.svelte';
 
 export const getStaticPaths = (async () => {
   return await Promise.all(
@@ -39,299 +46,11 @@ export const getStaticPaths = (async () => {
 const { meta, Content, image } = Astro.props;
 
 const m = calculatePoints(meta);
-
-// console.log(meta);
-
-// console.log(meta);
-// console.log(m);
-
-const md = await createMarkdownProcessor(markdown);
-
-const resist = meta.resistance;
-const vuln = meta.vulnerable;
-const absorb = meta.absorbent;
-const immune = [...meta.immunity, ...meta.conditions];
-
-if (meta.swarm) {
-  if (!meta.immunity.includes('physical')) {
-    resist.push('physical');
-  }
-
-  for (const s of swarmImmunities) {
-    immune.push({ id: s, collection: 'conditions' });
-  }
-  // meta.conditions = [...swarmImmunities, ...meta.conditions];
-}
-
-function speed(s) {
-  let output = '';
-  for (const [t, sp] of Object.entries(s)) {
-    if (t === 'walking') {
-      output += sp + ' ft.';
-    } else {
-      output += `, ${t.replace(/((m?)ing)$/, '')} ${sp} ft.`;
-    }
-  }
-
-  return output;
-}
-
-function vision(v) {
-  let output = '';
-  for (const t of v) {
-    if (meta[t]) {
-      output += `, ${t} ${meta[t]} ft.`;
-    } else {
-      output += `, ${t}`;
-    }
-  }
-
-  return output.slice(2);
-}
-
-function immuneStr(i) {
-  let output = '';
-  for (const im of i) {
-    if (im.id) {
-      output += `, <ref- src="${im.collection}/${im.id}">${im.id}</ref->`;
-    } else {
-      output += `, ${im}`;
-    }
-  }
-
-  return output.slice(2);
-}
-
-// Collect all traits into a single array with { name, html } structure
-const allTraits: Array<{ name: string; html: string }> = [];
-
-// 1. Lineage traits
-for (const t of meta.traits) {
-  const tr = await getEntry(t);
-  const desc = (await md.render(`**${tr.data.title}:** ` + tr.body)).code;
-  allTraits.push({ name: tr.data.title, html: desc });
-}
-
-// 2. Swarm
-if (meta.swarm !== false) {
-  allTraits.push({
-    name: 'Swarm',
-    html: '<p><strong>Swarm:</strong> Cannot gain temporary HP, cannot regain HP, deal ½ damage when bloodied.</p>',
-  });
-}
-
-// 3. Spicy
-if (meta.spicy !== '') {
-  const spicyText =
-    meta.spicy === 'fatigue'
-      ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.spicy}`
-      : `takes ${m.baseDamage} ${meta.spicy} damage`;
-  allTraits.push({
-    name: 'Spicy',
-    html: `<p><strong>Spicy:</strong> The first time a creature touches this monster each turn, it ${spicyText}.</p>`,
-  });
-}
-
-// 4. Radiates
-if (meta.radiates !== '') {
-  const radiatesText =
-    meta.radiates === 'fatigue'
-      ? `marks ¼ of ${m.baseDamage} (minimum 1) ${meta.radiates}`
-      : `takes ${m.baseDamage} ${meta.radiates} damage`;
-  allTraits.push({
-    name: 'Radiates',
-    html: `<p><strong>Radiates:</strong> Once each turn when a creature is within ${m.space * 2} ft. of the monster, it ${radiatesText}.</p>`,
-  });
-}
-
-// 5. Tags
-for (const [t, d] of Object.entries(tags)) {
-  if (meta[t]) {
-    const tagName = (d as { tag?: string }).tag || capitalize(t);
-    const desc = (await md.render(`**${tagName}:** ` + d.full)).code;
-    allTraits.push({ name: tagName, html: desc });
-  }
-}
-
-// Sort alphabetically by name
-allTraits.sort((a, b) => a.name.localeCompare(b.name));
-
-const hasTraits = allTraits.length > 0;
-
-// Prepare weapons data (combine natural weapons and equipped weapons)
-interface WeaponDisplay {
-  name: string;
-  damage: string;
-  element: string;
-  properties?: string[];
-  mastery?: string;
-  range?: number;
-  isNatural: boolean;
-  toHit: number;
-  damageBonus: number;
-  piercing: number;
-}
-
-// Check if monster has mastery tag
-const hasMastery = meta.mastery === true;
-
-// Calculate attack stat based on weapon properties
-function getAttackStat(properties: string[] = []): number {
-  if (properties.includes('agile')) {
-    return Math.max(meta.cunning, meta.power);
-  } else if (properties.includes('precise')) {
-    return Math.max(meta.focus, meta.power);
-  }
-  return meta.power;
-}
-
-// Global piercing from the monster
-const globalPiercing = m.piercing;
-const globalDamageBonus = m.bonus;
-
-const allWeapons: WeaponDisplay[] = [
-  ...meta.naturalWeapons.map((w) => {
-    // Use same logic as equipped weapons - check for agile/precise properties
-    const attackStat = getAttackStat(w.properties || []);
-    return {
-      name: w.name,
-      damage: w.damage,
-      element: w.element,
-      properties: w.properties,
-      mastery: hasMastery ? w.mastery : undefined,
-      range: w.range,
-      isNatural: true,
-      toHit: attackStat,
-      damageBonus: attackStat + globalDamageBonus,
-      piercing: globalPiercing,
-    };
-  }),
-  ...(await Promise.all(
-    meta.weapons.map(async (w) => {
-      const weapon = await getEntry(w);
-      const attackStat = getAttackStat(weapon.data.properties);
-      // Ranged weapons have range > 0
-      const weaponRange = weapon.data.range > 0 ? weapon.data.range : undefined;
-      return {
-        name: weapon.data.title,
-        damage: weapon.data.damage,
-        element: 'physical',
-        properties: weapon.data.properties,
-        range: weaponRange,
-        isNatural: false,
-        toHit: attackStat,
-        damageBonus: attackStat + globalDamageBonus,
-        piercing: globalPiercing,
-      };
-    }),
-  )),
-];
-
-const hasWeapons = allWeapons.length > 0;
-
-// Split weapons into melee and ranged based on range field
-const meleeWeapons = allWeapons.filter((w) => !w.range);
-const rangedWeapons = allWeapons.filter((w) => w.range);
-const hasBothWeaponTypes = meleeWeapons.length > 0 && rangedWeapons.length > 0;
-
-// Group attacks by type
-type AttackType =
-  | 'attack'
-  | 'power'
-  | 'focus'
-  | 'cunning'
-  | 'luck'
-  | 'reaction'
-  | 'other';
-const attackTypeLabels: Record<AttackType, string> = {
-  attack: 'Attacks',
-  power: 'Power Saves',
-  focus: 'Focus Saves',
-  cunning: 'Cunning Saves',
-  luck: 'Luck Saves',
-  reaction: 'Reactions',
-  other: 'Other Actions',
-};
-
-const attackGroups: Record<AttackType, typeof meta.attacks> = {
-  attack: meta.attacks
-    .filter((a) => a.type === 'attack')
-    .sort((a, b) => a.ap - b.ap),
-  power: meta.attacks
-    .filter((a) => a.type === 'power')
-    .sort((a, b) => a.ap - b.ap),
-  focus: meta.attacks
-    .filter((a) => a.type === 'focus')
-    .sort((a, b) => a.ap - b.ap),
-  cunning: meta.attacks
-    .filter((a) => a.type === 'cunning')
-    .sort((a, b) => a.ap - b.ap),
-  luck: meta.attacks
-    .filter((a) => a.type === 'luck')
-    .sort((a, b) => a.ap - b.ap),
-  reaction: meta.attacks
-    .filter((a) => a.type === 'reaction')
-    .sort((a, b) => a.ap - b.ap),
-  other: meta.attacks
-    .filter((a) => a.type === 'other')
-    .sort((a, b) => a.ap - b.ap),
-};
-
-const hasActions = meta.attacks.length > 0;
-
-// Fetch training references
-const techniqueEntries = await Promise.all(
-  meta.techniques.map(async (t) => {
-    const entry = await getEntry(t);
-    return { id: t, data: entry.data };
-  }),
-);
-const cantripEntries = await Promise.all(
-  meta.cantrips.map(async (c) => {
-    const entry = await getEntry(c);
-    return { id: c, data: entry.data };
-  }),
-);
-const charmEntries = await Promise.all(
-  meta.charms.map(async (c) => {
-    const entry = await getEntry(c);
-    return { id: c, data: entry.data };
-  }),
-);
-
-// Prepare feats with rendered content (like traits)
-const featDisplays: Array<{ name: string; html: string }> = [];
-for (const f of meta.feats) {
-  const feat = await getEntry(f);
-  const desc = (await md.render(`**${feat.data.title}:** ` + feat.body)).code;
-  featDisplays.push({ name: feat.data.title, html: desc });
-}
-
-const hasTraining =
-  techniqueEntries.length > 0 ||
-  cantripEntries.length > 0 ||
-  charmEntries.length > 0 ||
-  featDisplays.length > 0;
-
-// Check for damage/piercing modifiers
-const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
 ---
 
 <Layout>
   <div id="content" class="monster">
-    <header>
-      <h1 class="title modesto">{meta.title}</h1>
-      <p class="size-type">
-        {meta.ancient && 'Ancient '}
-        {meta.legendary && 'Legendary '}
-        {meta.size}
-        {meta.swarm ? ` swarm of ${meta.swarm} ${meta.type}s` : meta.type}{
-          meta.lineage.id
-            ? ` (${(await getEntry(meta.lineage)).data.title})`
-            : ''
-        }
-      </p>
-    </header>
+    <Header monster={meta} {m} />
 
     <div class="primary">
       {
@@ -368,398 +87,21 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
         )
       }
 
-      <dl class="critical ahs">
-        <div class="cgroup">
-          <dt>AC</dt>
-          <dd>
-            {m.ac}{
-              meta.armor.length > 0 &&
-                ' (' +
-                  (
-                    await Promise.all(
-                      meta.armor.map(
-                        async (a) => (await getEntry(a)).data.title,
-                      ),
-                    )
-                  ).join(', ') +
-                  ')'
-            }
-          </dd>
-        </div>
-
-        <div class="cgroup">
-          <dt>HP</dt>
-          <dd>{m.hp}</dd>
-        </div>
-
-        <div class="cgroup">
-          <dt>Speed</dt>
-          <dd>{speed(m.speed)}</dd>
-        </div>
-        {
-          hasDamageModifiers && (
-            <div class="cgroup">
-              {meta.strong !== 0 && (
-                <div class="cgroup">
-                  <dt>Damage</dt>
-                  <dd>+{m.bonus}</dd>
-                </div>
-              )}
-              {meta.savage !== 0 && (
-                <div class="cgroup">
-                  <dt>Piercing</dt>
-                  <dd>+{m.piercing}</dd>
-                </div>
-              )}
-            </div>
-          )
-        }
-        <div class="cgroup">
-          <div class="cgroup">
-            <dt>AP</dt>
-            <dd>{m.ap}</dd>
-          </div>
-          <div class="cgroup">
-            <dt>Fatigue</dt>
-            <dd>{m.fatigue}</dd>
-          </div>
-          <div class="cgroup">
-            <dt>Exhaustion</dt>
-            <dd>{m.exhaustion}</dd>
-          </div>
-        </div>
-
-        <div class="cgroup">
-          <div class="cgroup">
-            <dt>FCS</dt>
-            <dd>{meta.focus}</dd>
-          </div>
-          <div class="cgroup">
-            <dt>PWR</dt>
-            <dd>{meta.power}</dd>
-          </div>
-          <div class="cgroup">
-            <dt>CNG</dt>
-            <dd>{meta.cunning}</dd>
-          </div>
-          <div class="cgroup">
-            <dt>LCK</dt>
-            <dd>{meta.luck}</dd>
-          </div>
-        </div>
-      </dl>
-
-      <dl class="critical rvi">
-        {
-          resist.length > 0 && (
-            <div class="cgroup">
-              <dt>Resistances</dt>
-              <dd class="cap">{resist.join(', ')}</dd>
-            </div>
-          )
-        }
-        {
-          vuln.length > 0 && (
-            <div class="cgroup">
-              <dt>Vulnerabilities</dt>
-              <dd class="cap">{vuln.join(', ')}</dd>
-            </div>
-          )
-        }
-        {
-          immune.length > 0 && (
-            <div class="cgroup">
-              <dt>Immunities</dt>
-              <dd class="cap" set:html={immuneStr(immune)} />
-            </div>
-          )
-        }
-        {
-          absorb.length > 0 && (
-            <div class="cgroup">
-              <dt>Absorbs</dt>
-              <dd class="cap">{absorb.join(', ')}</dd>
-            </div>
-          )
-        }
-        {
-          meta.vision.length > 0 && (
-            <div class="cgroup">
-              <dt>Senses</dt>
-              <dd class="cap">{vision(meta.vision)}</dd>
-            </div>
-          )
-        }
-        <div class="cgroup">
-          <dt>CR</dt>
-          <dd>{m.cr} ({m.points} points)</dd>
-        </div>
-      </dl>
+      <CriticalStats monster={meta} {m} />
+      <Defenses monster={meta} {m} />
 
       <div class="desc type"><Content /></div>
     </div>
 
     <div class="secondary">
-      {
-        hasWeapons && (
-          <div class="tgroup">
-            <h2>Weapons</h2>
-            {hasBothWeaponTypes && meleeWeapons.length > 0 && <h3>Melee</h3>}
-            {meleeWeapons.length > 0 && (
-              <ul class="weapons-list">
-                {meleeWeapons.map((w) => {
-                  const damageBonusStr =
-                    w.damageBonus >= 0
-                      ? `+${w.damageBonus}`
-                      : `${w.damageBonus}`;
-
-                  return (
-                    <li>
-                      <strong>{w.name}</strong>
-                      <span class="to-hit">To Hit +{w.toHit}</span>, {w.damage}
-                      {damageBonusStr} {w.element}
-                      <span class="properties">
-                        (
-                        {w.properties?.map((p, i) => (
-                          <>
-                            <ref- src={`glossary/${p}`}>{capitalize(p)}</ref->
-                            {i < (w.properties?.length || 0) - 1 && ', '}
-                          </>
-                        ))}
-                        {w.piercing > 0 && (
-                          <>
-                            {w.properties?.length ? ', ' : ''}+{w.piercing}{' '}
-                            Piercing
-                          </>
-                        )}
-                        {w.mastery && (
-                          <>
-                            ,{' '}
-                            <ref- src={`glossary/${w.mastery}`}>
-                              {capitalize(w.mastery)}
-                            </ref->
-                          </>
-                        )}
-                        )
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-            {hasBothWeaponTypes && rangedWeapons.length > 0 && <h3>Ranged</h3>}
-            {rangedWeapons.length > 0 && (
-              <ul class="weapons-list">
-                {rangedWeapons.map((w) => {
-                  const damageBonusStr =
-                    w.damageBonus >= 0
-                      ? `+${w.damageBonus}`
-                      : `${w.damageBonus}`;
-
-                  return (
-                    <li>
-                      <strong>{w.name}</strong>
-                      <span class="range">(Range: {w.range} ft)</span>
-                      <span class="to-hit">To Hit +{w.toHit}</span>, {w.damage}
-                      {damageBonusStr} {w.element}
-                      <span class="properties">
-                        (
-                        {w.properties?.map((p, i) => (
-                          <>
-                            <ref- src={`glossary/${p}`}>{capitalize(p)}</ref->
-                            {i < (w.properties?.length || 0) - 1 && ', '}
-                          </>
-                        ))}
-                        {w.piercing > 0 && (
-                          <>
-                            {w.properties?.length ? ', ' : ''}+{w.piercing}{' '}
-                            Piercing
-                          </>
-                        )}
-                        {w.mastery && (
-                          <>
-                            ,{' '}
-                            <ref- src={`glossary/${w.mastery}`}>
-                              {capitalize(w.mastery)}
-                            </ref->
-                          </>
-                        )}
-                        )
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        )
-      }
-
-      {
-        hasActions && (
-          <div class="tgroup">
-            <h2>Actions</h2>
-            <div class="action-cards">
-              {meta.attacks.map((attack) => {
-                // Determine if this is a save type
-                const isSave = ['power', 'focus', 'cunning', 'luck'].includes(
-                  attack.type,
-                );
-                const isReaction = attack.type === 'reaction';
-                // Use ability field for stat, default to power
-                const abilityKey = attack.ability || 'power';
-                const attackStat = meta[
-                  abilityKey as keyof typeof meta
-                ] as number;
-                const dc = 8 + attackStat + m.cr;
-                const damageBonus = attackStat + globalDamageBonus;
-                const damageBonusStr =
-                  damageBonus >= 0 ? `+${damageBonus}` : `${damageBonus}`;
-
-                return (
-                  <div class="action-card">
-                    <div class="action-header">
-                      <strong>{attack.name}</strong>
-                      <span class="action-cost">
-                        {attack.ap} AP
-                        {attack.fatigue > 0 && `, ${attack.fatigue} fatigue`}
-                      </span>
-                      {attack.recharge && (
-                        <span class="recharge">
-                          Recharge: {attack.recharge}
-                        </span>
-                      )}
-                      {attack.thread && <span class="thread">[Thread]</span>}
-                    </div>
-
-                    {isReaction && attack.trigger && (
-                      <p class="trigger">
-                        <em>Trigger:</em> {attack.trigger}
-                      </p>
-                    )}
-
-                    <div class="action-body">
-                      {isSave && (
-                        <p class="save-dc">
-                          DC {dc} {abilityKey} save
-                        </p>
-                      )}
-
-                      {attack.damage && (
-                        <p class="action-damage">
-                          {attack.damage}
-                          {damageBonusStr} {attack.element || 'damage'}
-                          <span class="properties">
-                            {' '}
-                            (+{globalPiercing} Piercing)
-                          </span>
-                        </p>
-                      )}
-
-                      {attack.condition && (
-                        <p class="action-condition">
-                          →{' '}
-                          <ref- src={`conditions/${attack.condition.id}`}>
-                            {attack.condition.id}
-                          </ref->
-                        </p>
-                      )}
-
-                      {attack.range && (
-                        <p class="action-range">Range: {attack.range} ft</p>
-                      )}
-
-                      {attack.description && (
-                        <p class="action-desc">{attack.description}</p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )
-      }
-
-      {
-        (techniqueEntries.length > 0 || featDisplays.length > 0) && (
-          <div class="tgroup">
-            <h2>Abilities</h2>
-            {techniqueEntries.length > 0 && (
-              <p>
-                <strong>Techniques:</strong>{' '}
-                {techniqueEntries.map((t, i) => (
-                  <>
-                    <ref- src={`techniques/${t.id}`}>{t.data.title}</ref->
-                    {i < techniqueEntries.length - 1 && ', '}
-                  </>
-                ))}
-              </p>
-            )}
-            {featDisplays.map((feat) => (
-              <div class="type trait" set:html={feat.html} />
-            ))}
-          </div>
-        )
-      }
-
-      {
-        (cantripEntries.length > 0 || charmEntries.length > 0) && (
-          <div class="tgroup">
-            <h2>Spellcasting</h2>
-            {cantripEntries.length > 0 && (
-              <p>
-                <strong>Cantrips:</strong>{' '}
-                {cantripEntries.map((c, i) => (
-                  <>
-                    <ref- src={`cantrips/${c.id}`}>{c.data.title}</ref->
-                    {i < cantripEntries.length - 1 && ', '}
-                  </>
-                ))}
-              </p>
-            )}
-            {charmEntries.length > 0 && (
-              <p>
-                <strong>Charms:</strong>{' '}
-                {charmEntries.map((c, i) => (
-                  <>
-                    <ref- src={`charms/${c.id}`}>{c.data.title}</ref->
-                    {i < charmEntries.length - 1 && ', '}
-                  </>
-                ))}
-              </p>
-            )}
-          </div>
-        )
-      }
-
-      {
-        hasTraits && (
-          <div class="tgroup">
-            <h2>Traits</h2>
-            {allTraits.map((trait) => (
-              <div class="type trait" set:html={trait.html} />
-            ))}
-          </div>
-        )
-      }
+      <Weapons monster={meta} {m} />
+      <Actions monster={meta} {m} />
+      <Abilities monster={meta} {m} />
+      <Spellcasting monster={meta} {m} />
+      <Traits monster={meta} {m} />
     </div>
 
-    {
-      m.tags.filter((t) => t !== 'mastery').length > 0 && (
-        <div class="tgroup tags">
-          <h2>Tags</h2>
-          <ul>
-            {m.tags
-              .filter((t) => t !== 'mastery')
-              .sort()
-              .map((t) => (
-                <li class="tag">{t}</li>
-              ))}
-          </ul>
-        </div>
-      )
-    }
+    <MonsterTags monster={meta} {m} />
   </div>
 
   <style lang="scss">
@@ -777,7 +119,7 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
       width: 100%;
       container-type: inline-size;
 
-      header {
+      :global(header) {
         grid-column: 1 / -1;
       }
     }
@@ -802,7 +144,7 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
       position: fixed;
       border: none;
       background: transparent;
-      padding: 1rem;
+      padding: 0;
       overflow: visible;
 
       &::backdrop {
@@ -810,7 +152,7 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
       }
 
       .inner {
-        padding: 1rem;
+        padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -830,14 +172,14 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
           object-fit: contain;
           border: 1px solid black;
           box-shadow: 0px 0px 5px 2.5px rgba(0, 0, 0, 0.5);
-          background-color: white;
+          width: min-content;
         }
       }
 
       .close-btn {
         position: absolute;
-        top: 0.25rem;
-        right: 0.25rem;
+        top: -0.75rem;
+        right: -0.75rem;
         width: 1.5rem;
         height: 1.5rem;
         padding: 0.25rem;
@@ -873,12 +215,6 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
       }
     }
 
-    .rvi {
-      @container (max-width: 600px) {
-        grid-column: 1 / -1;
-      }
-    }
-
     .secondary {
       grid-column: 1 / -1;
       display: grid;
@@ -890,208 +226,11 @@ const hasDamageModifiers = meta.strong !== 0 || meta.savage !== 0;
       max-width: unset;
     }
 
-    .title {
-      grid-column: 1 / -1;
-      font-size: 2rem;
-      color: var(--dark-red);
-      line-height: 1;
-      border-bottom: 1px solid var(--gold);
-    }
-
-    .size-type {
-      font-size: 0.9rem;
-      text-transform: capitalize;
-      font-style: italic;
-      color: var(--dark-grey);
-    }
-
-    .cap {
-      text-transform: capitalize;
-    }
-
-    .cgroup {
-      display: flex;
-      gap: 0.25rem;
-
-      &:has(.cgroup) {
-        gap: 0.5rem;
-      }
-
-      dt {
-        font-weight: bold;
-        color: var(--dark-red);
-      }
-    }
-
     .desc {
       grid-column: 1 / -1;
 
       &:empty {
         display: none;
-      }
-    }
-
-    .abilities {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
-
-    .tgroup {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      font-size: 0.9rem;
-      h2 {
-        font-size: 1rem;
-        border-bottom: 1px solid var(--gold);
-      }
-
-      h3 {
-        font-size: 0.9rem;
-        color: var(--dark-red);
-        margin-block-start: 0.5rem;
-      }
-
-      .type {
-        width: 100%;
-        font-size: 0.9rem;
-      }
-    }
-
-    .weapons-list {
-      margin: 0;
-      padding: 0;
-      padding-inline-start: 1rem;
-      list-style: disc;
-
-      li {
-        margin-block: 0.25rem;
-      }
-
-      .to-hit {
-        font-weight: bold;
-        color: var(--dark-red);
-      }
-
-      .properties {
-        font-style: italic;
-        color: var(--dark-grey);
-      }
-    }
-
-    .inline-list {
-      margin: 0.25rem 0;
-    }
-
-    .action-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 0.5rem;
-    }
-
-    .action-card {
-      background: var(--white);
-      border: 1px solid var(--gold);
-      border-radius: 5px;
-      padding: 0.5rem;
-
-      .action-header {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--gold);
-        padding-bottom: 0.25rem;
-        margin-bottom: 0.25rem;
-
-        strong {
-          color: var(--dark-red);
-        }
-
-        .action-cost {
-          color: var(--dark-grey);
-          font-size: 0.85rem;
-        }
-
-        .recharge {
-          color: var(--dark-red);
-          font-style: italic;
-          font-size: 0.85rem;
-        }
-
-        .thread {
-          color: var(--dark-red);
-          font-weight: bold;
-          font-size: 0.85rem;
-        }
-      }
-
-      .trigger {
-        font-size: 0.85rem;
-        color: var(--dark-grey);
-        margin: 0.25rem 0;
-      }
-
-      .action-body {
-        p {
-          margin: 0.25rem 0;
-        }
-
-        .save-dc {
-          font-weight: bold;
-          color: var(--dark-red);
-          text-transform: capitalize;
-        }
-
-        .action-damage {
-          text-transform: capitalize;
-
-          .properties {
-            font-style: italic;
-            color: var(--dark-grey);
-          }
-        }
-
-        .action-condition {
-          text-transform: capitalize;
-        }
-
-        .action-desc {
-          margin-block-start: 0.25rem;
-        }
-      }
-    }
-
-    .training-group {
-      margin-block-end: 0.5rem;
-    }
-
-    .tags {
-      grid-column: 1 / -1;
-      // border-top: 1px solid var(--gold);
-      // padding-block-start: 0.5rem;
-
-      ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.25rem;
-        margin: 0;
-        padding: 0;
-        padding-block-start: 0.5rem;
-      }
-
-      .tag {
-        background: var(--white);
-        padding: 0.25rem 0.5rem;
-        border-radius: 5px;
-        border: 1px solid var(--gold);
-        line-height: 1;
-      }
-    }
-
-    .trait {
-      :global(> :not(:first-child)) {
-        margin-inline-start: 1rem;
       }
     }
   </style>
