@@ -70,6 +70,8 @@
     .type {
       width: 100%;
       font-size: 0.9rem;
+      margin-inline: 0;
+      max-width: unset;
     }
   }
 

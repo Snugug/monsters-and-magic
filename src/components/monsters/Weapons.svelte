@@ -145,94 +145,78 @@
 </script>
 
 {#if hasWeapons}
-  <div class="tgroup">
-    <h2>Weapons</h2>
-    <table>
-      <thead>
+  <table class="weapons">
+    <thead>
+      <tr>
+        <th style="width: 30%;">Weapon</th>
+        <th style="width: 7ch;">Range</th>
+        <th style="width: 4ch;">Hit</th>
+        <th style="width: 10ch;">Damage</th>
+        <th style="width: 70%;">Properties</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each meleeWeapons as w}
+        {@const damageBonusStr = formatBonus(w.damageBonus)}
+        {@const propsArray = buildPropertiesArray(w)}
         <tr>
-          <th style="width: 30%;">Weapon</th>
-          <th style="width: 7ch;">Range</th>
-          <th style="width: 4ch;">Hit</th>
-          <th style="width: 10ch;">Damage</th>
-          <th style="width: 70%;">Properties</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each meleeWeapons as w}
-          {@const damageBonusStr = formatBonus(w.damageBonus)}
-          {@const propsArray = buildPropertiesArray(w)}
-          <tr>
-            <td class="name">
-              <strong>{w.name}</strong>
-              <p>Melee Weapon</p>
-            </td>
-            <td>
-              <strong
-                >{propsArray.includes('reach') ? m.reach + 5 : m.reach} ft.</strong
+          <td class="name">
+            <strong>{w.name}</strong>
+            <p>Melee Weapon</p>
+          </td>
+          <td class="range">
+            <strong
+              >{propsArray.includes('reach') ? m.reach + 5 : m.reach}<span
+                class="distance"
               >
-              <p>Reach</p>
-            </td>
-            <td>+{w.toHit}</td>
-            <td>
-              <span class="damage">
-                {w.damage}{damageBonusStr}
-                <Icon icon={w.element} label={w.element}></Icon>
-              </span>
-            </td>
-            <td>{@html buildPropertiesList(propsArray)}</td>
-          </tr>
-        {/each}
-        {#each rangedWeapons as w}
-          {@const damageBonusStr = formatBonus(w.damageBonus)}
-          {@const propsArray = buildPropertiesArray(w)}
-          <tr>
-            <td class="name">
-              <strong>{w.name}</strong>
-              <p>Ranged Weapon</p>
-            </td>
-            <td>
-              <strong>{w.range} ft.</strong>
-              <p>Range</p>
-            </td>
-            <td>+{w.toHit}</td>
-            <td>
-              <span class="damage">
-                {w.damage}{damageBonusStr}
-                <Icon icon={w.element} label={w.element}></Icon>
-              </span>
-            </td>
-            <td>{@html buildPropertiesList(propsArray)}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+                ft.</span
+              ></strong
+            >
+            <p>Reach</p>
+          </td>
+          <td class="hit">+<strong>{w.toHit}</strong></td>
+          <td>
+            <span class="damage">
+              {w.damage}{damageBonusStr}
+              <Icon icon={w.element} label={w.element}></Icon>
+            </span>
+          </td>
+          <td class="properties">{@html buildPropertiesList(propsArray)}</td>
+        </tr>
+      {/each}
+      {#each rangedWeapons as w}
+        {@const damageBonusStr = formatBonus(w.damageBonus)}
+        {@const propsArray = buildPropertiesArray(w)}
+        <tr>
+          <td class="name">
+            <strong>{w.name}</strong>
+            <p>Ranged Weapon</p>
+          </td>
+          <td class="range">
+            <strong>{w.range}<span class="distance"> ft.</span></strong>
+            <p>Range</p>
+          </td>
+          <td class="hit">+<strong>{w.toHit}</strong></td>
+          <td>
+            <span class="damage">
+              {w.damage}{damageBonusStr}
+              <Icon icon={w.element} label={w.element}></Icon>
+            </span>
+          </td>
+          <td class="properties">{@html buildPropertiesList(propsArray)}</td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 {/if}
 
 <style lang="scss">
-  .tgroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.9rem;
-
-    h2 {
-      font-size: 1rem;
-      border-bottom: 1px solid var(--gold);
-    }
-
-    h3 {
-      font-size: 0.9rem;
-      color: var(--dark-red);
-      margin-block-start: 0.5rem;
-    }
-  }
-
   .damage {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.25rem;
+    font-weight: bold;
 
     :global(.icon) {
       width: 1em;
@@ -259,5 +243,63 @@
       font-style: italic;
       color: var(--dark-grey);
     }
+  }
+
+  .weapons {
+    background: transparent;
+
+    // thead td {
+    //   padding-block-end: 0.5rem;
+    // }
+
+    thead,
+    tr {
+      background: transparent;
+      border: none;
+    }
+
+    th,
+    td {
+      padding: 0.15rem;
+      font-size: 0.9rem;
+      border: none;
+      text-align: left;
+    }
+
+    th {
+      color: var(--black);
+      padding-block-end: 0.25rem;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    :global(.term-ref) {
+      font-weight: normal;
+    }
+  }
+
+  .name,
+  .range {
+    p {
+      font-size: 0.7rem;
+      color: var(--dark-grey);
+    }
+  }
+  .distance {
+    font-weight: normal;
+    font-size: 0.7rem;
+    margin-inline-start: 0.15rem;
+    color: var(--dark-grey);
+  }
+
+  .hit {
+    color: var(--dark-grey);
+    strong {
+      color: var(--black);
+    }
+  }
+
+  .properties {
+    color: var(--dark-grey);
   }
 </style>

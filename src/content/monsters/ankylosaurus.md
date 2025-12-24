@@ -39,7 +39,7 @@ attacks:
     type: attack
     damage: 1d10
     element: physical
-    condition: Prone
+    condition: prone
     ap: 2
     fatigue: 1
     trigger: ""

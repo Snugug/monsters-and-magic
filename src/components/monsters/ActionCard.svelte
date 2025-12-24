@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getEntry } from 'astro:content';
   import type { Monster, newAttackBase } from '$lib/shared';
   import type { CalculatedMonster } from '$lib/monsters';
 
@@ -12,6 +13,22 @@
 
   const { attack, meta, m, globalDamageBonus, globalPiercing }: Props =
     $props();
+
+  /**
+   * Resolve condition entry from the condition reference if it exists.
+   * The condition field can be either a content collection reference object
+   * (with collection and id properties) or an empty string.
+   * Note: The newAttackBase type uses string for condition, but actual data
+   * from content collections will have a reference object when a condition
+   * is set.
+   */
+  const conditionRef = attack.condition as
+    | { collection: 'conditions'; id: string }
+    | '';
+  const conditionEntry =
+    conditionRef && typeof conditionRef === 'object'
+      ? await getEntry(conditionRef)
+      : null;
 
   /**
    * Determines if the attack is a save-based attack (uses ability save DC)
@@ -89,10 +106,11 @@
       </p>
     {/if}
 
-    {#if attack.condition}
+    {#if conditionEntry}
       <p class="action-condition">
-        → <s-ref src={`conditions/${attack.condition.id}`}
-          >{attack.condition.id}</s-ref
+        →
+        <s-ref src={`conditions/${conditionEntry.slug}`}
+          >{conditionEntry.data.title}</s-ref
         >
       </p>
     {/if}

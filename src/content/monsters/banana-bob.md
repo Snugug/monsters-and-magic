@@ -96,7 +96,7 @@ attacks:
     type: attack
     damage: 1d6
     element: acid
-    condition: Frightened
+    condition: blinded
     ap: 3
     fatigue: 2
     trigger: ""
@@ -109,7 +109,7 @@ attacks:
     type: focus
     damage: 1d6
     element: physical
-    condition: Unconscious
+    condition: weakened
     ap: 1
     fatigue: 0
     trigger: ""
@@ -121,7 +121,7 @@ attacks:
     type: reaction
     damage: ""
     element: ""
-    condition: Protected
+    condition: protected
     ap: 1
     fatigue: 0
     trigger: Hit by damage
@@ -145,7 +145,7 @@ attacks:
     type: cunning
     damage: ""
     element: ""
-    condition: Blinded
+    condition: impaired
     ap: 1
     fatigue: 0
     trigger: ""
@@ -157,7 +157,7 @@ attacks:
     type: other
     damage: 1d6
     element: ""
-    condition: Quickened
+    condition: quickened
     ap: 1
     fatigue: 0
     trigger: ""

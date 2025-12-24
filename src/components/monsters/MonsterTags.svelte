@@ -58,6 +58,7 @@
       border-radius: 5px;
       border: 1px solid var(--gold);
       line-height: 1;
+      font-size: 0.7rem;
     }
   }
 </style>

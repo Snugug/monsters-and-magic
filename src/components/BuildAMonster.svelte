@@ -1155,7 +1155,7 @@
                 >
                   <option value="">-</option>
                   {#each conditions as e}
-                    <option value={e.title}>{capitalize(e.title)}</option>
+                    <option value={e.id}>{capitalize(e.title)}</option>
                   {/each}
                 </select>
               </div>

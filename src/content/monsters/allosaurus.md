@@ -42,7 +42,7 @@ attacks:
     type: attack
     damage: ""
     element: ""
-    condition: Prone
+    condition: prone
     ap: 2
     fatigue: 1
     trigger: ""
