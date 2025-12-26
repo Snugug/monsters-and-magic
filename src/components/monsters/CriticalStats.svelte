@@ -35,7 +35,8 @@
   }
 
   /**
-   * Resolve armor entries to get their display titles
+   * Resolve armor entries to get their display titles.
+   * Also includes "Armor Charm" if the Armor charm's AC bonus is being applied.
    */
   const armorTitles =
     monster.armor.length > 0
@@ -43,6 +44,11 @@
           monster.armor.map(async (a) => (await getEntry(a)).data.title),
         )
       : [];
+
+  // Add Armor Charm to the list if it's contributing to AC
+  if (m.armorCharm) {
+    armorTitles.push('Armor Charm');
+  }
 </script>
 
 <dl class="critical ahs">

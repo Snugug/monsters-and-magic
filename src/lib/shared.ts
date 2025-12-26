@@ -391,6 +391,7 @@ export const monsterCalc = {
   exhaustion: 1,
   speed: {} as { [k: string]: number },
   ac: 0,
+  armorCharm: false,
   bonus: 0,
   piercing: 0,
   reach: 5,

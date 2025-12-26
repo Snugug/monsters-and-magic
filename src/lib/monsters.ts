@@ -303,6 +303,26 @@ export function calculatePoints(
 
     // Defense
 
+    // Check for Armor charm eligibility:
+    // - Monster has the Armor charm
+    // - Monster has a spellcasting ability set
+    // - Monster has no armor or only shield-type armor
+    // Note: charms can be either strings (from BuildAMonster) or reference objects (from Astro content)
+    const hasArmorCharm = monster.charms?.some((c) => {
+      const charm = c as string | { id: string };
+      return (typeof charm === 'string' ? charm : charm.id) === 'armor';
+    });
+    const hasSpellcasting = !!monster.spellcasting;
+    let hasOnlyShieldArmor = true;
+    if (monster.armor?.length) {
+      hasOnlyShieldArmor = monster.armor.every((w) => {
+        const a = armor.find((f) => f.id === w.id);
+        return a?.type === 'shield';
+      });
+    }
+    const armorCharmApplies =
+      hasArmorCharm && hasSpellcasting && hasOnlyShieldArmor;
+
     // Armor
     if (monster.armor?.length) {
       const a0 = monster.armor.map((w) => armor.find((f) => f.id === w.id));
@@ -318,6 +338,14 @@ export function calculatePoints(
       p.points += points(a + monster.armored, 2);
     } else {
       p.ac += monster.cunning;
+    }
+
+    // Apply Armor charm: add spellcasting modifier to AC if eligible
+    if (armorCharmApplies) {
+      const spellMod = monster[monster.spellcasting as keyof Monster] as number;
+      p.ac += spellMod;
+      p.points += points(spellMod - 1, 2);
+      p.armorCharm = true;
     }
 
     if (monster.armored !== 0) {
