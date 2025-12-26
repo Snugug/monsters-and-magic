@@ -378,15 +378,19 @@
     }
   }
 
+  function resetPrompt() {
+    let size = space(monster.size);
+    let swarm = space(monster.swarm);
+    let plural = pluralMonsterType(monster.type);
+    const canSwarm = monster.swarm && monster.size !== 'tiny';
+
+    prompt = `A ${monster.title}.\n\nA ${monster.size} (fits inside a ${size} foot by ${size} foot square)${canSwarm ? ` swarm of ${monster.swarm} (fits inside a ${swarm} foot by ${swarm} foot square) ` : ' '}${canSwarm ? plural : monster.type}.\n\n${body}`;
+  }
+
   // Prompt
   $effect(() => {
     if (!image && monster.title) {
-      let size = space(monster.size);
-      let swarm = space(monster.swarm);
-      let plural = pluralMonsterType(monster.type);
-      const canSwarm = monster.swarm && monster.size !== 'tiny';
-
-      prompt = `A ${monster.title}.\n\nA ${monster.size} (fits inside a ${size} foot by ${size} foot square)${canSwarm ? ` swarm of ${monster.swarm} (fits inside a ${swarm} foot by ${swarm} foot square) ` : ' '}${canSwarm ? plural : monster.type}.\n\n${body}`;
+      resetPrompt();
     }
   });
 
@@ -506,7 +510,7 @@
     const { image: img } = attributes;
     delete attributes.image;
     if (img) {
-      handler = await getFileHandle(`src/${img}`);
+      handler = await getFileHandle(`src/assets/${img}`);
       file = await handler.getFile();
       image = await fileToImage(file);
     } else {
@@ -522,6 +526,8 @@
     const combined = Object.assign(structuredClone(baseMonster), attributes);
 
     monster = combined;
+
+    resetPrompt();
   }
 
   async function resetMonster(e: Event) {
