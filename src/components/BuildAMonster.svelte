@@ -436,13 +436,17 @@
           `src/assets/images/monsters/${imageFilename}`,
           image,
         );
-        const pth = await getPath(f);
-        addToast(
-          `Image for ${monster.title} saved to ${pth.join('/')}`,
-          'success',
-        );
-        // Set imagePath directly, excluding 'src/'
-        imagePath = `images/monsters/${imageFilename}`;
+
+        if (f) {
+          const pth = await getPath(f);
+          addToast(
+            `Image for ${monster.title} saved to ${pth.join('/')}`,
+            'success',
+          );
+          // Set imagePath directly, excluding 'src/'
+          imagePath = `images/monsters/${imageFilename}`;
+          handler = f;
+        }
       } else if (handler) {
         // Use existing image path from handler
         const pth = await getPath(handler);
