@@ -65,3 +65,17 @@ export async function getFileHandle(path: string, create = false) {
     create,
   });
 }
+
+/**
+ * Checks if a file exists at the given path.
+ * @param path - The path to check, relative to the project folder.
+ * @returns True if the file exists, false otherwise.
+ */
+export async function fileExists(path: string): Promise<boolean> {
+  try {
+    const file = await getFileHandle(path, false);
+    return !!file;
+  } catch {
+    return false;
+  }
+}

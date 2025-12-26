@@ -153,8 +153,13 @@
   $effect(() => {
     if (popover) {
       popover.addEventListener('beforetoggle', (e) => {
-        if (e.newState === 'closed') {
-          // useImage(e);
+        // When the popover closes, implicitly use the generated image if one exists
+        // This handles dismissing the popover by clicking outside or pressing Escape
+        if (e.newState === 'closed' && preview) {
+          image = preview;
+          preview = '';
+          handler = null;
+          file = null;
         }
       });
     }

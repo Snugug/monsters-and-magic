@@ -19,13 +19,14 @@
   import { fileToImage } from '$js/images';
   import { slugify, capitalize } from '$lib/helpers';
   import {
+    chooseFolder,
+    fileExists,
+    folder,
+    getDir,
+    getFileHandle,
     getPath,
     writeFile,
     writeImage,
-    getFileHandle,
-    getDir,
-    folder,
-    chooseFolder,
   } from '$js/fs.svelte';
   import Multiselect from '$components/Multiselect.svelte';
   import Repeater from '$components/Repeater.svelte';
@@ -418,29 +419,33 @@
 
   async function saveMonster(e: SubmitEvent) {
     e.preventDefault();
-    // Track if this is a new monster (no existing file handler)
-    const isNewMonster = !handler;
     try {
       let imagePath = '';
       const slug = slugify(monster.title);
-      const uid = Math.floor(Date.now()).toString(36);
 
-      let pth;
-      if (handler) {
-        pth = await getPath(handler);
-      } else if (image) {
+      // Save generated image if needed (image exists but no file handler)
+      // This occurs when user clicks "Use" on a generated image instead of "Save"
+      if (image && !handler) {
+        // Determine unique filename: use slug, add uid only if file exists
+        let imageFilename = `${slug}.png`;
+        if (await fileExists(`src/images/monsters/${imageFilename}`)) {
+          const uid = Math.floor(Date.now()).toString(36);
+          imageFilename = `${slug}-${uid}.png`;
+        }
         const f = await writeImage(
-          `src/images/monsters/${slug}-${uid}.png`,
+          `src/images/monsters/${imageFilename}`,
           image,
         );
-        pth = await getPath(f);
+        const pth = await getPath(f);
         addToast(
           `Image for ${monster.title} saved to ${pth.join('/')}`,
           'success',
         );
-      }
-
-      if (pth) {
+        // Set imagePath directly, excluding 'src/'
+        imagePath = `images/monsters/${imageFilename}`;
+      } else if (handler) {
+        // Use existing image path from handler
+        const pth = await getPath(handler);
         if (pth[0] === 'src') {
           pth.shift();
         }
@@ -598,6 +603,7 @@
           bind:handler
           bind:prompt
           bind:this={imagePicker}
+          editable={true}
           type="monster"
         />
       </div>
