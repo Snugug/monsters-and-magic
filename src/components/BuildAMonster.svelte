@@ -428,12 +428,12 @@
       if (image && !handler) {
         // Determine unique filename: use slug, add uid only if file exists
         let imageFilename = `${slug}.png`;
-        if (await fileExists(`src/images/monsters/${imageFilename}`)) {
+        if (await fileExists(`src/assets/images/monsters/${imageFilename}`)) {
           const uid = Math.floor(Date.now()).toString(36);
           imageFilename = `${slug}-${uid}.png`;
         }
         const f = await writeImage(
-          `src/images/monsters/${imageFilename}`,
+          `src/assets/images/monsters/${imageFilename}`,
           image,
         );
         const pth = await getPath(f);
@@ -447,6 +447,9 @@
         // Use existing image path from handler
         const pth = await getPath(handler);
         if (pth[0] === 'src') {
+          pth.shift();
+        }
+        if (pth[0] === 'assets') {
           pth.shift();
         }
         imagePath = pth.join('/');

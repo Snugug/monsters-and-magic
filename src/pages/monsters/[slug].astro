@@ -20,14 +20,14 @@ import MonsterTags from '$components/monsters/MonsterTags.svelte';
 
 export const getStaticPaths = (async () => {
   const images = import.meta.glob<{ default: ImageMetadata }>(
-    '/src/images/**/*.{jpeg,jpg,png,gif}',
+    '/src/assets/images/**/*.{jpeg,jpg,png,gif}',
   );
 
   return await Promise.all(
     (await getCollection('monsters')).map(async (monster) => {
       const { Content } = await monster.render();
 
-      const ip = join('/src', monster.data.image);
+      const ip = join('/src/assets', monster.data.image);
 
       let image = images[ip] || false;
 
