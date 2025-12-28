@@ -39,7 +39,7 @@ export async function buildChapter(
       .sort((a, b) => a.data.title.localeCompare(b.data.title))
       .map((lin) => {
         const h = [{ depth: 3, slug: lin.slug, text: lin.data.title }];
-        for (const trait of traits[lin.slug]) {
+        for (const trait of traits[lin.slug] || []) {
           h.push({
             depth: 4,
             slug: trait.slug,
@@ -62,28 +62,20 @@ export async function buildChapter(
   if (c.slug === 'character-classes') {
     const feats = Object.groupBy(
       sortFeats((await getCollection('feats')).filter((a) => a.data.class)),
-      (o) => o.data.class.id,
+      (o) => o.data.class!.id,
     );
     headings = (await getCollection('classes'))
       .sort((a, b) => a.data.title.localeCompare(b.data.title))
       .map((cla) => {
         const h = [{ depth: 2, slug: cla.slug, text: cla.data.title }];
         const f = feats[cla.slug];
-        for (const feat of f) {
+        for (const feat of f || []) {
           h.push({
             depth: 3,
             slug: feat.slug,
             text: feat.data.title,
           });
         }
-        // for (const feat of cla.data.feats) {
-        //   h.push({
-        //     depth: 3,
-        //     slug: slugify(feat.title, { lower: true }),
-        //     text: feat.title,
-        //   });
-        // }
-
         return h;
       })
       .flat();
@@ -97,10 +89,10 @@ export async function buildChapter(
       .filter((a) => a.data.type === 'basic')
       .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
     const adv = techniques
-      .filter((a) => a.data.type === 'advanced')
+      .filter((a) => a.data.type === 'advanced' && !a.data.rare)
       .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
     const rare = techniques
-      .filter((a) => a.data.type === 'rare')
+      .filter((a) => a.data.rare)
       .map((a) => ({ depth: 3, slug: a.slug, text: a.data.title }));
     // console.log(headings);
 
@@ -152,4 +144,4 @@ export const chapters = (
   if (a.chapter < b.chapter) return -1;
   if (a.chapter > b.chapter) return 1;
   return 0;
-}) as Chapters[];
+}) as Chapter[];
