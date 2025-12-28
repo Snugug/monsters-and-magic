@@ -11,7 +11,7 @@
     "fix": "prettier --write .",
     "tsx": "tsx",
     "pretest": "rm -rf .nyc_output && mkdir .nyc_output",
-    "test": "run-s *:omni",
+    "test": "run-s e2e:test vitest:omni",
     "posttest": "nyc report",
     "vitest": "vitest",
     "vitest:omni": "vitest run --coverage.enabled --coverage.reporter=json",
@@ -19,7 +19,7 @@
     "unit:watch": "vitest --project unit",
     "integration:test": "vitest run --project integration --coverage",
     "integration:watch": "vitest --project integration",
-    "e2e:test": "playwright test --reporter=line",
+    "e2e:test": "playwright test",
     "e2e:ui": "playwright test --ui",
     "e2e:omni": "playwright test",
     "coverage:report": "nyc report"
@@ -67,6 +67,7 @@
     "sirv": "^3.0.2",
     "tsx": "^4.21.0",
     "unist-util-visit": "^5.0.0",
+    "v8-to-istanbul": "^9.3.0",
     "vite-plugin-istanbul": "^7.2.1",
     "vitest": "^4.0.16"
   },
