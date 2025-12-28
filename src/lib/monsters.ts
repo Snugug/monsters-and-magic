@@ -422,7 +422,7 @@ export function calculatePoints(
     // Set CR at the end
     p.cr = Math.ceil((p.points - 7) / 10);
 
-    if (p.cr < 0) p.cr = 0;
+    if (p.cr <= 0) p.cr = 0;
     // }
 
     return p;
