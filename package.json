@@ -10,19 +10,20 @@
     "lint": "prettier -c .",
     "fix": "prettier --write .",
     "tsx": "tsx",
-    "pretest": "rm -rf .nyc_output && mkdir .nyc_output",
+    "pretest": "rm -rf .coverage && mkdir .coverage",
     "test": "run-s *:omni",
-    "posttest": "nyc report",
+    "posttest": "run-s *:report",
     "vitest": "vitest",
-    "vitest:omni": "vitest run --coverage.enabled --coverage.reporter=json",
+    "vitest:omni": "vitest run --coverage.enabled --coverage.reporter=json --coverage.reportOnFailure",
     "unit:test": "vitest run --project unit --coverage",
     "unit:watch": "vitest --project unit",
     "integration:test": "vitest run --project integration --coverage",
     "integration:watch": "vitest --project integration",
     "e2e:test": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "e2e:omni": "playwright test",
-    "coverage:report": "nyc report"
+    "e2e:omni": "COVERAGE_MODE=json playwright test",
+    "vitest:report": "nyc report --temp-dir .coverage/vitest --reporter text",
+    "e2e:report": "mcr merge --inputDir .coverage/e2e/raw --reports text --outputDir .coverage/report"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -52,9 +53,11 @@
     "@testing-library/svelte": "^5.2.10",
     "@types/sharedworker": "^0.0.188",
     "@types/wicg-file-system-access": "^2023.10.7",
-    "@vitest/coverage-istanbul": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.16",
     "happy-dom": "^20.0.11",
     "hastscript": "^9.0.1",
+    "monocart-coverage-reports": "^2.12.9",
+    "monocart-reporter": "^2.9.23",
     "npm-run-all": "^4.1.5",
     "nyc": "^17.1.0",
     "prettier": "^3.7.4",
@@ -68,20 +71,7 @@
     "tsx": "^4.21.0",
     "unist-util-visit": "^5.0.0",
     "v8-to-istanbul": "^9.3.0",
-    "vite-plugin-istanbul": "^7.2.1",
     "vitest": "^4.0.16"
-  },
-  "nyc": {
-    "extension": [
-      ".js",
-      ".ts",
-      ".svelte",
-      ".astro"
-    ],
-    "exclude": [
-      "node_modules",
-      "tests"
-    ]
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a",
   "volta": {

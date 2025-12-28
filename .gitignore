@@ -27,3 +27,5 @@ pnpm-debug.log*
 .playwright
 .nyc_output
 .coverage
+monocart-report
+coverage-reports

@@ -26,9 +26,9 @@ export default getViteConfig({
       },
     ],
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
       reporter: ['text', 'json'],
-      reportsDirectory: '.nyc_output',
+      reportsDirectory: '.coverage/vitest',
     },
   },
 } as ViteUserConfig);

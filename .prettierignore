@@ -19,3 +19,5 @@ assets
 maps
 generated
 src/images/**/*
+monocart-report
+coverage-reports
