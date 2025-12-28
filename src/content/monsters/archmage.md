@@ -1,0 +1,102 @@
+---
+title: Archmage
+size: medium
+swarm: false
+type: humanoid
+image: images/monsters/archmage.png
+focus: 5
+power: 1
+cunning: 3
+luck: 0
+spellcasting: focus
+lineage: ""
+traits: []
+feats: []
+weapons: []
+armor: []
+vision: []
+blindsight: 10
+tremmorsense: 10
+truesight: 10
+speeds: []
+walking: 30
+flying: 0
+climbing: 0
+swimming: 0
+burrowing: 0
+savage: 0
+strong: 0
+energetic: 2
+conditioned: 0
+spicy: ""
+radiates: ""
+naturalWeapons:
+  - name: Arcane Blast
+    damage: 6d6
+    element: force
+    range: 150
+    properties:
+      - precise
+    mastery: ""
+  - name: Arcane Burst
+    damage: 6d6
+    element: force
+    properties:
+      - precise
+    mastery: ""
+attacks: []
+techniques: []
+cantrips:
+  - thunderclap
+  - minor-illusion
+  - lightning-lasso
+  - water-whip
+charms:
+  - counterspell
+  - invisibility
+  - armor
+  - blast
+upcast: 0
+hp: 3
+armored: 0
+resistance: []
+immunity: []
+vulnerable: []
+absorbent: []
+conditions: []
+aggressive: false
+amorphous: false
+ancient: false
+amphibious: false
+aquatic: false
+bloodthirsty: false
+burden: false
+draining: false
+escape: false
+flyby: false
+grappler: false
+illuminated: false
+reach: false
+jumper: false
+lair: false
+legendary: false
+pack: false
+unrelenting: false
+undying: false
+bursting: false
+regeneration: false
+extraplanar: false
+occupier: false
+freediver: false
+icewalker: false
+immutable: false
+incorporeal: false
+matana: true
+webwalker: false
+climber: false
+tunneler: false
+photophobic: false
+siege: false
+abduct: false
+mastery: false
+---
