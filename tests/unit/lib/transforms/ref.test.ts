@@ -131,7 +131,6 @@ describe('lib/transforms/ref', () => {
     // "power 3" via sized
 
     const content = node.content;
-    console.log(JSON.stringify(content, null, 2));
 
     const refs = (node.content as any[]).filter(
       (c) => typeof c === 'object' && c.tag === 'ref-',
