@@ -11,7 +11,7 @@
     "fix": "prettier --write .",
     "tsx": "tsx",
     "pretest": "rm -rf .nyc_output && mkdir .nyc_output",
-    "test": "run-s e2e:test vitest:omni",
+    "test": "run-s *:omni",
     "posttest": "nyc report",
     "vitest": "vitest",
     "vitest:omni": "vitest run --coverage.enabled --coverage.reporter=json",
