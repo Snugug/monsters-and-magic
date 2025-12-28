@@ -69,9 +69,80 @@ describe('lib/transforms/lookup', () => {
     expect(typed).toHaveProperty('hold', 'glossary/hold');
   });
 
-  it('should export a RegExp', () => {
-    expect(replacementRegExp).toBeInstanceOf(RegExp);
-    // Basic check if it matches a known key
-    expect('1 ongoing').toMatch(replacementRegExp);
+  describe('replacementRegExp', () => {
+    it('should match modified patterns', () => {
+      // "+1 ongoing"
+      expect('+1 ongoing').toMatch(replacementRegExp);
+      // "-1 ongoing"
+      expect('-1 ongoing').toMatch(replacementRegExp);
+      // "1d6 piercing"
+      expect('1d6 piercing').toMatch(replacementRegExp);
+      // "5 hp"
+      expect('5 hp').toMatch(replacementRegExp);
+      // "1-fatigue"
+      expect('1-fatigue').toMatch(replacementRegExp);
+      // "2 threads"
+      expect('2 threads').toMatch(replacementRegExp);
+      // "10 weight"
+      expect('10 weight').toMatch(replacementRegExp);
+      // "1d4 piercing"
+      expect('1d4 piercing').toMatch(replacementRegExp);
+    });
+
+    it('should match sized patterns', () => {
+      // "power 3"
+      expect('power 3').toMatch(replacementRegExp);
+      // "focus 1"
+      expect('focus 1').toMatch(replacementRegExp);
+      // "cunning 0"
+      expect('cunning 0').toMatch(replacementRegExp);
+      // "luck 1"
+      expect('luck 1').toMatch(replacementRegExp);
+    });
+
+    it('should match typed patterns', () => {
+      // "hold 1-soft"
+      expect('hold 1-soft').toMatch(replacementRegExp);
+      // "hold 3-clever"
+      expect('hold 3-clever').toMatch(replacementRegExp);
+      // "hold 2-something"
+      expect('hold 2-something').toMatch(replacementRegExp);
+
+      // Typed regex: `(${Object.keys(typed).join('|')})\\s(\\d+|(\\+?\\w+))-\\w+`
+      // It allows digits OR (+?word).
+      // "hold +1-soft" ?
+      expect('hold +1-soft').toMatch(replacementRegExp);
+      // "hold +str-heavy" ?
+      expect('hold +str-heavy').toMatch(replacementRegExp);
+      // "hold +something-else"
+      expect('hold +something-else').toMatch(replacementRegExp);
+    });
+
+    it('should match plain lookup patterns', () => {
+      expect('thread').toMatch(replacementRegExp);
+      expect('fly speed').toMatch(replacementRegExp);
+      expect('something').toMatch(replacementRegExp); // From mocked glossary
+      expect('tech one').toMatch(replacementRegExp); // From mocked techniques
+    });
+
+    it('should match shortLookup patterns', () => {
+      // "+dc"
+      expect('+dc').toMatch(replacementRegExp);
+      // "+pb"
+      expect('+pb').toMatch(replacementRegExp);
+      // "+spell"
+      expect('+spell').toMatch(replacementRegExp);
+    });
+
+    it('should NOT match invalid patterns', () => {
+      // "ongoing" plain (needs number prefix)
+      expect('ongoing').not.toMatch(replacementRegExp);
+      // "1 invalid"
+      expect('1 invalid').not.toMatch(replacementRegExp);
+      // "hold 1" (needs -type)
+      expect('hold 1').not.toMatch(replacementRegExp);
+      // "dc" (needs +)
+      expect('dc').not.toMatch(replacementRegExp);
+    });
   });
 });
