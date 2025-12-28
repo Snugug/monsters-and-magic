@@ -77,7 +77,7 @@ function remarkContainers() {
             const captData = capt.data || {};
             captData.hName = 'figcaption';
             captData.hProperties = h('figcaption', capt || {}).properties;
-            node.children = node.children.splice(label - 1, 1);
+            node.children.splice(label, 1);
             node.children.push(capt);
           }
 
